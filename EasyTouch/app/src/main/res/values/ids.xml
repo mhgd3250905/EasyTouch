@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="ivTouch" type="id">ivTouch</item>
+    <item name="ivTouchBack" type="id">ivTouchBack</item>
+    <item name="ivTouchHome" type="id">ivTouchHome</item>
+    <item name="ivTouchRecent" type="id">ivTouchRecent</item>
+</resources>

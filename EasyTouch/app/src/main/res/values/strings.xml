@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">EasyTouch</string>
+    <string name="action_settings">Settings</string>
+    <string name="accessibility">打开开关，才可以使用悬浮球功能。</string>
+</resources>

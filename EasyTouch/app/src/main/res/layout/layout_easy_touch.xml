@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@id/ivTouchRecent"
+        android:src="@drawable/shape_react_recent"
+        android:layout_width="15dp"
+        android:layout_height="80dp"  />
+
+    <ImageView
+        android:id="@id/ivTouchHome"
+        android:src="@drawable/shape_react_home"
+        android:layout_width="15dp"
+        android:layout_height="80dp"  />
+
+    <ImageView
+        android:id="@id/ivTouchBack"
+        android:src="@drawable/shape_react_back"
+        android:layout_width="15dp"
+        android:layout_height="80dp" />
+</LinearLayout>
