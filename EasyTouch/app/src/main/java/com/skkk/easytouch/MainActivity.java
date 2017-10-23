@@ -3,6 +3,8 @@ package com.skkk.easytouch;
 import android.Manifest;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.TargetApi;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.SYSTEM_ALERT_WINDOW
     };
     private static final String PACKAGE_URL_SCHEME = "package:"; // 方案
+    private ComponentName mAdminName;
+    private DevicePolicyManager mDPM;
 
 
     @Override
@@ -75,6 +79,14 @@ public class MainActivity extends AppCompatActivity {
 
         initPermissions();
         initEvent();
+
+        mAdminName = new ComponentName(this, AdminManageReceiver.class);
+        mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+
+        //如果设备管理器尚未激活，这里会启动一个激活设备管理器的Intent,具体的表现就是第一次打开程序时，手机会弹出激活设备管理器的提示，激活即可。
+        if (!mDPM.isAdminActive(mAdminName)) {
+            showAdminManagement(mAdminName);
+        }
     }
 
     private void initEvent() {
@@ -207,5 +219,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    //激活设备管理器
+    private void showAdminManagement(ComponentName mAdminName) {
+        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminName);
+        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "activity device");
+        startActivityForResult(intent,1);
     }
 }

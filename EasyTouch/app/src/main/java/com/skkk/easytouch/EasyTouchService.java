@@ -2,13 +2,15 @@ package com.skkk.easytouch;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Service;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
+import android.os.Vibrator;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,6 +26,10 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
     private float lastY;
     private float dy;
     private float dx;
+    private ComponentName mAdminName;
+    private DevicePolicyManager mDPM;
+    private boolean isMove;
+    private Vibrator vibrator;
 
 
     @Override
@@ -32,6 +38,11 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         if (windowManager == null) {
             windowManager = (WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         }
+
+        mAdminName = new ComponentName(this, AdminManageReceiver.class);
+        mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
         Point size = new Point();
         windowManager.getDefaultDisplay().getSize(size);
@@ -59,26 +70,40 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         ivTouchBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //震动30毫秒
+                vibrator.vibrate(30);
                 recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
             }
         });
         ivTouchHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //震动30毫秒
+                vibrator.vibrate(30);
                 recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_HOME);
             }
         });
         ivTouchRecent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //震动30毫秒
+                vibrator.vibrate(30);
                 recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_RECENTS);
             }
         });
+        ivTouchBack.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mDPM.isAdminActive(mAdminName)) {
+                    //震动30毫秒
+                    vibrator.vibrate(15);
+                    mDPM.lockNow();
+                }
+                return false;
+            }
+        });
 
-        ivTouchBack.setOnTouchListener(this);
         ivTouchHome.setOnTouchListener(this);
-        ivTouchRecent.setOnTouchListener(this);
-
 
 
     }
@@ -89,7 +114,6 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -117,22 +141,23 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
     public boolean onTouch(View v, MotionEvent e) {
             switch (e.getAction()){
                 case MotionEvent.ACTION_DOWN:
-                    lastX = e.getX();
-                    lastY = e.getY();
+                    isMove = false;
+                    lastY = e.getRawY();
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    isMove = true;
 //                    dx = e.getX()-lastX;
-                    dy = e.getY()-lastY;
+                    dy = e.getRawY()-lastY;
 //                    mParams.x+=dx/3;
-                    mParams.y+=dy/3;
+                    mParams.y+=dy;
                     windowManager.updateViewLayout(touchView,mParams);
-                    lastX=e.getX();
-                    lastY=e.getY();
+                    lastX=e.getRawX();
+                    lastY=e.getRawY();
                     break;
                 case MotionEvent.ACTION_UP:
 
                     break;
             }
-            return false;
+            return isMove;
     }
 }
