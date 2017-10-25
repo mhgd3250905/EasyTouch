@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <declare-styleable name="SettingItemView">
+        <attr name="title" format="string" />
+        <attr name="value" format="string" />
+    </declare-styleable>
+
+</resources>

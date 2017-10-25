@@ -6,4 +6,12 @@
     <item name="iv_touch_top" type="id">iv_touch_top</item>
     <item name="iv_touch_mid" type="id">iv_touch_mid</item>
     <item name="iv_touch_bottom" type="id">iv_touch_bottom</item>
+    <item name="container_settings" type="id">container_settings</item>
+    <item name="tv_settings_title" type="id">tv_settings_title</item>
+    <item name="tv_settings_value" type="id">tv_settings_value</item>
+    <item name="settings_item_shape" type="id">settings_item_shape</item>
+    <item name="settings_item_float" type="id">settings_item_float</item>
+    <item name="settings_item_assist" type="id">settings_item_assist</item>
+    <item name="settings_item_theme" type="id">settings_item_theme</item>
+    <item name="settings_item_lock" type="id">settings_item_lock</item>
 </resources>

@@ -7,4 +7,39 @@
     <color name="colorBack">#55f03c78</color>
     <color name="colorHome">#5550a0b4</color>
     <color name="colorRecent">#5578503c</color>
+
+    <color name="colorCardBackground">#FFFFFF</color>
+    <color name="colorTransparent">#00000000</color>
+
+
+    <color name="nightColorPrimary">#383838</color>
+    <color name="nightColorPrimaryDark">#383838</color>
+    <color name="nightColorAccent">#dc7878</color>
+    <color name="nightColorCardBackground">#454545</color>
+
+    <color name="transparentColor">#55000000</color>
+    <color name="realTransparentColor">#00000000</color>
+
+
+    <color name="colorLightBlue">#3ffffF</color>
+    <color name="colorBlackBody">#cc000000</color>
+    <color name="colorBlackBody77">#cc000000</color>
+    <color name="colorRed">#bbff2244</color>
+    <color name="colorWhite">#fff</color>
+    <color name="colorWhite55">#55ffffff</color>
+    <color name="colorGray">#999999</color>
+    <color name="colorGrayLight">#aaaaaa</color>
+    <color name="colorTransPrimaryDark">#552B6582</color>
+    <color name="colorURL">#50c8b4</color>
+    <color name="colorEmail">#b45064</color>
+    <color name="colorPhone">#6464f0</color>
+    <color name="backgroundColor">#FFFFFF</color>
+    <color name="colorTouchNormalLine">#56abe4</color>
+    <color name="colorTouchPressLine">#2aa515</color>
+    <color name="colorTouchErrorLine">#d81e06</color>
+    <color name="colorListBackground">#e9e7e8</color>
+
+    <color name="theme_color_primary">#fb7299</color>
+    <color name="theme_color_primary_dark">#b85671</color>
+    <color name="theme_color_primary_trans">#99f0486c</color>
 </resources>

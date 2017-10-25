@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 
 import static android.os.Build.VERSION_CODES.M;
@@ -33,12 +34,24 @@ import static android.os.Build.VERSION_CODES.M;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    Toolbar toolbar;
-    Button btnTouchBall;
-    Button btnTouchReact;
-    LinearLayout contentMain;
 
     private static final int PERMISSION_REQUEST_CODE = 0; // 系统权限管理页面的参数
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.settings_item_float)
+    SettingItemView settingsItemFloat;
+    @Bind(R.id.settings_item_assist)
+    SettingItemView settingsItemAssist;
+    @Bind(R.id.settings_item_theme)
+    SettingItemView settingsItemTheme;
+    @Bind(R.id.settings_item_shape)
+    SettingItemView settingsItemShape;
+    @Bind(R.id.btn_touch_ball)
+    Button btnTouchBall;
+    @Bind(R.id.content_main)
+    LinearLayout contentMain;
+    @Bind(R.id.settings_item_lock)
+    SettingItemView settingsItemLock;
     private ArrayList<String> needRequestPermissions = new ArrayList<>();
     // 所需的全部权限
     private static final String[] PERMISSIONS = new String[]{
@@ -54,40 +67,83 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        btnTouchBall = (Button) findViewById(R.id.btn_touch_ball);
-        btnTouchReact = (Button) findViewById(R.id.btn_touch_react);
-        contentMain = (LinearLayout) findViewById(R.id.content_main);
         setSupportActionBar(toolbar);
 
+        initUI();
 
+    }
+
+    /**
+     * 设置UI
+     */
+    private void initUI() {
         /**
          * 判断是否有无障碍权限
          */
-        if (!isAccessibilityServiceRunning("FloatService"))
-            DialogUtils.showDialog(this, R.drawable.ic_warning, "提醒", "为了保证EasyTouch的正常使用，您需要开启无障碍权限！",
-                    "前往设置", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            startActivity(new Intent("android.settings.ACCESSIBILITY_SETTINGS"));
-                        }
-                    }, "退出应用", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    }).show();
+        if (!isAccessibilityServiceRunning("FloatService")) {
+            settingsItemAssist.setValue("未开启");
+            settingsItemAssist.setSettingItemClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DialogUtils.showDialog(MainActivity.this, R.drawable.ic_warning, "提醒", "为了保证EasyTouch的正常使用，您需要开启无障碍权限！",
+                            "前往设置", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    startActivity(new Intent("android.settings.ACCESSIBILITY_SETTINGS"));
+                                }
+                            }, "退出应用", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            }).show();
+                }
+            });
+        } else {
+            settingsItemAssist.setValue("已开启");
+            settingsItemAssist.setSettingItemClickListener(null);
+        }
 
-        checkAlertWindowPermission();
+        if (Build.VERSION.SDK_INT >= M) {
+            if (!Settings.canDrawOverlays(this)) {
+                settingsItemFloat.setValue("未开启");
+                settingsItemFloat.setSettingItemClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                        intent.setData(Uri.parse("package:" + getPackageName()));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                });
+
+            } else {
+                settingsItemFloat.setValue("已开启");
+                settingsItemFloat.setSettingItemClickListener(null);
+            }
+        }
+
         initEvent();
 
+        //如果设备管理器尚未激活，这里会启动一个激活设备管理器的Intent,具体的表现就是第一次打开程序时，手机会弹出激活设备管理器的提示，激活即可。
         mAdminName = new ComponentName(this, AdminManageReceiver.class);
         mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-
-        //如果设备管理器尚未激活，这里会启动一个激活设备管理器的Intent,具体的表现就是第一次打开程序时，手机会弹出激活设备管理器的提示，激活即可。
         if (!mDPM.isAdminActive(mAdminName)) {
-            showAdminManagement(mAdminName);
+            settingsItemLock.setValue("未开启");
+            settingsItemLock.setSettingItemClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showAdminManagement(mAdminName);
+                }
+            });
+        }else {
+            settingsItemLock.setValue("已开启");
+            settingsItemLock.setSettingItemClickListener(null);
         }
+
+
+
+
     }
 
     /**
@@ -113,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
     @Override
@@ -184,6 +239,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminName);
         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "activity device");
-        startActivityForResult(intent,1);
+        startActivityForResult(intent, 1);
     }
 }
