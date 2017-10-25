@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@id/ll_touch_container"
+    android:layout_width="15dp"
+    android:layout_height="240dp"
+    android:orientation="vertical">
 
     <ImageView
-        android:id="@id/ivTouchRecent"
-        android:src="@drawable/shape_react_recent"
-        android:layout_width="15dp"
-        android:layout_height="80dp"  />
+        android:id="@id/iv_touch_top"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/shape_react_corners_top" />
 
     <ImageView
-        android:id="@id/ivTouchHome"
-        android:src="@drawable/shape_react_home"
-        android:layout_width="15dp"
-        android:layout_height="80dp"  />
+        android:id="@id/iv_touch_mid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/shape_react_corners_mid" />
 
     <ImageView
-        android:id="@id/ivTouchBack"
-        android:src="@drawable/shape_react_back"
-        android:layout_width="15dp"
-        android:layout_height="80dp" />
+        android:id="@id/iv_touch_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/shape_react_corners_bottom" />
 </LinearLayout>

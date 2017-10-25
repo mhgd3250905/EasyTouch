@@ -11,32 +11,56 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.annotation.DrawableRes;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+
 public class EasyTouchService extends Service implements View.OnTouchListener {
+    private static final String TAG = "EasyTouchService";
     private WindowManager windowManager;
     private WindowManager.LayoutParams mParams;
     private View touchView;
     private float lastX;
     private float lastY;
-    private float dy;
-    private float dx;
     private ComponentName mAdminName;
     private DevicePolicyManager mDPM;
     private boolean isMove;
     private Vibrator vibrator;
+    private ImageView ivTouchBottom;
+    private ImageView ivTouchMid;
+    private ImageView ivTouchTop;
+    private LinearLayout llTouchContainer;
+    private GestureDetector midDetector;
+    private GestureDetector topDetector;
+
+    private GestureDetector bottomDetector;
+    private float dx;
+    private float dy;
+    //自定义
+    private final int DEFAULT_TOUCH_WIDTH=15;
+    private final int DEFAULT_TOUCH_HEIGHT=240;
+    private final int DEFAULT_VIBRATE_LEVEL=30;
+    private int touchWidth = DEFAULT_TOUCH_WIDTH;//悬浮条的宽度 单位dp
+    private int touchHeight = DEFAULT_TOUCH_HEIGHT;//悬浮条的高度 单位dp
+    private int vibrateLevel = DEFAULT_VIBRATE_LEVEL;//震动等级
+    private @DrawableRes int topDrawable=R.drawable.shape_react_corners_top;//上方触摸块背景
+    private @DrawableRes int midDrawable=R.drawable.shape_react_corners_mid;//中部触摸块背景
+    private @DrawableRes int bottomDrawable=R.drawable.shape_react_corners_bottom;//下方触摸块背景
 
 
     @Override
     public void onCreate() {
         super.onCreate();
         if (windowManager == null) {
-            windowManager = (WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+            windowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         }
 
         mAdminName = new ComponentName(this, AdminManageReceiver.class);
@@ -61,56 +85,258 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         mParams.format = PixelFormat.RGBA_8888;
         mParams.gravity = Gravity.LEFT | Gravity.TOP;
         mParams.x = 0;
-        mParams.y = screenHeight-dp2px(getApplicationContext(),200f);
+        mParams.y = screenHeight - dp2px(getApplicationContext(), 200f);
 
-        touchView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch,null);
-        ImageView ivTouchBack= (ImageView) touchView.findViewById(R.id.ivTouchBack);
-        ImageView ivTouchHome= (ImageView) touchView.findViewById(R.id.ivTouchHome);
-        ImageView ivTouchRecent= (ImageView) touchView.findViewById(R.id.ivTouchRecent);
-        ivTouchBack.setOnClickListener(new View.OnClickListener() {
+        touchView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch, null);
+        llTouchContainer = (LinearLayout) touchView.findViewById(R.id.ll_touch_container);
+        ivTouchTop = (ImageView) touchView.findViewById(R.id.iv_touch_top);
+        ivTouchMid = (ImageView) touchView.findViewById(R.id.iv_touch_mid);
+        ivTouchBottom = (ImageView) touchView.findViewById(R.id.iv_touch_bottom);
+
+        llTouchContainer.post(new Runnable() {
             @Override
-            public void onClick(View v) {
-                //震动30毫秒
-                vibrator.vibrate(30);
-                recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
-            }
-        });
-        ivTouchHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //震动30毫秒
-                vibrator.vibrate(30);
-                recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_HOME);
-            }
-        });
-        ivTouchRecent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //震动30毫秒
-                vibrator.vibrate(30);
-                recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_RECENTS);
-            }
-        });
-        ivTouchBack.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (mDPM.isAdminActive(mAdminName)) {
-                    //震动30毫秒
-                    vibrator.vibrate(15);
-                    mDPM.lockNow();
-                }
-                return false;
+            public void run() {
+                initTouchUI();
+
             }
         });
 
-        ivTouchHome.setOnTouchListener(this);
+        //设置时间
+        initEvent();
+
+        windowManager.addView(touchView, mParams);
 
 
     }
 
+    /**
+     * 设置触摸块UI
+     */
+    private void initTouchUI() {
+        //设置宽高
+        touchWidth=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_WIDTH,DEFAULT_TOUCH_WIDTH);
+        touchHeight=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_HEIGHT,DEFAULT_TOUCH_HEIGHT);
+        vibrateLevel=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_VIBRATE_LEVEL,DEFAULT_VIBRATE_LEVEL);
+        topDrawable=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_TOP_DRAWABLE,R.drawable.shape_react_corners_top);
+        midDrawable=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_MID_DRAWABLE,R.drawable.shape_react_corners_mid);
+        bottomDrawable=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_BOTTOM_DRAWABLE,R.drawable.shape_react_corners_bottom);
+
+        ViewGroup.LayoutParams containerLp = llTouchContainer.getLayoutParams();
+        containerLp.width = dp2px(getApplicationContext(), touchWidth);
+        containerLp.height = dp2px(getApplicationContext(), touchHeight);
+        llTouchContainer.setLayoutParams(containerLp);
+        windowManager.updateViewLayout(touchView, mParams);
+
+        ivTouchTop.setImageResource(topDrawable);
+        ivTouchMid.setImageResource(midDrawable);
+        ivTouchBottom.setImageResource(bottomDrawable);
+    }
+
+    /**
+     * 设置事件
+     */
+    private void initEvent() {
+        ivTouchTop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        ivTouchMid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        ivTouchBottom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        ivTouchTop.setOnTouchListener(this);
+        ivTouchMid.setOnTouchListener(this);
+        ivTouchBottom.setOnTouchListener(this);
+        topDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                //震动30毫秒
+                vibrator.vibrate(vibrateLevel);
+                recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_RECENTS);
+                return false;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (e2.getY() - e1.getY() > 10 && Math.abs(e1.getY() - e2.getY()) > Math.abs(e1.getX() - e2.getX())) {
+                    vibrator.vibrate(vibrateLevel);
+                    recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
+                }
+                return false;
+            }
+        });
+        midDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                //记录move down坐标
+                setMoveDownXY(e);
+                return false;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                //震动30毫秒
+                vibrator.vibrate(vibrateLevel);
+                recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_HOME);
+                return false;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                //刷新悬浮条位置
+                refreshMovePlace(e2);
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                return false;
+            }
+        });
+        bottomDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                //震动30毫秒
+                vibrator.vibrate(vibrateLevel);
+                recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
+                return false;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (e1.getY() - e2.getY() > 10 && Math.abs(e1.getY() - e2.getY()) > Math.abs(e1.getX() - e2.getX())) {
+                    if (mDPM.isAdminActive(mAdminName)) {
+                        //震动30毫秒
+                        vibrator.vibrate(vibrateLevel);
+                        mDPM.lockNow();
+                    }
+                }
+                return false;
+            }
+        });
+//        midDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
+//            @Override
+//            public boolean onSingleTapConfirmed(MotionEvent e) {
+//                Log.d(TAG, "onSingleTapConfirmed() called with: e = [" + e + "]");
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onDoubleTap(MotionEvent e) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onDoubleTapEvent(MotionEvent e) {
+//                return false;
+//            }
+//        });
+//        bottomDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
+//            @Override
+//            public boolean onSingleTapConfirmed(MotionEvent e) {
+//                //震动30毫秒
+//                vibrator.vibrate(30);
+//                recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onDoubleTap(MotionEvent e) {
+//                if (mDPM.isAdminActive(mAdminName)) {
+//                    //震动30毫秒
+//                    vibrator.vibrate(15);
+//                    mDPM.lockNow();
+//                }
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onDoubleTapEvent(MotionEvent e) {
+//                return false;
+//            }
+//        });
+    }
+
+    private void refreshMovePlace(MotionEvent e2) {
+        dx = e2.getRawX() - lastX;
+        dy = e2.getRawY() - lastY;
+        mParams.y += dy;
+        windowManager.updateViewLayout(touchView, mParams);
+        lastX = e2.getRawX();
+        lastY = e2.getRawY();
+    }
+
+    private void setMoveDownXY(MotionEvent e) {
+        lastY = e.getRawY();
+        lastX = e.getRawX();
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        windowManager.addView(touchView,mParams);
+        windowManager.updateViewLayout(touchView, mParams);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -139,25 +365,13 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent e) {
-            switch (e.getAction()){
-                case MotionEvent.ACTION_DOWN:
-                    isMove = false;
-                    lastY = e.getRawY();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    isMove = true;
-//                    dx = e.getX()-lastX;
-                    dy = e.getRawY()-lastY;
-//                    mParams.x+=dx/3;
-                    mParams.y+=dy;
-                    windowManager.updateViewLayout(touchView,mParams);
-                    lastX=e.getRawX();
-                    lastY=e.getRawY();
-                    break;
-                case MotionEvent.ACTION_UP:
-
-                    break;
-            }
-            return isMove;
+        if (v.getId() == R.id.iv_touch_top) {
+            return topDetector.onTouchEvent(e);
+        } else if (v.getId() == R.id.iv_touch_mid) {
+            return midDetector.onTouchEvent(e);
+        } else if (v.getId() == R.id.iv_touch_bottom) {
+            return bottomDetector.onTouchEvent(e);
+        }
+        return false;
     }
 }

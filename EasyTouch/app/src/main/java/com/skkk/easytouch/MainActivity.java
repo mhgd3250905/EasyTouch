@@ -2,7 +2,6 @@ package com.skkk.easytouch;
 
 import android.Manifest;
 import android.accessibilityservice.AccessibilityServiceInfo;
-import android.annotation.TargetApi;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -28,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+
+import static android.os.Build.VERSION_CODES.M;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }).show();
 
-        initPermissions();
+        checkAlertWindowPermission();
         initEvent();
 
         mAdminName = new ComponentName(this, AdminManageReceiver.class);
@@ -86,6 +87,20 @@ public class MainActivity extends AppCompatActivity {
         //如果设备管理器尚未激活，这里会启动一个激活设备管理器的Intent,具体的表现就是第一次打开程序时，手机会弹出激活设备管理器的提示，激活即可。
         if (!mDPM.isAdminActive(mAdminName)) {
             showAdminManagement(mAdminName);
+        }
+    }
+
+    /**
+     * 申请悬浮窗权限
+     */
+    private void checkAlertWindowPermission() {
+        if (Build.VERSION.SDK_INT >= M) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
         }
     }
 
@@ -99,14 +114,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * 检测权限
-     */
-    private void initPermissions() {
-        if (PermissionsUtils.lacksPermissions(MainActivity.this, PERMISSIONS)) {
-            requestPermissions(PERMISSIONS);
-        }
-    }
 
 
     @Override
@@ -137,55 +144,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // 请求权限兼容低版本
-    @TargetApi(Build.VERSION_CODES.M)
-    private void requestPermissions(String... permissions) {
-        needRequestPermissions.clear();
-        for (int i = 0; i < PERMISSIONS.length; i++) {
-            if (PermissionsUtils.lacksPermission(this, PERMISSIONS[i])) {
-                needRequestPermissions.add(PERMISSIONS[i]);
-            }
-        }
-        String[] permissionArr = new String[needRequestPermissions.size()];
-        needRequestPermissions.toArray(permissionArr);
-        requestPermissions(permissionArr, PERMISSION_REQUEST_CODE);
-    }
-
-    /**
-     * 用户权限处理,
-     * 如果全部获取, 则直接过.
-     * 如果权限缺失, 则提示Dialog.
-     *
-     * @param requestCode  请求码
-     * @param permissions  权限
-     * @param grantResults 结果
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-
-        if (requestCode == PERMISSION_REQUEST_CODE && hasAllPermissionsGranted(grantResults)) {
-
-        } else {
-            DialogUtils.showDialog(MainActivity.this, R.drawable.ic_warning,
-                    "提醒", "当前应用缺少必要权限，\n请点击\"设置\"-\"权限\"打开所需要的权限。",
-                    "设置", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            intent.setData(Uri.parse(PACKAGE_URL_SCHEME + getPackageName()));
-                            startActivity(intent);
-                        }
-                    }, "算了", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-
-                        }
-                    }).show();
-        }
-
-    }
 
     /**
      * 判断是否包含所有的权限

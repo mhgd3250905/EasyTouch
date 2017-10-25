@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="ivTouch" type="id">ivTouch</item>
-    <item name="ivTouchBack" type="id">ivTouchBack</item>
-    <item name="ivTouchHome" type="id">ivTouchHome</item>
-    <item name="ivTouchRecent" type="id">ivTouchRecent</item>
+
+    <item name="ll_touch_container" type="id">ll_touch_container</item>
+    <item name="iv_touch_top" type="id">iv_touch_top</item>
+    <item name="iv_touch_mid" type="id">iv_touch_mid</item>
+    <item name="iv_touch_bottom" type="id">iv_touch_bottom</item>
 </resources>
