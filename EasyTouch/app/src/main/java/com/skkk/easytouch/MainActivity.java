@@ -23,6 +23,12 @@ import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.skkk.easytouch.Receiver.AdminManageReceiver;
+import com.skkk.easytouch.Services.EasyTouchService;
+import com.skkk.easytouch.Services.FloatService;
+import com.skkk.easytouch.Utils.DialogUtils;
+import com.skkk.easytouch.View.SettingItemView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,9 +75,8 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        initUI();
-
     }
+
 
     /**
      * 设置UI
@@ -141,9 +146,13 @@ public class MainActivity extends AppCompatActivity {
             settingsItemLock.setSettingItemClickListener(null);
         }
 
-
-
-
+        //设置形状
+        settingsItemShape.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,ShapeSettingActivity.class));
+            }
+        });
     }
 
     /**
@@ -174,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
+        initUI();
     }
 
     @Override

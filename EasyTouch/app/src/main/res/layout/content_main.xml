@@ -14,7 +14,7 @@
     tools:context="com.skkk.easytouch.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <com.skkk.easytouch.SettingItemView
+    <com.skkk.easytouch.View.SettingItemView
         android:id="@id/settings_item_float"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         app:title="悬浮窗权限"
         app:value="未打开"/>
 
-    <com.skkk.easytouch.SettingItemView
+    <com.skkk.easytouch.View.SettingItemView
         android:id="@id/settings_item_assist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         app:title="辅助功能"
         app:value="未打开"/>
 
-    <com.skkk.easytouch.SettingItemView
+    <com.skkk.easytouch.View.SettingItemView
         android:id="@id/settings_item_lock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         app:title="锁屏功能"
         app:value="未开启"/>
 
-    <com.skkk.easytouch.SettingItemView
+    <com.skkk.easytouch.View.SettingItemView
         android:id="@id/settings_item_shape"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         app:title="悬浮条外观"
         app:value="15*240"/>
 
-    <com.skkk.easytouch.SettingItemView
+    <com.skkk.easytouch.View.SettingItemView
         android:id="@id/settings_item_theme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

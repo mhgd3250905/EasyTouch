@@ -1,4 +1,4 @@
-package com.skkk.easytouch;
+package com.skkk.easytouch.Utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

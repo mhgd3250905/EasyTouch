@@ -1,4 +1,4 @@
-package com.skkk.easytouch;
+package com.skkk.easytouch.Services;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Service;
@@ -21,6 +21,11 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.skkk.easytouch.Receiver.AdminManageReceiver;
+import com.skkk.easytouch.Configs;
+import com.skkk.easytouch.R;
+import com.skkk.easytouch.Utils.SpUtils;
 
 
 public class EasyTouchService extends Service implements View.OnTouchListener {
@@ -51,7 +56,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
     private int touchWidth = DEFAULT_TOUCH_WIDTH;//悬浮条的宽度 单位dp
     private int touchHeight = DEFAULT_TOUCH_HEIGHT;//悬浮条的高度 单位dp
     private int vibrateLevel = DEFAULT_VIBRATE_LEVEL;//震动等级
-    private @DrawableRes int topDrawable=R.drawable.shape_react_corners_top;//上方触摸块背景
+    private @DrawableRes int topDrawable= R.drawable.shape_react_corners_top;//上方触摸块背景
     private @DrawableRes int midDrawable=R.drawable.shape_react_corners_mid;//中部触摸块背景
     private @DrawableRes int bottomDrawable=R.drawable.shape_react_corners_bottom;//下方触摸块背景
 
@@ -114,7 +119,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
      */
     private void initTouchUI() {
         //设置宽高
-        touchWidth=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_WIDTH,DEFAULT_TOUCH_WIDTH);
+        touchWidth= SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_WIDTH,DEFAULT_TOUCH_WIDTH);
         touchHeight=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_HEIGHT,DEFAULT_TOUCH_HEIGHT);
         vibrateLevel=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_VIBRATE_LEVEL,DEFAULT_VIBRATE_LEVEL);
         topDrawable=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_TOP_DRAWABLE,R.drawable.shape_react_corners_top);

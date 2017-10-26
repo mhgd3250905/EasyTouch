@@ -1,4 +1,4 @@
-package com.skkk.easytouch;
+package com.skkk.easytouch.Services;
 
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityEvent;

@@ -14,4 +14,5 @@
     <item name="settings_item_assist" type="id">settings_item_assist</item>
     <item name="settings_item_theme" type="id">settings_item_theme</item>
     <item name="settings_item_lock" type="id">settings_item_lock</item>
+    <item name="tb_shape_settings" type="id">tb_shape_settings</item>
 </resources>

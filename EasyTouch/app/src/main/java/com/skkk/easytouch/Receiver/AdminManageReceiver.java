@@ -1,4 +1,4 @@
-package com.skkk.easytouch;
+package com.skkk.easytouch.Receiver;
 
 import android.app.admin.DeviceAdminReceiver;
 

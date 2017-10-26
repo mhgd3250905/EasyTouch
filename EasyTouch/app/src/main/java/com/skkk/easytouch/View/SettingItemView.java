@@ -1,4 +1,4 @@
-package com.skkk.easytouch;
+package com.skkk.easytouch.View;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.skkk.easytouch.R;
 
 /**
  * 创建于 2017/10/18
