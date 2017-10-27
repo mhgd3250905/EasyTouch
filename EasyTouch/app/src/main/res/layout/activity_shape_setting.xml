@@ -62,7 +62,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="长度"
+                        android:text="高度"
                         android:textColor="@color/colorBlackBody"
                         android:textSize="25sp" />
 
@@ -82,7 +82,7 @@
                             android:textSize="15sp" />
 
                         <android.support.v7.widget.AppCompatSeekBar
-                            android:id="@+id/sb_length"
+                            android:id="@+id/sb_height"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1" />

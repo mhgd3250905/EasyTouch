@@ -22,10 +22,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.skkk.easytouch.Receiver.AdminManageReceiver;
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
+import com.skkk.easytouch.Receiver.AdminManageReceiver;
 import com.skkk.easytouch.Utils.SpUtils;
+
+import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_HEIGHT;
+import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_WIDTH;
+import static com.skkk.easytouch.Configs.DEFAULT_VIBRATE_LEVEL;
 
 
 public class EasyTouchService extends Service implements View.OnTouchListener {
@@ -49,13 +53,10 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
     private GestureDetector bottomDetector;
     private float dx;
     private float dy;
-    //自定义
-    private final int DEFAULT_TOUCH_WIDTH=15;
-    private final int DEFAULT_TOUCH_HEIGHT=240;
-    private final int DEFAULT_VIBRATE_LEVEL=30;
-    private int touchWidth = DEFAULT_TOUCH_WIDTH;//悬浮条的宽度 单位dp
-    private int touchHeight = DEFAULT_TOUCH_HEIGHT;//悬浮条的高度 单位dp
-    private int vibrateLevel = DEFAULT_VIBRATE_LEVEL;//震动等级
+
+    private int touchWidth = Configs.DEFAULT_TOUCH_WIDTH;//悬浮条的宽度 单位dp
+    private int touchHeight = Configs.DEFAULT_TOUCH_HEIGHT;//悬浮条的高度 单位dp
+    private int vibrateLevel = Configs.DEFAULT_VIBRATE_LEVEL;//震动等级
     private @DrawableRes int topDrawable= R.drawable.shape_react_corners_top;//上方触摸块背景
     private @DrawableRes int midDrawable=R.drawable.shape_react_corners_mid;//中部触摸块背景
     private @DrawableRes int bottomDrawable=R.drawable.shape_react_corners_bottom;//下方触摸块背景
@@ -98,16 +99,6 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         ivTouchMid = (ImageView) touchView.findViewById(R.id.iv_touch_mid);
         ivTouchBottom = (ImageView) touchView.findViewById(R.id.iv_touch_bottom);
 
-        llTouchContainer.post(new Runnable() {
-            @Override
-            public void run() {
-                initTouchUI();
-
-            }
-        });
-
-        //设置时间
-        initEvent();
 
         windowManager.addView(touchView, mParams);
 
@@ -135,6 +126,8 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         ivTouchTop.setImageResource(topDrawable);
         ivTouchMid.setImageResource(midDrawable);
         ivTouchBottom.setImageResource(bottomDrawable);
+
+        initEvent();
     }
 
     /**
@@ -341,6 +334,12 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        llTouchContainer.post(new Runnable() {
+            @Override
+            public void run() {
+                initTouchUI();
+            }
+        });
         windowManager.updateViewLayout(touchView, mParams);
         return super.onStartCommand(intent, flags, startId);
     }

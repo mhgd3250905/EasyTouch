@@ -11,11 +11,16 @@ package com.skkk.easytouch;
 * 时    间：2017/10/25$ 23:24$.
 */
 public class Configs {
-    public static final String KEY_TOUCH_UI_WIDTH="key_touch_ui_width";
-    public static final String KEY_TOUCH_UI_HEIGHT="key_touch_ui_height";
-    public static final String KEY_TOUCH_UI_TOP_DRAWABLE="key_touch_ui_top_drawable";
-    public static final String KEY_TOUCH_UI_MID_DRAWABLE="key_touch_ui_mid_drawable";
-    public static final String KEY_TOUCH_UI_BOTTOM_DRAWABLE="key_touch_ui_bottom_drawable";
-    public static final String KEY_TOUCH_UI_VIBRATE_LEVEL="key_touch_ui_vibrate_level";
+    public static final String KEY_TOUCH_UI_WIDTH = "key_touch_ui_width";
+    public static final String KEY_TOUCH_UI_HEIGHT = "key_touch_ui_height";
+    public static final String KEY_TOUCH_UI_TOP_DRAWABLE = "key_touch_ui_top_drawable";
+    public static final String KEY_TOUCH_UI_MID_DRAWABLE = "key_touch_ui_mid_drawable";
+    public static final String KEY_TOUCH_UI_BOTTOM_DRAWABLE = "key_touch_ui_bottom_drawable";
+    public static final String KEY_TOUCH_UI_VIBRATE_LEVEL = "key_touch_ui_vibrate_level";
+
+    //自定义
+    public static final int DEFAULT_TOUCH_WIDTH = 15;
+    public static final int DEFAULT_TOUCH_HEIGHT = 240;
+    public static final int DEFAULT_VIBRATE_LEVEL = 30;
 
 }
