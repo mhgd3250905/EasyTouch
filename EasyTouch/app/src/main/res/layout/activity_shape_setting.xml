@@ -46,12 +46,12 @@
             </LinearLayout>
 
             <LinearLayout
-                android:padding="10dp"
-                android:gravity="center"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:orientation="vertical">
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -186,28 +186,67 @@
                             android:textColor="@color/colorAccent"
                             android:textSize="15sp" />
                     </LinearLayout>
-                </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="颜色"
-                        android:textColor="@color/colorBlackBody"
-                        android:textSize="25sp" />
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical">
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="透明度"
+                            android:textColor="@color/colorBlackBody"
+                            android:textSize="25sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentStart="true"
+                                android:gravity="center"
+                                android:text="透"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="15sp" />
+
+                            <android.support.v7.widget.AppCompatSeekBar
+                                android:id="@+id/sb_alpha"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentEnd="true"
+                                android:gravity="center"
+                                android:text="实"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="15sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical">
+
+                        <com.skkk.easytouch.View.SettingItemView
+                            android:id="@+id/sivTheme"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:title="主题"
+                            app:value="圆角"></com.skkk.easytouch.View.SettingItemView>
+                    </LinearLayout>
                 </LinearLayout>
-
             </LinearLayout>
-
         </LinearLayout>
-
-
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

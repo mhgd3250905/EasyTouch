@@ -66,7 +66,9 @@ public class SettingItemView extends LinearLayout {
             container.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onClickListener.onClick(v);
+                    if (onClickListener!=null) {
+                        onClickListener.onClick(v);
+                    }
                 }
             });
         }

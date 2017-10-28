@@ -6,8 +6,10 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
@@ -27,6 +29,7 @@ import com.skkk.easytouch.R;
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
 import com.skkk.easytouch.Utils.SpUtils;
 
+import static com.skkk.easytouch.Configs.DEFAULT_ALPHA;
 import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_HEIGHT;
 import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_WIDTH;
 import static com.skkk.easytouch.Configs.DEFAULT_VIBRATE_LEVEL;
@@ -57,9 +60,19 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
     private int touchWidth = Configs.DEFAULT_TOUCH_WIDTH;//悬浮条的宽度 单位dp
     private int touchHeight = Configs.DEFAULT_TOUCH_HEIGHT;//悬浮条的高度 单位dp
     private int vibrateLevel = Configs.DEFAULT_VIBRATE_LEVEL;//震动等级
-    private @DrawableRes int topDrawable= R.drawable.shape_react_corners_top;//上方触摸块背景
-    private @DrawableRes int midDrawable=R.drawable.shape_react_corners_mid;//中部触摸块背景
-    private @DrawableRes int bottomDrawable=R.drawable.shape_react_corners_bottom;//下方触摸块背景
+    private
+    @DrawableRes
+    int topDrawable = R.drawable.shape_react_corners_top;//上方触摸块背景
+    private
+    @DrawableRes
+    int midDrawable = R.drawable.shape_react_corners_mid;//中部触摸块背景
+    private
+    @DrawableRes
+    int bottomDrawable = R.drawable.shape_react_corners_bottom;//下方触摸块背景
+    private int topColor;
+    private int midColor;
+    private int bottomColor;
+    private int colorAlpha;
 
 
     @Override
@@ -110,24 +123,55 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
      */
     private void initTouchUI() {
         //设置宽高
-        touchWidth= SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_WIDTH,DEFAULT_TOUCH_WIDTH);
-        touchHeight=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_HEIGHT,DEFAULT_TOUCH_HEIGHT);
-        vibrateLevel=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_VIBRATE_LEVEL,DEFAULT_VIBRATE_LEVEL);
-        topDrawable=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_TOP_DRAWABLE,R.drawable.shape_react_corners_top);
-        midDrawable=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_MID_DRAWABLE,R.drawable.shape_react_corners_mid);
-        bottomDrawable=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_BOTTOM_DRAWABLE,R.drawable.shape_react_corners_bottom);
+        touchWidth = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_WIDTH, DEFAULT_TOUCH_WIDTH);
+        touchHeight = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_HEIGHT, DEFAULT_TOUCH_HEIGHT);
+        vibrateLevel = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL, DEFAULT_VIBRATE_LEVEL);
+
+        topDrawable = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_DRAWABLE, R.drawable.shape_react_corners_top);
+        midDrawable = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_MID_DRAWABLE, R.drawable.shape_react_corners_mid);
+        bottomDrawable = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_DRAWABLE, R.drawable.shape_react_corners_bottom);
+
+        topColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_COLOR, R.color.colorRecent);
+        midColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_MID_COLOR, R.color.colorHome);
+        bottomColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_COLOR, R.color.colorBack);
+
+        colorAlpha = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA, DEFAULT_ALPHA);
 
         ViewGroup.LayoutParams containerLp = llTouchContainer.getLayoutParams();
         containerLp.width = dp2px(getApplicationContext(), touchWidth);
         containerLp.height = dp2px(getApplicationContext(), touchHeight);
         llTouchContainer.setLayoutParams(containerLp);
-        windowManager.updateViewLayout(touchView, mParams);
 
         ivTouchTop.setImageResource(topDrawable);
         ivTouchMid.setImageResource(midDrawable);
         ivTouchBottom.setImageResource(bottomDrawable);
 
+
+        setImageViewDrawableColor(ivTouchTop, topDrawable, topColor, colorAlpha);
+        setImageViewDrawableColor(ivTouchMid, midDrawable, midColor, colorAlpha);
+        setImageViewDrawableColor(ivTouchBottom, bottomDrawable, bottomColor, colorAlpha);
+
         initEvent();
+
+        windowManager.updateViewLayout(touchView, mParams);
+    }
+
+    /**
+     * 设置自定义颜色的drawable
+     *
+     * @param iv
+     * @param drawableRes
+     * @param color
+     */
+    private void setImageViewDrawableColor(ImageView iv, @DrawableRes int drawableRes, int color,int alpha) {
+        GradientDrawable drawable = (GradientDrawable) getResources().getDrawable(drawableRes, getTheme());
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        int argb = Color.argb(alpha, red, green, blue);
+
+        drawable.setColor(argb);
+        iv.setImageDrawable(drawable);
     }
 
     /**
