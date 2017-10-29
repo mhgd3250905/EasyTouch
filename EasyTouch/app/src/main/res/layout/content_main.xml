@@ -59,13 +59,23 @@
         app:title="悬浮条主题"
         app:value="方块"/>
 
-    <Button
+    <TextView
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
         android:gravity="center"
         android:text="悬浮条"
         android:padding="10dp"
-        android:id="@+id/btn_touch_ball"
+        android:id="@id/btn_touch_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:text="悬浮球"
+        android:padding="10dp"
+        android:id="@id/btn_touch_ball"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/ll_touch_container"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@id/ivTouchBall"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/vector_drawable_ball_2" />
+
+</LinearLayout>

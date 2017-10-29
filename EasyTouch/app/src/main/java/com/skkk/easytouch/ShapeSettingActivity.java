@@ -1,11 +1,14 @@
 package com.skkk.easytouch;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.DrawableRes;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.Toolbar;
@@ -48,7 +51,7 @@ public class ShapeSettingActivity extends AppCompatActivity {
 
 
     public static final int ITEM_HEIGHT_MIN = 40;
-    public static final int ITEM_HEIGHT_STEP = 30;
+    public static final int ITEM_HEIGHT_STEP = 20;
     public static final int ITEM_WIDTH_MIN = 11;
     public static final int ITEM_WIDTH_STEP = 3;
     public static final int VIBRATE_MIN = 0;
@@ -63,6 +66,14 @@ public class ShapeSettingActivity extends AppCompatActivity {
     private int setWidth;
     private int setVibrate;
     private boolean isServiceRunning = false;
+    private int topColor;
+    private int midColor;
+    private int bottomColor;
+    private int alpha;
+    private int theme;
+    private int topDrawable;
+    private int midDrawable;
+    private int bottomDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +107,9 @@ public class ShapeSettingActivity extends AppCompatActivity {
 
         setVibrate = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL, Configs.DEFAULT_VIBRATE_LEVEL);
         sbVibrate.setProgress((setHeight - VIBRATE_MIN) / VIBRATE_STEP);
+
+        alpha=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_COLOR_ALPHA,Configs.DEFAULT_ALPHA);
+        sbAlpha.setProgress(alpha);
     }
 
     /**
@@ -172,11 +186,14 @@ public class ShapeSettingActivity extends AppCompatActivity {
             }
         });
 
+
         sbAlpha.setMax(255);
         sbAlpha.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 Log.d(TAG, "onProgressChanged() called with: progress = [" + progress + "]");
+                alpha = progress;
                 upDateTouchViewShape(0, 0);
                 SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA, progress);
             }
@@ -192,7 +209,7 @@ public class ShapeSettingActivity extends AppCompatActivity {
             }
         });
 
-        int topColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_COLOR, Color.BLACK);
+        topColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_COLOR, Color.BLACK);
         ivTouchTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,6 +219,7 @@ public class ShapeSettingActivity extends AppCompatActivity {
                     public void colorChanged(int color) {
                         GradientDrawable drawable = (GradientDrawable) ivTouchTop.getDrawable();
                         drawable.setColor(color);
+                        topColor = color;
                         ivTouchTop.setImageDrawable(drawable);
                         SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_COLOR, color);
                     }
@@ -210,7 +228,7 @@ public class ShapeSettingActivity extends AppCompatActivity {
             }
         });
 
-        final int midColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_MID_COLOR, Color.BLACK);
+        midColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_MID_COLOR, Color.BLACK);
         ivTouchMid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,6 +238,7 @@ public class ShapeSettingActivity extends AppCompatActivity {
                     public void colorChanged(int color) {
                         GradientDrawable drawable = (GradientDrawable) ivTouchMid.getDrawable();
                         drawable.setColor(color);
+                        midColor = color;
                         ivTouchMid.setImageDrawable(drawable);
                         SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_MID_COLOR, color);
                     }
@@ -228,7 +247,7 @@ public class ShapeSettingActivity extends AppCompatActivity {
             }
         });
 
-        final int bottomColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_COLOR, Color.BLACK);
+        bottomColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_COLOR, Color.BLACK);
         ivTouchBottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -239,6 +258,7 @@ public class ShapeSettingActivity extends AppCompatActivity {
                         GradientDrawable drawable = (GradientDrawable) ivTouchBottom.getDrawable();
                         drawable.setColor(color);
                         ivTouchBottom.setImageDrawable(drawable);
+                        bottomColor = color;
                         SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_COLOR, color);
                     }
                 });
@@ -246,14 +266,30 @@ public class ShapeSettingActivity extends AppCompatActivity {
             }
         });
 
+        theme = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_THEME, Configs.TOUCH_UI_THEME_0);
         sivTheme.setSettingItemClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AlertDialog.Builder builder=new AlertDialog.Builder(ShapeSettingActivity.this);
+                String[] themeTitleArr=new String[]{
+                        "主题1",
+                        "主题2",
+                };
+                builder.setSingleChoiceItems(themeTitleArr, theme, new DialogInterface.OnClickListener() {
 
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        theme=which;
+                        SpUtils.saveInt(getApplicationContext(),Configs.KEY_TOUCH_UI_THEME,which);
+                        upDateTouchViewShape(0,0);
+                        dialog.dismiss();
+                    }
+                });
+                builder.setTitle("请选择主题");
+                builder.create().show();
             }
         });
     }
-
     /**
      * 更新形状
      *
@@ -272,7 +308,39 @@ public class ShapeSettingActivity extends AppCompatActivity {
                 layoutParams.width = dp2px(getApplicationContext(), width);
             }
             llTouchContainer.setLayoutParams(layoutParams);
+
+            if (theme==Configs.TOUCH_UI_THEME_0){
+                topDrawable=R.drawable.shape_react_corners_top;
+                midDrawable=R.drawable.shape_react_corners_mid;
+                bottomDrawable=R.drawable.shape_react_corners_bottom;
+            }else if (theme==Configs.TOUCH_UI_THEME_1){
+                topDrawable=R.drawable.shape_react_top;
+                midDrawable=R.drawable.shape_react_mid;
+                bottomDrawable=R.drawable.shape_react_bottom;
+            }
+
+            setImageViewDrawableColor(ivTouchTop,topDrawable,topColor,alpha);
+            setImageViewDrawableColor(ivTouchMid,midDrawable,midColor,alpha);
+            setImageViewDrawableColor(ivTouchBottom,bottomDrawable,bottomColor,alpha);
         }
+    }
+
+    /**
+     * 设置自定义颜色的drawable
+     *
+     * @param iv
+     * @param drawableRes
+     * @param color
+     */
+    private void setImageViewDrawableColor(ImageView iv, @DrawableRes int drawableRes, int color, int alpha) {
+        GradientDrawable drawable = (GradientDrawable) getResources().getDrawable(drawableRes, getTheme());
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        int argb = Color.argb(alpha, red, green, blue);
+
+        drawable.setColor(argb);
+        iv.setImageDrawable(drawable);
     }
 
     private int dp2px(Context context, float dp) {

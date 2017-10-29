@@ -30,9 +30,12 @@ import com.skkk.easytouch.Receiver.AdminManageReceiver;
 import com.skkk.easytouch.Utils.SpUtils;
 
 import static com.skkk.easytouch.Configs.DEFAULT_ALPHA;
+import static com.skkk.easytouch.Configs.DEFAULT_THEME;
 import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_HEIGHT;
 import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_WIDTH;
 import static com.skkk.easytouch.Configs.DEFAULT_VIBRATE_LEVEL;
+import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_LEFT;
+import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_RIGHT;
 
 
 public class EasyTouchService extends Service implements View.OnTouchListener {
@@ -73,6 +76,12 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
     private int midColor;
     private int bottomColor;
     private int colorAlpha;
+    private int screenWidth;
+    private int screenHeight;
+    private int leftBorder;
+    private int rightBorder;
+    private int direction;
+    private int directionX;
 
 
     @Override
@@ -89,8 +98,11 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
         Point size = new Point();
         windowManager.getDefaultDisplay().getSize(size);
-        int screenWidth = size.x;
-        int screenHeight = size.y;
+        screenWidth = size.x;
+        screenHeight = size.y;
+
+        leftBorder = 0;
+        rightBorder = screenWidth;
 
         mParams = new WindowManager.LayoutParams();
         mParams.packageName = getPackageName();
@@ -103,7 +115,15 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
         mParams.format = PixelFormat.RGBA_8888;
         mParams.gravity = Gravity.LEFT | Gravity.TOP;
-        mParams.x = 0;
+
+        direction=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_DIRECTION,TOUCH_UI_DIRECTION_LEFT);
+        if (direction==TOUCH_UI_DIRECTION_LEFT){
+            directionX=leftBorder;
+        }else {
+            directionX=rightBorder;
+        }
+
+        mParams.x = directionX;
         mParams.y = screenHeight - dp2px(getApplicationContext(), 200f);
 
         touchView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch, null);
@@ -136,6 +156,18 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         bottomColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_COLOR, R.color.colorBack);
 
         colorAlpha = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA, DEFAULT_ALPHA);
+
+        int theme=SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_THEME, DEFAULT_THEME);
+
+        if (theme==Configs.TOUCH_UI_THEME_0){
+            topDrawable=R.drawable.shape_react_corners_top;
+            midDrawable=R.drawable.shape_react_corners_mid;
+            bottomDrawable=R.drawable.shape_react_corners_bottom;
+        }else if (theme==Configs.TOUCH_UI_THEME_1){
+            topDrawable=R.drawable.shape_react_top;
+            midDrawable=R.drawable.shape_react_mid;
+            bottomDrawable=R.drawable.shape_react_bottom;
+        }
 
         ViewGroup.LayoutParams containerLp = llTouchContainer.getLayoutParams();
         containerLp.width = dp2px(getApplicationContext(), touchWidth);
@@ -275,6 +307,21 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                if (e2.getX()-e1.getX()>5&&Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX())/2)){
+                    if (direction==TOUCH_UI_DIRECTION_LEFT){
+                        direction=TOUCH_UI_DIRECTION_RIGHT;
+                        SpUtils.saveInt(getApplicationContext(),Configs.KEY_TOUCH_UI_DIRECTION,TOUCH_UI_DIRECTION_RIGHT);
+                        mParams.x=rightBorder;
+                        windowManager.updateViewLayout(touchView,mParams);
+                    }
+                }else if (e1.getX()-e2.getX()>5&&Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX())/2)){
+                    if (direction==TOUCH_UI_DIRECTION_RIGHT){
+                        direction=TOUCH_UI_DIRECTION_LEFT;
+                        SpUtils.saveInt(getApplicationContext(),Configs.KEY_TOUCH_UI_DIRECTION,TOUCH_UI_DIRECTION_LEFT);
+                        mParams.x=leftBorder;
+                        windowManager.updateViewLayout(touchView,mParams);
+                    }
+                }
                 return false;
             }
         });
@@ -319,47 +366,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
                 return false;
             }
         });
-//        midDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
-//            @Override
-//            public boolean onSingleTapConfirmed(MotionEvent e) {
-//                Log.d(TAG, "onSingleTapConfirmed() called with: e = [" + e + "]");
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onDoubleTap(MotionEvent e) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onDoubleTapEvent(MotionEvent e) {
-//                return false;
-//            }
-//        });
-//        bottomDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
-//            @Override
-//            public boolean onSingleTapConfirmed(MotionEvent e) {
-//                //震动30毫秒
-//                vibrator.vibrate(30);
-//                recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onDoubleTap(MotionEvent e) {
-//                if (mDPM.isAdminActive(mAdminName)) {
-//                    //震动30毫秒
-//                    vibrator.vibrate(15);
-//                    mDPM.lockNow();
-//                }
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onDoubleTapEvent(MotionEvent e) {
-//                return false;
-//            }
-//        });
+
     }
 
     private void refreshMovePlace(MotionEvent e2) {
@@ -421,5 +428,15 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
             return bottomDetector.onTouchEvent(e);
         }
         return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            windowManager.removeView(touchView);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

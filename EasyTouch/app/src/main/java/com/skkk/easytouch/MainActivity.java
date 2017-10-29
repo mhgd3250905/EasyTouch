@@ -20,13 +20,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
+import com.skkk.easytouch.Services.EasyTouchBallService;
 import com.skkk.easytouch.Services.EasyTouchService;
 import com.skkk.easytouch.Services.FloatService;
 import com.skkk.easytouch.Utils.DialogUtils;
+import com.skkk.easytouch.Utils.ServiceUtils;
 import com.skkk.easytouch.View.SettingItemView;
 
 import java.util.ArrayList;
@@ -52,8 +54,10 @@ public class MainActivity extends AppCompatActivity {
     SettingItemView settingsItemTheme;
     @Bind(R.id.settings_item_shape)
     SettingItemView settingsItemShape;
+    @Bind(R.id.btn_touch_line)
+    TextView btnTouchLine;
     @Bind(R.id.btn_touch_ball)
-    Button btnTouchBall;
+    TextView btnTouchBall;
     @Bind(R.id.content_main)
     LinearLayout contentMain;
     @Bind(R.id.settings_item_lock)
@@ -74,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-
     }
 
 
@@ -82,6 +85,24 @@ public class MainActivity extends AppCompatActivity {
      * 设置UI
      */
     private void initUI() {
+        initEvent();
+    }
+
+    /**
+     * 申请悬浮窗权限
+     */
+    private void checkAlertWindowPermission() {
+        if (Build.VERSION.SDK_INT >= M) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        }
+    }
+
+    private void initEvent() {
         /**
          * 判断是否有无障碍权限
          */
@@ -128,8 +149,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        initEvent();
-
         //如果设备管理器尚未激活，这里会启动一个激活设备管理器的Intent,具体的表现就是第一次打开程序时，手机会弹出激活设备管理器的提示，激活即可。
         mAdminName = new ComponentName(this, AdminManageReceiver.class);
         mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -151,29 +170,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,ShapeSettingActivity.class));
+                stopService(new Intent(MainActivity.this,EasyTouchService.class));
             }
         });
-    }
 
-    /**
-     * 申请悬浮窗权限
-     */
-    private void checkAlertWindowPermission() {
-        if (Build.VERSION.SDK_INT >= M) {
-            if (!Settings.canDrawOverlays(this)) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-                intent.setData(Uri.parse("package:" + getPackageName()));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+        btnTouchLine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ServiceUtils.isServiceRun(getApplicationContext(),"com.skkk.easytouch.Services.EasyTouchBallService")){
+                    stopService(new Intent(MainActivity.this,EasyTouchBallService.class));
+                }
+                startService(new Intent(MainActivity.this, EasyTouchService.class));
+                startService(new Intent(MainActivity.this, FloatService.class));
             }
-        }
-    }
+        });
 
-    private void initEvent() {
         btnTouchBall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startService(new Intent(MainActivity.this, EasyTouchService.class));
+                if (ServiceUtils.isServiceRun(getApplicationContext(),"com.skkk.easytouch.Services.EasyTouchService")){
+                    stopService(new Intent(MainActivity.this,EasyTouchService.class));
+                }
+                startService(new Intent(MainActivity.this, EasyTouchBallService.class));
                 startService(new Intent(MainActivity.this, FloatService.class));
             }
         });

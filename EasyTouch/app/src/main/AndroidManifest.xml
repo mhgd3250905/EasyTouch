@@ -37,6 +37,10 @@
             android:name=".Services.EasyTouchService"
             android:enabled="true"
             android:exported="true" />
+        <service
+            android:name=".Services.EasyTouchBallService"
+            android:enabled="true"
+            android:exported="true" />
 
         <receiver
             android:name=".Receiver.AdminManageReceiver"
