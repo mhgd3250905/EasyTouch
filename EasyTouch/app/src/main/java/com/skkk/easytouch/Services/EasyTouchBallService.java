@@ -1,6 +1,10 @@
 package com.skkk.easytouch.Services;
 
 import android.accessibilityservice.AccessibilityService;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -9,8 +13,10 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -58,11 +64,39 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     private int directionX;
     private ImageView ivTouchBall;
     private boolean canMove = false;
+    private AnimatorSet set;
+    private ObjectAnimator scaleXAnim;
+    private ObjectAnimator scaleYAnim;
+    private Handler handler=new Handler();
+    private Runnable longClickRunnable;
+    private boolean isRepeat=false;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        longClickRunnable=new Runnable() {
+            @Override
+            public void run() {
+                scaleXAnim = ObjectAnimator.ofFloat(ivTouchBall,"scaleX",1f,1.3f,1f);
+                scaleYAnim = ObjectAnimator.ofFloat(ivTouchBall,"scaleY",1f,1.3f,1f);
+                set = new AnimatorSet();
+                set.play(scaleXAnim).with(scaleYAnim);
+                set.setDuration(300);
+                final Runnable runnable = this;
+                set.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (isRepeat){
+                            handler.postDelayed(runnable,300);
+                        }
+                    }
+                });
+                set.start();
+            }
+        };
+
         if (windowManager == null) {
             windowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         }
@@ -130,11 +164,21 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
             }
         });
 
+        ivTouchBall.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Log.i(TAG, "onLongClick: ");
+                return false;
+            }
+        });
+
+
         ivTouchBall.setOnTouchListener(this);
 
         ballDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
+                Log.i(TAG, "onDown: ");
                 //记录move down坐标
                 setMoveDownXY(e);
                 return false;
@@ -142,11 +186,12 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
 
             @Override
             public void onShowPress(MotionEvent e) {
-
+                Log.i(TAG, "onShowPress: ");
             }
 
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
+                Log.i(TAG, "onSingleTapUp: ");
                 //震动30毫秒
                 vibrator.vibrate(vibrateLevel);
                 recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
@@ -155,6 +200,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
 
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                Log.i(TAG, "onScroll: ");
                 if (canMove) {
                     refreshMovePlace(e2);
                 }
@@ -163,12 +209,20 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
 
             @Override
             public void onLongPress(MotionEvent e) {
+                Log.i(TAG, "onLongPress: ");
                 vibrator.vibrate(vibrateLevel);
-                canMove = true;
+                if (canMove) {
+                    canMove = false;
+                    cancelLongClickAnim();
+                }else {
+                    showLongClickAnim();
+                    canMove=true;
+                }
             }
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                Log.i(TAG, "onFling: ");
                 if (e2.getX() - e1.getX() > 10 && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 2)) {
                     if (canMove) {//右划
                         if (direction == TOUCH_UI_DIRECTION_LEFT) {
@@ -211,14 +265,19 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
                     }
                 }
 
-                if (e2.getAction() == MotionEvent.ACTION_UP) {
-                    canMove = false;
-                }
                 return false;
             }
         });
+    }
 
+    private void showLongClickAnim(){
+        isRepeat=true;
+        handler.post(longClickRunnable);
+    }
 
+    private void cancelLongClickAnim(){
+        isRepeat=false;
+        handler.removeCallbacks(longClickRunnable);
     }
 
     private void refreshMovePlace(MotionEvent e2) {
