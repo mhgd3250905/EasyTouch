@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -22,6 +23,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -32,7 +34,6 @@ import com.skkk.easytouch.Receiver.AdminManageReceiver;
 import com.skkk.easytouch.Utils.SpUtils;
 
 import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_LEFT;
-import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_RIGHT;
 
 
 public class EasyTouchBallService extends Service implements View.OnTouchListener {
@@ -67,20 +68,20 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     private AnimatorSet set;
     private ObjectAnimator scaleXAnim;
     private ObjectAnimator scaleYAnim;
-    private Handler handler=new Handler();
+    private Handler handler = new Handler();
     private Runnable longClickRunnable;
-    private boolean isRepeat=false;
+    private boolean isRepeat = false;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        longClickRunnable=new Runnable() {
+        longClickRunnable = new Runnable() {
             @Override
             public void run() {
-                scaleXAnim = ObjectAnimator.ofFloat(ivTouchBall,"scaleX",1f,1.3f,1f);
-                scaleYAnim = ObjectAnimator.ofFloat(ivTouchBall,"scaleY",1f,1.3f,1f);
+                scaleXAnim = ObjectAnimator.ofFloat(ivTouchBall, "scaleX", 1f, 1.3f, 1f);
+                scaleYAnim = ObjectAnimator.ofFloat(ivTouchBall, "scaleY", 1f, 1.3f, 1f);
                 set = new AnimatorSet();
                 set.play(scaleXAnim).with(scaleYAnim);
                 set.setDuration(300);
@@ -88,8 +89,8 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
                 set.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        if (isRepeat){
-                            handler.postDelayed(runnable,300);
+                        if (isRepeat) {
+                            handler.postDelayed(runnable, 300);
                         }
                     }
                 });
@@ -168,6 +169,10 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
             @Override
             public boolean onLongClick(View v) {
                 Log.i(TAG, "onLongClick: ");
+                vibrator.vibrate(vibrateLevel);
+                if (!canMove) {
+                    canMove = true;
+                }
                 return false;
             }
         });
@@ -200,83 +205,83 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
 
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                Log.i(TAG, "onScroll: ");
+                Log.i(TAG, "onScroll: e2-Action--->" + e2.getAction());
                 if (canMove) {
                     refreshMovePlace(e2);
                 }
+
                 return false;
             }
 
             @Override
-            public void onLongPress(MotionEvent e) {
+            public void onLongPress(final MotionEvent e) {
                 Log.i(TAG, "onLongPress: ");
-                vibrator.vibrate(vibrateLevel);
-                if (canMove) {
-                    canMove = false;
-                    cancelLongClickAnim();
-                }else {
-                    showLongClickAnim();
-                    canMove=true;
-                }
+
             }
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 Log.i(TAG, "onFling: ");
                 if (e2.getX() - e1.getX() > 10 && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 2)) {
-                    if (canMove) {//右划
-                        if (direction == TOUCH_UI_DIRECTION_LEFT) {
-                            direction = TOUCH_UI_DIRECTION_RIGHT;
-                            SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_RIGHT);
-                            mParams.x = rightBorder;
-                            windowManager.updateViewLayout(touchView, mParams);
-                        }
-                    } else {
+                    if (!canMove) {//右划
+//                        if (direction == TOUCH_UI_DIRECTION_LEFT) {
+//                            direction = TOUCH_UI_DIRECTION_RIGHT;
+//                            SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_RIGHT);
+//                            mParams.x = rightBorder;
+//                            windowManager.updateViewLayout(touchView, mParams);
+//                        }
+//                    } else {
                         //震动30毫秒
                         vibrator.vibrate(vibrateLevel);
                         recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_RECENTS);
                     }
                 } else if (e1.getX() - e2.getX() > 10 && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 2)) {
-                    if (canMove) {//左滑
-                        if (direction == TOUCH_UI_DIRECTION_RIGHT) {
-                            direction = TOUCH_UI_DIRECTION_LEFT;
-                            SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
-                            mParams.x = leftBorder;
-                            windowManager.updateViewLayout(touchView, mParams);
-                        }
-                    } else {
+                    if (!canMove) {//左滑
+//                        if (direction == TOUCH_UI_DIRECTION_RIGHT) {
+//                            direction = TOUCH_UI_DIRECTION_LEFT;
+//                            SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
+//                            mParams.x = leftBorder;
+//                            windowManager.updateViewLayout(touchView, mParams);
+//                        }
+//                    } else {
                         //震动30毫秒
                         vibrator.vibrate(vibrateLevel);
                         recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_HOME);
                     }
                 } else if (e1.getY() - e2.getY() > 10 && Math.abs(e1.getY() - e2.getY()) > (Math.abs(e1.getX() - e2.getX()) * 2)) {
                     //上滑
-                    if (!canMove) {//左滑
+                    if (!canMove) {
                         //震动30毫秒
-                        vibrator.vibrate(vibrateLevel);
-                        recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
+                        if (mDPM.isAdminActive(mAdminName)) {
+                            //震动30毫秒
+                            vibrator.vibrate(vibrateLevel);
+                            mDPM.lockNow();
+                        }
                     }
                 } else if (e2.getY() - e1.getY() > 10 && Math.abs(e1.getY() - e2.getY()) > (Math.abs(e1.getX() - e2.getX()) * 2)) {
                     //下滑
-                    if (!canMove) {//左滑
+                    if (!canMove) {
                         //震动30毫秒
                         vibrator.vibrate(vibrateLevel);
                         recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
                     }
                 }
 
+
                 return false;
             }
         });
+
+        ballDetector.setIsLongpressEnabled(false);
     }
 
-    private void showLongClickAnim(){
-        isRepeat=true;
+    private void showLongClickAnim() {
+        isRepeat = true;
         handler.post(longClickRunnable);
     }
 
-    private void cancelLongClickAnim(){
-        isRepeat=false;
+    private void cancelLongClickAnim() {
+        isRepeat = false;
         handler.removeCallbacks(longClickRunnable);
     }
 
@@ -284,6 +289,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         dx = e2.getRawX() - lastX;
         dy = e2.getRawY() - lastY;
         mParams.y += dy;
+        mParams.x += dx;
         windowManager.updateViewLayout(touchView, mParams);
         lastX = e2.getRawX();
         lastY = e2.getRawY();
@@ -331,7 +337,55 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
 
     @Override
     public boolean onTouch(View v, MotionEvent e) {
+        if (e.getAction() == MotionEvent.ACTION_UP) {
+            if (canMove) {
+                showAcionUpAnim();
+            }
+        }
         return ballDetector.onTouchEvent(e);
+    }
+
+    private void showAcionUpAnim() {
+        float startF=0f;
+        float endF=0f;
+        boolean isLeft = false;
+        if (mParams.x<=(rightBorder+leftBorder)/2){
+            startF=mParams.x;
+            endF=0;
+            isLeft=true;
+        }else if (mParams.x>(rightBorder+leftBorder)/2){
+            startF=rightBorder-mParams.x;
+            endF=0;
+            isLeft=false;
+        }
+
+        final boolean isFinalLeft=isLeft;
+        ValueAnimator valueAnim=ValueAnimator.ofFloat(startF,endF);
+        valueAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float animX= (float) animation.getAnimatedValue();
+                if (isFinalLeft) {
+                    mParams.x = (int) animX;
+                    Log.i(TAG, "mParams.x-->"+mParams.x);
+                    windowManager.updateViewLayout(touchView, mParams);
+                }else {
+                    mParams.x = rightBorder-(int)animX;
+                    Log.i(TAG, "mParams.x-->"+mParams.x);
+                    windowManager.updateViewLayout(touchView, mParams);
+                }
+            }
+        });
+        valueAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                canMove = false;
+            }
+        });
+        valueAnim.setInterpolator(new BounceInterpolator());
+        valueAnim.setDuration(500);
+        valueAnim.start();
     }
 
     @Override
