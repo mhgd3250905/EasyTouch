@@ -18,4 +18,8 @@
     <item name="ivTouchBall" type="id">ivTouchBall</item>
     <item name="btn_touch_ball" type="id">btn_touch_ball</item>
     <item name="btn_touch_line" type="id">btn_touch_line</item>
+    <item name="ll_menu_container" type="id">ll_menu_container</item>
+    <item name="sb_system_audio" type="id">sb_system_audio</item>
+    <item name="sb_media_audio" type="id">sb_media_audio</item>
+    <item name="sb_alarm_audio" type="id">sb_alarm_audio</item>
 </resources>

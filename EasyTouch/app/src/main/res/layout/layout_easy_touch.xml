@@ -1,31 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@id/ll_touch_container"
-    android:layout_width="15dp"
+    android:layout_width="240dp"
     android:layout_height="240dp"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
-    <ImageView
-        android:alpha="50"
-        android:id="@id/iv_touch_top"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:src="@drawable/shape_react_corners_top" />
+    <LinearLayout
+        android:layout_width="15dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <ImageView
-        android:alpha="50"
-        android:id="@id/iv_touch_mid"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:src="@drawable/shape_react_corners_mid" />
+        <ImageView
+            android:id="@id/iv_touch_top"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:alpha="50"
+            android:src="@drawable/shape_react_corners_top" />
 
-    <ImageView
-        android:alpha="50"
-        android:id="@id/iv_touch_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        <ImageView
+            android:id="@id/iv_touch_mid"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:alpha="50"
+            android:src="@drawable/shape_react_corners_mid" />
+
+        <ImageView
+            android:id="@id/iv_touch_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:alpha="50"
+            android:src="@drawable/shape_react_corners_bottom" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@id/ll_menu_container"
+        android:layout_width="225dp"
+        android:layout_height="240dp"
         android:layout_weight="1"
-        android:src="@drawable/shape_react_corners_bottom" />
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <SeekBar
+            android:id="@id/sb_system_audio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <SeekBar
+            android:id="@id/sb_media_audio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <SeekBar
+            android:id="@id/sb_alarm_audio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
 </LinearLayout>

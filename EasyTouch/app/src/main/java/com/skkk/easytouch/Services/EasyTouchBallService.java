@@ -224,26 +224,12 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
                 Log.i(TAG, "onFling: ");
                 if (e2.getX() - e1.getX() > 10 && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 2)) {
                     if (!canMove) {//右划
-//                        if (direction == TOUCH_UI_DIRECTION_LEFT) {
-//                            direction = TOUCH_UI_DIRECTION_RIGHT;
-//                            SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_RIGHT);
-//                            mParams.x = rightBorder;
-//                            windowManager.updateViewLayout(touchView, mParams);
-//                        }
-//                    } else {
                         //震动30毫秒
                         vibrator.vibrate(vibrateLevel);
                         recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_RECENTS);
                     }
                 } else if (e1.getX() - e2.getX() > 10 && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 2)) {
                     if (!canMove) {//左滑
-//                        if (direction == TOUCH_UI_DIRECTION_RIGHT) {
-//                            direction = TOUCH_UI_DIRECTION_LEFT;
-//                            SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
-//                            mParams.x = leftBorder;
-//                            windowManager.updateViewLayout(touchView, mParams);
-//                        }
-//                    } else {
                         //震动30毫秒
                         vibrator.vibrate(vibrateLevel);
                         recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_HOME);

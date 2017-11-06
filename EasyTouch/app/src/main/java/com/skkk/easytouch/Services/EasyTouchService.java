@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.skkk.easytouch.Configs;
@@ -83,27 +85,41 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
     private int direction;
     private int directionX;
 
+    private int minTouchSlop = 10;    //触摸滑动最小触发距离
+    private AudioManager audioManager;  //音量管理器
+    private LinearLayout llMenuContainer;
+    private SeekBar sbSystemAudio,sbMediaAudio,sbAlarmAudio;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
+        //设置界面窗口管理器
         if (windowManager == null) {
             windowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         }
 
+        //设置音量管理器
+        audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+
+        //设置设置管理器
         mAdminName = new ComponentName(this, AdminManageReceiver.class);
         mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
 
+        //设置震动管理器
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
+        //设置屏幕尺寸
         Point size = new Point();
         windowManager.getDefaultDisplay().getSize(size);
         screenWidth = size.x;
         screenHeight = size.y;
 
+        //设置左右边界
         leftBorder = 0;
         rightBorder = screenWidth;
 
+        //设置布局管理器
         mParams = new WindowManager.LayoutParams();
         mParams.packageName = getPackageName();
         mParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -116,21 +132,28 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         mParams.format = PixelFormat.RGBA_8888;
         mParams.gravity = Gravity.LEFT | Gravity.TOP;
 
-        direction=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_DIRECTION,TOUCH_UI_DIRECTION_LEFT);
-        if (direction==TOUCH_UI_DIRECTION_LEFT){
-            directionX=leftBorder;
-        }else {
-            directionX=rightBorder;
+        //设置左右方向
+        direction = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
+        if (direction == TOUCH_UI_DIRECTION_LEFT) {
+            directionX = leftBorder;
+        } else {
+            directionX = rightBorder;
         }
 
+        //设置悬浮窗的位置
         mParams.x = directionX;
         mParams.y = screenHeight - dp2px(getApplicationContext(), 200f);
 
+        //初始化悬浮窗的控件内容
         touchView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch, null);
         llTouchContainer = (LinearLayout) touchView.findViewById(R.id.ll_touch_container);
         ivTouchTop = (ImageView) touchView.findViewById(R.id.iv_touch_top);
         ivTouchMid = (ImageView) touchView.findViewById(R.id.iv_touch_mid);
         ivTouchBottom = (ImageView) touchView.findViewById(R.id.iv_touch_bottom);
+        llMenuContainer = (LinearLayout) touchView.findViewById(R.id.ll_menu_container);
+        sbSystemAudio = (SeekBar) touchView.findViewById(R.id.sb_system_audio);
+        sbMediaAudio = (SeekBar) touchView.findViewById(R.id.sb_media_audio);
+        sbAlarmAudio = (SeekBar) touchView.findViewById(R.id.sb_alarm_audio);
 
 
         windowManager.addView(touchView, mParams);
@@ -157,16 +180,16 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
         colorAlpha = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA, DEFAULT_ALPHA);
 
-        int theme=SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_THEME, DEFAULT_THEME);
+        int theme = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_THEME, DEFAULT_THEME);
 
-        if (theme==Configs.TOUCH_UI_THEME_0){
-            topDrawable=R.drawable.shape_react_corners_top;
-            midDrawable=R.drawable.shape_react_corners_mid;
-            bottomDrawable=R.drawable.shape_react_corners_bottom;
-        }else if (theme==Configs.TOUCH_UI_THEME_1){
-            topDrawable=R.drawable.shape_react_top;
-            midDrawable=R.drawable.shape_react_mid;
-            bottomDrawable=R.drawable.shape_react_bottom;
+        if (theme == Configs.TOUCH_UI_THEME_0) {
+            topDrawable = R.drawable.shape_react_corners_top;
+            midDrawable = R.drawable.shape_react_corners_mid;
+            bottomDrawable = R.drawable.shape_react_corners_bottom;
+        } else if (theme == Configs.TOUCH_UI_THEME_1) {
+            topDrawable = R.drawable.shape_react_top;
+            midDrawable = R.drawable.shape_react_mid;
+            bottomDrawable = R.drawable.shape_react_bottom;
         }
 
         ViewGroup.LayoutParams containerLp = llTouchContainer.getLayoutParams();
@@ -195,7 +218,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
      * @param drawableRes
      * @param color
      */
-    private void setImageViewDrawableColor(ImageView iv, @DrawableRes int drawableRes, int color,int alpha) {
+    private void setImageViewDrawableColor(ImageView iv, @DrawableRes int drawableRes, int color, int alpha) {
         GradientDrawable drawable = (GradientDrawable) getResources().getDrawable(drawableRes, getTheme());
         int red = Color.red(color);
         int green = Color.green(color);
@@ -234,6 +257,8 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         ivTouchTop.setOnTouchListener(this);
         ivTouchMid.setOnTouchListener(this);
         ivTouchBottom.setOnTouchListener(this);
+
+        //设置top按键事件触发
         topDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
@@ -265,13 +290,101 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (e2.getY() - e1.getY() > 10 && Math.abs(e1.getY() - e2.getY()) > Math.abs(e1.getX() - e2.getX())) {
+                if (e2.getY() - e1.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
+                    //下滑
                     vibrator.vibrate(vibrateLevel);
                     recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
+                } else if (e1.getY() - e2.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
+                    //上滑
+                    showMenuContainer();
+                    sbSystemAudio.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
+                            int curVolume = audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+                            sbSystemAudio.setMax(maxVolume);
+                            sbSystemAudio.setProgress(curVolume);
+                            //设置音量控制变化监听
+                            sbSystemAudio.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                @Override
+                                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                    audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM,progress,0);
+                                }
+
+                                @Override
+                                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                                }
+
+                                @Override
+                                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                                }
+                            });
+                        }
+                    });
+
+                    sbAlarmAudio.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
+                            int curVolume = audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+                            sbAlarmAudio.setMax(maxVolume);
+                            sbAlarmAudio.setProgress(curVolume);
+                            //设置音量控制变化监听
+                            sbAlarmAudio.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                @Override
+                                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                    audioManager.setStreamVolume(AudioManager.STREAM_ALARM,progress,0);
+                                }
+
+                                @Override
+                                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                                }
+
+                                @Override
+                                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                                }
+                            });
+                        }
+                    });
+
+                    sbMediaAudio.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
+                            int curVolume = audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+                            sbMediaAudio.setMax(maxVolume);
+                            sbMediaAudio.setProgress(curVolume);
+                            //设置音量控制变化监听
+                            sbMediaAudio.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                @Override
+                                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,progress,0);
+                                }
+
+                                @Override
+                                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                                }
+
+                                @Override
+                                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                                }
+                            });
+                        }
+                    });
+                    windowManager.updateViewLayout(touchView,mParams);
+
+
                 }
                 return false;
             }
         });
+        //设置mid按键事件触发
         midDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
@@ -307,24 +420,25 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (e2.getX()-e1.getX()>5&&Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX())/2)){
-                    if (direction==TOUCH_UI_DIRECTION_LEFT){
-                        direction=TOUCH_UI_DIRECTION_RIGHT;
-                        SpUtils.saveInt(getApplicationContext(),Configs.KEY_TOUCH_UI_DIRECTION,TOUCH_UI_DIRECTION_RIGHT);
-                        mParams.x=rightBorder;
-                        windowManager.updateViewLayout(touchView,mParams);
+                if (e2.getX() - e1.getX() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 3)) {
+                    if (direction == TOUCH_UI_DIRECTION_LEFT) {
+                        direction = TOUCH_UI_DIRECTION_RIGHT;
+                        SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_RIGHT);
+                        mParams.x = rightBorder;
+                        windowManager.updateViewLayout(touchView, mParams);
                     }
-                }else if (e1.getX()-e2.getX()>5&&Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX())/2)){
-                    if (direction==TOUCH_UI_DIRECTION_RIGHT){
-                        direction=TOUCH_UI_DIRECTION_LEFT;
-                        SpUtils.saveInt(getApplicationContext(),Configs.KEY_TOUCH_UI_DIRECTION,TOUCH_UI_DIRECTION_LEFT);
-                        mParams.x=leftBorder;
-                        windowManager.updateViewLayout(touchView,mParams);
+                } else if (e1.getX() - e2.getX() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 3)) {
+                    if (direction == TOUCH_UI_DIRECTION_RIGHT) {
+                        direction = TOUCH_UI_DIRECTION_LEFT;
+                        SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
+                        mParams.x = leftBorder;
+                        windowManager.updateViewLayout(touchView, mParams);
                     }
                 }
                 return false;
             }
         });
+        //设置bottom按键事件触发
         bottomDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
@@ -356,7 +470,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (e1.getY() - e2.getY() > 10 && Math.abs(e1.getY() - e2.getY()) > Math.abs(e1.getX() - e2.getX())) {
+                if (e1.getY() - e2.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
                     if (mDPM.isAdminActive(mAdminName)) {
                         //震动30毫秒
                         vibrator.vibrate(vibrateLevel);
@@ -367,6 +481,13 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
             }
         });
 
+    }
+
+    //显示菜单容器
+    private void showMenuContainer() {
+        mParams.width=mParams.height;
+        llMenuContainer.setVisibility(View.VISIBLE);
+        windowManager.updateViewLayout(touchView,mParams);
     }
 
     private void refreshMovePlace(MotionEvent e2) {
@@ -435,7 +556,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         super.onDestroy();
         try {
             windowManager.removeView(touchView);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
