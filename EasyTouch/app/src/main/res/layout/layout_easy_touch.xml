@@ -36,12 +36,13 @@
     </LinearLayout>
 
     <LinearLayout
+        android:background="@drawable/shape_react_corners_top_menu_bg"
         android:id="@id/ll_menu_container"
         android:layout_width="225dp"
         android:layout_height="240dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <SeekBar
             android:id="@id/sb_system_audio"

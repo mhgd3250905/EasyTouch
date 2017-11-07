@@ -88,7 +88,8 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
     private int minTouchSlop = 10;    //触摸滑动最小触发距离
     private AudioManager audioManager;  //音量管理器
     private LinearLayout llMenuContainer;
-    private SeekBar sbSystemAudio,sbMediaAudio,sbAlarmAudio;
+    private SeekBar sbSystemAudio, sbMediaAudio, sbAlarmAudio;
+    private boolean isMenuShow;//菜单是否打开
 
 
     @Override
@@ -154,7 +155,6 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         sbSystemAudio = (SeekBar) touchView.findViewById(R.id.sb_system_audio);
         sbMediaAudio = (SeekBar) touchView.findViewById(R.id.sb_media_audio);
         sbAlarmAudio = (SeekBar) touchView.findViewById(R.id.sb_alarm_audio);
-
 
         windowManager.addView(touchView, mParams);
 
@@ -273,8 +273,13 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 //震动30毫秒
-                vibrator.vibrate(vibrateLevel);
-                recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_RECENTS);
+                if (isMenuShow){
+                    isMenuShow=false;
+                    hideMenuContainer();
+                }else {
+                    vibrator.vibrate(vibrateLevel);
+                    recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_RECENTS);
+                }
                 return false;
             }
 
@@ -296,90 +301,91 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
                     recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
                 } else if (e1.getY() - e2.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
                     //上滑
-                    showMenuContainer();
-                    sbSystemAudio.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
-                            int curVolume = audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
-                            sbSystemAudio.setMax(maxVolume);
-                            sbSystemAudio.setProgress(curVolume);
-                            //设置音量控制变化监听
-                            sbSystemAudio.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                                @Override
-                                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                                    audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM,progress,0);
-                                }
+                    if (!isMenuShow) {
+                        isMenuShow = true;
+                        showMenuContainer();
+                        sbSystemAudio.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
+                                int curVolume = audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+                                sbSystemAudio.setMax(maxVolume);
+                                sbSystemAudio.setProgress(curVolume);
+                                //设置音量控制变化监听
+                                sbSystemAudio.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                    @Override
+                                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                        audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, progress, 0);
+                                    }
 
-                                @Override
-                                public void onStartTrackingTouch(SeekBar seekBar) {
+                                    @Override
+                                    public void onStartTrackingTouch(SeekBar seekBar) {
 
-                                }
+                                    }
 
-                                @Override
-                                public void onStopTrackingTouch(SeekBar seekBar) {
+                                    @Override
+                                    public void onStopTrackingTouch(SeekBar seekBar) {
 
-                                }
-                            });
-                        }
-                    });
+                                    }
+                                });
+                            }
+                        });
 
-                    sbAlarmAudio.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
-                            int curVolume = audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
-                            sbAlarmAudio.setMax(maxVolume);
-                            sbAlarmAudio.setProgress(curVolume);
-                            //设置音量控制变化监听
-                            sbAlarmAudio.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                                @Override
-                                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                                    audioManager.setStreamVolume(AudioManager.STREAM_ALARM,progress,0);
-                                }
+                        sbAlarmAudio.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
+                                int curVolume = audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+                                sbAlarmAudio.setMax(maxVolume);
+                                sbAlarmAudio.setProgress(curVolume);
+                                //设置音量控制变化监听
+                                sbAlarmAudio.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                    @Override
+                                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0);
+                                    }
 
-                                @Override
-                                public void onStartTrackingTouch(SeekBar seekBar) {
+                                    @Override
+                                    public void onStartTrackingTouch(SeekBar seekBar) {
 
-                                }
+                                    }
 
-                                @Override
-                                public void onStopTrackingTouch(SeekBar seekBar) {
+                                    @Override
+                                    public void onStopTrackingTouch(SeekBar seekBar) {
 
-                                }
-                            });
-                        }
-                    });
+                                    }
+                                });
+                            }
+                        });
 
-                    sbMediaAudio.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
-                            int curVolume = audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
-                            sbMediaAudio.setMax(maxVolume);
-                            sbMediaAudio.setProgress(curVolume);
-                            //设置音量控制变化监听
-                            sbMediaAudio.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                                @Override
-                                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,progress,0);
-                                }
+                        sbMediaAudio.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
+                                int curVolume = audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM);
+                                sbMediaAudio.setMax(maxVolume);
+                                sbMediaAudio.setProgress(curVolume);
+                                //设置音量控制变化监听
+                                sbMediaAudio.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                    @Override
+                                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+                                    }
 
-                                @Override
-                                public void onStartTrackingTouch(SeekBar seekBar) {
+                                    @Override
+                                    public void onStartTrackingTouch(SeekBar seekBar) {
 
-                                }
+                                    }
 
-                                @Override
-                                public void onStopTrackingTouch(SeekBar seekBar) {
+                                    @Override
+                                    public void onStopTrackingTouch(SeekBar seekBar) {
 
-                                }
-                            });
-                        }
-                    });
-                    windowManager.updateViewLayout(touchView,mParams);
-
-
+                                    }
+                                });
+                            }
+                        });
+                        windowManager.updateViewLayout(touchView, mParams);
+                    }
                 }
                 return false;
             }
@@ -483,10 +489,18 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
     }
 
-    //显示菜单容器
+    /**
+     * 显示隐藏菜单
+     */
     private void showMenuContainer() {
-        mParams.width=mParams.height;
+        mParams.width = dp2px(getApplicationContext(),touchHeight);
         llMenuContainer.setVisibility(View.VISIBLE);
+        windowManager.updateViewLayout(touchView, mParams);
+    }
+
+    private void hideMenuContainer(){
+        mParams.width=dp2px(getApplicationContext(),touchWidth);
+        llMenuContainer.setVisibility(View.GONE);
         windowManager.updateViewLayout(touchView,mParams);
     }
 
