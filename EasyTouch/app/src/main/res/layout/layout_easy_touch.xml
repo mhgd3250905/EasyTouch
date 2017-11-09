@@ -42,26 +42,91 @@
         android:layout_height="240dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:paddingStart="10dp">
 
-        <SeekBar
-            android:id="@id/sb_system_audio"
+        <RelativeLayout
+            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content">
 
-        <SeekBar
-            android:id="@id/sb_media_audio"
+            <TextView
+                android:text="静音"
+                android:layout_alignTop="@id/switch_mode"
+                android:layout_alignBottom="@id/switch_mode"
+                android:id="@id/tv_audio_mode"
+                android:layout_toLeftOf="@id/switch_mode"
+                android:src="@drawable/ic_notifications"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <Switch
+                android:paddingEnd="5dp"
+                android:layout_centerVertical="true"
+                android:id="@id/switch_mode"
+                android:layout_alignParentEnd="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_height="0dp"
+            android:layout_weight="2">
 
-        <SeekBar
-            android:id="@id/sb_alarm_audio"
+            <ImageView
+                android:id="@id/iv_audio_system"
+                android:src="@drawable/ic_notifications"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <SeekBar
+                android:layout_toRightOf="@id/iv_audio_system"
+                android:id="@id/sb_system_audio"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_height="0dp"
+            android:layout_weight="2">
 
-    </LinearLayout>
+            <ImageView
+                android:id="@id/iv_audio_media"
+                android:src="@drawable/ic_media"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <SeekBar
+                android:layout_toRightOf="@id/iv_audio_media"
+                android:id="@id/sb_media_audio"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2">
+
+            <ImageView
+                android:id="@id/iv_audio_alarm"
+                android:src="@drawable/ic_alarm"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <SeekBar
+                android:layout_toRightOf="@id/iv_audio_alarm"
+                android:id="@id/sb_alarm_audio"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+        </LinearLayout>
 
 </LinearLayout>

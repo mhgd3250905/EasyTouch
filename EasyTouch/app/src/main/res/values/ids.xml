@@ -22,4 +22,9 @@
     <item name="sb_system_audio" type="id">sb_system_audio</item>
     <item name="sb_media_audio" type="id">sb_media_audio</item>
     <item name="sb_alarm_audio" type="id">sb_alarm_audio</item>
+    <item name="iv_audio_system" type="id">iv_audio_system</item>
+    <item name="iv_audio_media" type="id">iv_audio_media</item>
+    <item name="iv_audio_alarm" type="id">iv_audio_alarm</item>
+    <item name="tv_audio_mode" type="id">tv_audio_mode</item>
+    <item name="switch_mode" type="id">switch_mode</item>
 </resources>
