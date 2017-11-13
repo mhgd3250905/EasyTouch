@@ -72,10 +72,20 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     private Runnable longClickRunnable;
     private boolean isRepeat = false;
 
+    private Runnable pressRunnable;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        //点击后定时取消按钮的显示效果
+        pressRunnable=new Runnable() {
+            @Override
+            public void run() {
+                hideTouchBall();
+            }
+        };
 
         longClickRunnable = new Runnable() {
             @Override
@@ -185,6 +195,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
             public boolean onDown(MotionEvent e) {
                 Log.i(TAG, "onDown: ");
                 //记录move down坐标
+                showTouchBall();
                 setMoveDownXY(e);
                 return false;
             }
@@ -199,6 +210,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
                 Log.i(TAG, "onSingleTapUp: ");
                 //震动30毫秒
                 vibrator.vibrate(vibrateLevel);
+                showTouchBall();
                 recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
                 return false;
             }
@@ -207,6 +219,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 Log.i(TAG, "onScroll: e2-Action--->" + e2.getAction());
                 if (canMove) {
+                    showTouchBall();
                     refreshMovePlace(e2);
                 }
 
@@ -261,14 +274,21 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         ballDetector.setIsLongpressEnabled(false);
     }
 
-    private void showLongClickAnim() {
-        isRepeat = true;
-        handler.post(longClickRunnable);
+
+    /**
+     * 显示点击效果
+     */
+    private void showTouchBall(){
+        ivTouchBall.setImageResource(R.drawable.vector_drawable_ball_press);
+        handler.removeCallbacks(pressRunnable);
+        handler.postDelayed(pressRunnable,1000);
     }
 
-    private void cancelLongClickAnim() {
-        isRepeat = false;
-        handler.removeCallbacks(longClickRunnable);
+    /**
+     * 隐藏
+     */
+    private void hideTouchBall(){
+        ivTouchBall.setImageResource(R.drawable.vector_drawable_ball);
     }
 
     private void refreshMovePlace(MotionEvent e2) {

@@ -10,6 +10,6 @@
         android:id="@id/ivTouchBall"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/vector_drawable_ball_2" />
+        android:src="@drawable/vector_drawable_ball" />
 
 </LinearLayout>
