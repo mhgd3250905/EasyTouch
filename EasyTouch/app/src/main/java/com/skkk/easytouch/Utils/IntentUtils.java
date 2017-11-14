@@ -1,5 +1,6 @@
 package com.skkk.easytouch.Utils;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -63,6 +64,23 @@ public class IntentUtils {
         } catch (Exception e) {
             //若无法正常跳转，在此进行错误处理
             Toast.makeText(context, "无法跳转到支付宝，请检查您是否安装了支付宝！", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 跳转到微信页面
+     * @param context
+     */
+    public static void toWeChatScanDirect(Context context) {
+        try {
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName("com.tencent.mm", "com.tencent.mm.ui.LauncherUI"));
+            intent.putExtra("LauncherUI.From.Scaner.Shortcut", true);
+            intent.setFlags(335544320);
+            intent.setAction("android.intent.action.VIEW");
+            context.startActivity(intent);
+        } catch (Exception e) {
+
         }
     }
 }

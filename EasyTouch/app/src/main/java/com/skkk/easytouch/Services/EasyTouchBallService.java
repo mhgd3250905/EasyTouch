@@ -26,6 +26,7 @@ import android.view.WindowManager;
 import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.skkk.easytouch.Configs;
@@ -48,7 +49,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     private boolean isMove;
     private Vibrator vibrator;
 
-    private LinearLayout llTouchContainer;
+    private RelativeLayout llTouchContainer;
     private GestureDetector ballDetector;
     private float dx;
     private float dy;
@@ -64,6 +65,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     private int direction;
     private int directionX;
     private ImageView ivTouchBall;
+    private LinearLayout llMenuContainer;
     private boolean canMove = false;
     private AnimatorSet set;
     private ObjectAnimator scaleXAnim;
@@ -148,9 +150,9 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         mParams.y = screenHeight - dp2px(getApplicationContext(), 200f);
 
         touchView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball, null);
-        llTouchContainer = (LinearLayout) touchView.findViewById(R.id.ll_touch_container);
+        llTouchContainer = (RelativeLayout) touchView.findViewById(R.id.ll_touch_container);
         ivTouchBall = (ImageView) touchView.findViewById(R.id.ivTouchBall);
-
+        llMenuContainer= (LinearLayout) touchView.findViewById(R.id.ll_menu_container);
 
         windowManager.addView(touchView, mParams);
     }
@@ -212,6 +214,8 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
                 vibrator.vibrate(vibrateLevel);
                 showTouchBall();
                 recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
+//                IntentUtils.toWeChatScanDirect(getApplicationContext());
+//                showMenuContainer();
                 return false;
             }
 
@@ -272,6 +276,22 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         });
 
         ballDetector.setIsLongpressEnabled(false);
+    }
+
+    /**
+     * 显示隐藏菜单
+     */
+    private void showMenuContainer() {
+        mParams.width = dp2px(getApplicationContext(),240);
+        mParams.x-=dp2px(getApplicationContext(),120);
+        llMenuContainer.setVisibility(View.VISIBLE);
+        windowManager.updateViewLayout(touchView, mParams);
+    }
+
+    private void hideMenuContainer(){
+        mParams.width=dp2px(getApplicationContext(),200);
+        llMenuContainer.setVisibility(View.GONE);
+        windowManager.updateViewLayout(touchView,mParams);
     }
 
 

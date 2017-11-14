@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@id/ll_touch_container"
-    android:layout_width="60dp"
-    android:layout_height="60dp"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:id="@id/ll_menu_container"
+        android:layout_toRightOf="@id/ivTouchBall"
+        android:background="@color/colorGray"
+        android:layout_width="200dp"
+        android:layout_height="200dp">
+
+    </LinearLayout>
+
     <ImageView
-        android:layout_margin="10dp"
+        android:layout_centerVertical="true"
         android:id="@id/ivTouchBall"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/vector_drawable_ball" />
 
-</LinearLayout>
+</RelativeLayout>

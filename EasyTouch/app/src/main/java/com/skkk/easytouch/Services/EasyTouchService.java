@@ -104,10 +104,13 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
     @Override
     public void onCreate() {
         super.onCreate();
+
+
         //设置界面窗口管理器
         if (windowManager == null) {
             windowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         }
+
 
         //设置音量管理器
         audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
@@ -169,6 +172,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         ivAudioAlarm = (ImageView) touchView.findViewById(R.id.iv_audio_alarm);
         switchMode = (Switch) touchView.findViewById(R.id.switch_mode);
         tvAudioMode = (TextView) touchView.findViewById(R.id.tv_audio_mode);
+
 
         windowManager.addView(touchView, mParams);
     }
