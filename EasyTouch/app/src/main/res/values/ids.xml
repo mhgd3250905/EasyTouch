@@ -27,4 +27,8 @@
     <item name="iv_audio_alarm" type="id">iv_audio_alarm</item>
     <item name="tv_audio_mode" type="id">tv_audio_mode</item>
     <item name="switch_mode" type="id">switch_mode</item>
+    <item name="ll_menu_bottom_container" type="id">ll_menu_bottom_container</item>
+    <item name="iv_scan_alipay" type="id">iv_scan_alipay</item>
+    <item name="iv_pay_alipay" type="id">iv_pay_alipay</item>
+    <item name="iv_scan_weixin" type="id">iv_scan_weixin</item>
 </resources>

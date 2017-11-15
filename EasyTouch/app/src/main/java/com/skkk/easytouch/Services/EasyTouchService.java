@@ -99,6 +99,10 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
     private ImageView ivAudioAlarm;
     private TextView tvAudioMode;
     private Switch switchMode;
+    private LinearLayout llMenuBottomContainer;
+    private ImageView ivAlipayScan;
+    private ImageView ivAlipayPay;
+    private ImageView ivWeixinScan;
 
 
     @Override
@@ -163,6 +167,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         ivTouchTop = (ImageView) touchView.findViewById(R.id.iv_touch_top);
         ivTouchMid = (ImageView) touchView.findViewById(R.id.iv_touch_mid);
         ivTouchBottom = (ImageView) touchView.findViewById(R.id.iv_touch_bottom);
+
         llMenuContainer = (LinearLayout) touchView.findViewById(R.id.ll_menu_container);
         sbSystemAudio = (SeekBar) touchView.findViewById(R.id.sb_system_audio);
         sbMediaAudio = (SeekBar) touchView.findViewById(R.id.sb_media_audio);
@@ -173,6 +178,10 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         switchMode = (Switch) touchView.findViewById(R.id.switch_mode);
         tvAudioMode = (TextView) touchView.findViewById(R.id.tv_audio_mode);
 
+        llMenuBottomContainer = (LinearLayout) touchView.findViewById(R.id.ll_menu_bottom_container);
+        ivAlipayScan = (ImageView) touchView.findViewById(R.id.iv_scan_alipay);
+        ivAlipayPay = (ImageView) touchView.findViewById(R.id.iv_pay_alipay);
+        ivWeixinScan = (ImageView) touchView.findViewById(R.id.iv_scan_weixin);
 
         windowManager.addView(touchView, mParams);
     }
@@ -290,10 +299,10 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 //震动30毫秒
-                if (isMenuShow){
-                    isMenuShow=false;
+                if (isMenuShow) {
+                    isMenuShow = false;
                     hideMenuContainer();
-                }else {
+                } else {
                     vibrator.vibrate(vibrateLevel);
                     recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_RECENTS);
                 }
@@ -434,16 +443,16 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
             switchMode.post(new Runnable() {
                 @Override
                 public void run() {
-                    switchMode.setChecked(audioManager.getRingerMode()==AudioManager.RINGER_MODE_SILENT);
+                    switchMode.setChecked(audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT);
                     switchMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            if (isChecked){
+                            if (isChecked) {
                                 audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                                tvAudioMode.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorBlackBody));
-                            }else {
+                                tvAudioMode.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorBlackBody));
+                            } else {
                                 audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                                tvAudioMode.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.colorWhite));
+                                tvAudioMode.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorWhite));
                                 audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, sbSystemAudio.getProgress(), 0);
                                 audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, sbMediaAudio.getProgress(), 0);
                                 audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, sbAlarmAudio.getProgress(), 0);
@@ -466,7 +475,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                             //如果在静音模式下拖动不实际设置音量
-                            if (audioManager.getRingerMode()!=AudioManager.RINGER_MODE_SILENT){
+                            if (audioManager.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
                                 audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, progress, 0);
                             }
                         }
@@ -541,19 +550,54 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         }
     }
 
+
+    /**
+     * 设置Top按键上滑事件：音量调节
+     */
+    private void setDownTouchMoveEvent() {
+        if (!isMenuShow) {
+            isMenuShow = true;
+            showMenuContainer();//显示菜单
+
+            //设置静音模式切换监听
+            switchMode.post(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+            windowManager.updateViewLayout(touchView, mParams);
+        }
+    }
+
     /**
      * 显示隐藏菜单
      */
     private void showMenuContainer() {
-        mParams.width = dp2px(getApplicationContext(),touchHeight);
+        mParams.width = dp2px(getApplicationContext(), touchHeight);
         llMenuContainer.setVisibility(View.VISIBLE);
         windowManager.updateViewLayout(touchView, mParams);
     }
 
-    private void hideMenuContainer(){
-        mParams.width=dp2px(getApplicationContext(),touchWidth);
+    private void hideMenuContainer() {
+        mParams.width = dp2px(getApplicationContext(), touchWidth);
         llMenuContainer.setVisibility(View.GONE);
-        windowManager.updateViewLayout(touchView,mParams);
+        windowManager.updateViewLayout(touchView, mParams);
+    }
+
+    /**
+     * 显示隐藏菜单
+     */
+    private void showBottomMenuContainer() {
+        mParams.width = dp2px(getApplicationContext(), touchHeight);
+        llMenuBottomContainer.setVisibility(View.VISIBLE);
+        windowManager.updateViewLayout(touchView, mParams);
+    }
+
+    private void hideBottomMenuContainer() {
+        mParams.width = dp2px(getApplicationContext(), touchWidth);
+        llMenuBottomContainer.setVisibility(View.GONE);
+        windowManager.updateViewLayout(touchView, mParams);
     }
 
     private void refreshMovePlace(MotionEvent e2) {
