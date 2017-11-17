@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
+import com.skkk.easytouch.Utils.IntentUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 
 import static com.skkk.easytouch.Configs.DEFAULT_ALPHA;
@@ -93,7 +95,9 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
     private AudioManager audioManager;  //音量管理器
     private LinearLayout llMenuContainer;
     private SeekBar sbSystemAudio, sbMediaAudio, sbAlarmAudio;
-    private boolean isMenuShow;//菜单是否打开
+    private boolean isTopMenuShow=false;//Top菜单是否打开
+    private boolean isBottomMenuShow=false;//Bottom菜单是否打开
+
     private ImageView ivAudioSystem;
     private ImageView ivAudioMedia;
     private ImageView ivAudioAlarm;
@@ -284,23 +288,35 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
         ivTouchMid.setOnTouchListener(this);
         ivTouchBottom.setOnTouchListener(this);
 
+        ivTouchTop.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+//                setTopMenuEvent();
+                return true;
+            }
+        });
+
         //设置top按键事件触发
         topDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
+                Log.d(TAG, "onDown() called with: e = [" + e + "]");
                 return false;
             }
 
             @Override
             public void onShowPress(MotionEvent e) {
+                Log.d(TAG, "onShowPress() called with: e = [" + e + "]");
 
             }
 
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
+                Log.d(TAG, "onSingleTapUp() called with: e = [" + e + "]");
                 //震动30毫秒
-                if (isMenuShow) {
-                    isMenuShow = false;
+                if (isTopMenuShow) {
+                    vibrator.vibrate(vibrateLevel);
+                    isTopMenuShow = false;
                     hideMenuContainer();
                 } else {
                     vibrator.vibrate(vibrateLevel);
@@ -316,7 +332,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
             @Override
             public void onLongPress(MotionEvent e) {
-
+                Log.d(TAG, "onLongPress() called with: e = [" + e + "]");
             }
 
             @Override
@@ -327,7 +343,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
                     recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
                 } else if (e1.getY() - e2.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
                     //上滑
-                    setUpTouchMoveEvent();
+                    setTopMenuEvent();
                 }
                 return false;
             }
@@ -400,9 +416,15 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
-                //震动30毫秒
-                vibrator.vibrate(vibrateLevel);
-                recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
+                if (isBottomMenuShow){
+                    vibrator.vibrate(vibrateLevel);
+                    isBottomMenuShow=false;
+                    hideBottomMenuContainer();
+                }else {
+                    //震动30毫秒
+                    vibrator.vibrate(vibrateLevel);
+                    recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
+                }
                 return false;
             }
 
@@ -419,24 +441,32 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 if (e1.getY() - e2.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
+                    //上滑
+                    //锁屏
                     if (mDPM.isAdminActive(mAdminName)) {
                         //震动30毫秒
                         vibrator.vibrate(vibrateLevel);
                         mDPM.lockNow();
                     }
+                }else if (e2.getY() - e1.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
+                    //下滑
+                    //呼出菜单
+                    setBottomMenuEvent();
                 }
                 return false;
             }
         });
+
+        topDetector.setIsLongpressEnabled(false);
 
     }
 
     /**
      * 设置Top按键上滑事件：音量调节
      */
-    private void setUpTouchMoveEvent() {
-        if (!isMenuShow) {
-            isMenuShow = true;
+    private void setTopMenuEvent() {
+        if (!isTopMenuShow) {
+            isTopMenuShow = true;
             showMenuContainer();//显示菜单
 
             //设置静音模式切换监听
@@ -552,18 +582,37 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
 
     /**
-     * 设置Top按键上滑事件：音量调节
+     * 设置Bottom按键下滑事件：音量调节
      */
-    private void setDownTouchMoveEvent() {
-        if (!isMenuShow) {
-            isMenuShow = true;
-            showMenuContainer();//显示菜单
+    private void setBottomMenuEvent() {
+        if (!isBottomMenuShow) {
+            isBottomMenuShow = true;
+            showBottomMenuContainer();//显示菜单
 
             //设置静音模式切换监听
             switchMode.post(new Runnable() {
                 @Override
                 public void run() {
+                    ivAlipayScan.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            IntentUtils.toAliPayScan(getApplicationContext());
+                        }
+                    });
 
+                    ivAlipayPay.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            IntentUtils.toAliPayCode(getApplicationContext());
+                        }
+                    });
+
+                    ivWeixinScan.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            IntentUtils.toWeChatScanDirect(getApplicationContext());
+                        }
+                    });
                 }
             });
             windowManager.updateViewLayout(touchView, mParams);

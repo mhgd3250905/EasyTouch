@@ -154,6 +154,13 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         ivTouchBall = (ImageView) touchView.findViewById(R.id.ivTouchBall);
         llMenuContainer= (LinearLayout) touchView.findViewById(R.id.ll_menu_container);
 
+        llMenuContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
+
         windowManager.addView(touchView, mParams);
     }
 
@@ -213,9 +220,9 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
                 //震动30毫秒
                 vibrator.vibrate(vibrateLevel);
                 showTouchBall();
-                recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
+//                recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
 //                IntentUtils.toWeChatScanDirect(getApplicationContext());
-//                showMenuContainer();
+                showMenuContainer();
                 return false;
             }
 
@@ -283,7 +290,8 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
      */
     private void showMenuContainer() {
         mParams.width = dp2px(getApplicationContext(),240);
-        mParams.x-=dp2px(getApplicationContext(),120);
+        mParams.height=dp2px(getApplicationContext(),200);
+        mParams.y-=dp2px(getApplicationContext(),100);
         llMenuContainer.setVisibility(View.VISIBLE);
         windowManager.updateViewLayout(touchView, mParams);
     }
