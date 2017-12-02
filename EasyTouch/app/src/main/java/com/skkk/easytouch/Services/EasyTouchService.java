@@ -590,7 +590,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
             showBottomMenuContainer();//显示菜单
 
             //设置静音模式切换监听
-            switchMode.post(new Runnable() {
+            llMenuBottomContainer.post(new Runnable() {
                 @Override
                 public void run() {
                     ivAlipayScan.setOnClickListener(new View.OnClickListener() {

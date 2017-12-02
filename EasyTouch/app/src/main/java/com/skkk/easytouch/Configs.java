@@ -11,6 +11,15 @@ package com.skkk.easytouch;
 * 时    间：2017/10/25$ 23:24$.
 */
 public class Configs {
+
+    public enum Position{
+        NONE,
+        MAIN,
+        TOP,
+        MID,
+        BOTTOM;
+    }
+
     public static final String KEY_TOUCH_UI_WIDTH = "key_touch_ui_width";
     public static final String KEY_TOUCH_UI_HEIGHT = "key_touch_ui_height";
     public static final String KEY_TOUCH_UI_TOP_COLOR = "key_touch_ui_top_color";
