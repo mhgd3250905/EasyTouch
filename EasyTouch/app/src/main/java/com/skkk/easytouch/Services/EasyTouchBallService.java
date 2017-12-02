@@ -688,7 +688,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         menuView.post(new Runnable() {
             @Override
             public void run() {
-                if (!selectPos.equals(Configs.Position.NONE)) {
+                if (!selectPos.equals(Configs.Position.NONE)&&!selectPos.equals(Configs.Position.MAIN)) {
                     hideMenuBallAnim(ivTouchBall, Configs.Position.MAIN, false);
                 }
                 hideMenuBallAnim(ivMenuBall1, Configs.Position.TOP, selectPos.equals(Configs.Position.TOP));
