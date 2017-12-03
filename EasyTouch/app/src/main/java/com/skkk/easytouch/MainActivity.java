@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout contentMain;
     @Bind(R.id.settings_item_lock)
     SettingItemView settingsItemLock;
+    @Bind(R.id.settings_item_touch_detail)
+    SettingItemView settingsItemTouchDetail;
     private ArrayList<String> needRequestPermissions = new ArrayList<>();
     // 所需的全部权限
     private static final String[] PERMISSIONS = new String[]{
@@ -87,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 && !notificationManager.isNotificationPolicyAccessGranted()) {
 
             Intent intent = new Intent(
-                    android.provider.Settings
+                    Settings
                             .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
 
             startActivity(intent);
@@ -175,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                     showAdminManagement(mAdminName);
                 }
             });
-        }else {
+        } else {
             settingsItemLock.setValue("已开启");
             settingsItemLock.setSettingItemClickListener(null);
         }
@@ -184,16 +186,23 @@ public class MainActivity extends AppCompatActivity {
         settingsItemShape.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,ShapeSettingActivity.class));
-                stopService(new Intent(MainActivity.this,EasyTouchService.class));
+                startActivity(new Intent(MainActivity.this, ShapeSettingActivity.class));
+                stopService(new Intent(MainActivity.this, EasyTouchService.class));
+            }
+        });
+
+        settingsItemTouchDetail.setSettingItemClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,AppSelectActivity.class));
             }
         });
 
         btnTouchLine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ServiceUtils.isServiceRun(getApplicationContext(),"com.skkk.easytouch.Services.EasyTouchBallService")){
-                    stopService(new Intent(MainActivity.this,EasyTouchBallService.class));
+                if (ServiceUtils.isServiceRun(getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchBallService")) {
+                    stopService(new Intent(MainActivity.this, EasyTouchBallService.class));
                 }
                 startService(new Intent(MainActivity.this, EasyTouchService.class));
                 startService(new Intent(MainActivity.this, FloatService.class));
@@ -203,8 +212,8 @@ public class MainActivity extends AppCompatActivity {
         btnTouchBall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ServiceUtils.isServiceRun(getApplicationContext(),"com.skkk.easytouch.Services.EasyTouchService")){
-                    stopService(new Intent(MainActivity.this,EasyTouchService.class));
+                if (ServiceUtils.isServiceRun(getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchService")) {
+                    stopService(new Intent(MainActivity.this, EasyTouchService.class));
                 }
                 startService(new Intent(MainActivity.this, EasyTouchBallService.class));
                 startService(new Intent(MainActivity.this, FloatService.class));

@@ -14,10 +14,13 @@ public class Configs {
 
     public enum Position{
         NONE,
-        MAIN,
         TOP,
         MID,
         BOTTOM;
+    }
+
+    public interface OnAnimEndListener{
+        void onAnimEnd();
     }
 
     public static final String KEY_TOUCH_UI_WIDTH = "key_touch_ui_width";

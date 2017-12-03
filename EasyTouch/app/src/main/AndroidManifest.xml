@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
 
     <application
         android:allowBackup="true"
@@ -56,8 +56,10 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ShapeSettingActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".ShapeSettingActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AppSelectActivity"></activity>
     </application>
 
 </manifest>

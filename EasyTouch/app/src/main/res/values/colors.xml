@@ -42,4 +42,9 @@
     <color name="theme_color_primary">#fb7299</color>
     <color name="theme_color_primary_dark">#b85671</color>
     <color name="theme_color_primary_trans">#99f0486c</color>
+
+    <color name="easy_touch_ball_menu_red">#A35150</color>
+    <color name="easy_touch_ball_menu_blue">#455882</color>
+    <color name="easy_touch_ball_menu_gray">#544A4A</color>
+
 </resources>

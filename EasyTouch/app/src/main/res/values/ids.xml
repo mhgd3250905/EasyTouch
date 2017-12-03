@@ -39,4 +39,11 @@
     <item name="iv_menu_detail_back" type="id">iv_menu_detail_back</item>
     <item name="container_ball_menu_detail_pay" type="id">container_ball_menu_detail_pay</item>
     <item name="containerMenuDetailBack" type="id">containerMenuDetailBack</item>
+    <item name="fl_app_select" type="id">fl_app_select</item>
+    <item name="rv_apps" type="id">rv_apps</item>
+    <item name="iv_item_icon" type="id">iv_item_icon</item>
+    <item name="iv_item_item_app_add" type="id">iv_item_item_app_add</item>
+    <item name="tv_app_name" type="id">tv_app_name</item>
+    <item name="tv_item_app_name" type="id">tv_item_app_name</item>
+    <item name="settings_item_touch_detail" type="id">settings_item_touch_detail</item>
 </resources>

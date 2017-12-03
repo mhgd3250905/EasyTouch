@@ -114,6 +114,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     private ImageView ivWeixinScan;
     private ImageView ivMenuDetailBack;
     private RelativeLayout containerMenuDetailBack;
+    private ObjectAnimator hideMenuDetailAnim;
 
 
     @Override
@@ -254,8 +255,8 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         ivWeixinScan = (ImageView) menuDetailView.findViewById(R.id.iv_scan_weixin);
 
 
-        ivMenuDetailBack =(ImageView)menuDetailView.findViewById(R.id.iv_menu_detail_back);
-        containerMenuDetailBack =(RelativeLayout)menuDetailView.findViewById(R.id.containerMenuDetailBack);
+        ivMenuDetailBack = (ImageView) menuDetailView.findViewById(R.id.iv_menu_detail_back);
+        containerMenuDetailBack = (RelativeLayout) menuDetailView.findViewById(R.id.containerMenuDetailBack);
 
         llMenuContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -426,7 +427,12 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         containerMenuDetailBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideMenuDetailContainer();
+                hideMenuDetailEnterAnim(menuDetailView, new Configs.OnAnimEndListener() {
+                    @Override
+                    public void onAnimEnd() {
+                        hideMenuDetailContainer();
+                    }
+                });
             }
         });
     }
@@ -437,8 +443,8 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
             public void run() {
                 if (isMenuDetailShow) {
                     windowManager.removeView(menuDetailView);
-                    windowManager.addView(touchView,mParams );
-                    isMenuDetailShow=false;
+                    windowManager.addView(touchView, mParams);
+                    isMenuDetailShow = false;
                 }
             }
         });
@@ -564,7 +570,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         menuContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                hideMenuContainer(Configs.Position.NONE);
+                hideMenuContainer(Configs.Position.NONE,null);
                 return false;
             }
         });
@@ -572,25 +578,35 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         ivMenuBall1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideMenuContainer(Configs.Position.TOP);
-                if (!isMenuDetailShow) {
-                    showMenuDetailVoice();
-                }
+                hideMenuContainer(Configs.Position.TOP, new Configs.OnAnimEndListener() {
+                    @Override
+                    public void onAnimEnd() {
+                        if (!isMenuDetailShow) {
+                            showMenuDetailVoice();
+                        }
+                    }
+                });
+
             }
         });
         ivMenuBall2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideMenuContainer(Configs.Position.MID);
+                hideMenuContainer(Configs.Position.MID,null);
             }
         });
+
         ivMenuBall3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideMenuContainer(Configs.Position.BOTTOM);
-                if (!isMenuDetailShow) {
-                    showMenuDetailPay();
-                }
+                hideMenuContainer(Configs.Position.BOTTOM, new Configs.OnAnimEndListener() {
+                    @Override
+                    public void onAnimEnd() {
+                        if (!isMenuDetailShow) {
+                            showMenuDetailPay();
+                        }
+                    }
+                });
             }
         });
     }
@@ -604,7 +620,40 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         containerMenuDetailVoice.setVisibility(View.VISIBLE);
         containerMenuDetailPay.setVisibility(View.GONE);
         windowManager.addView(menuDetailView, mMenuDetailParams);
-        isMenuDetailShow = true;
+        containerMenuDetailVoice.post(new Runnable() {
+            @Override
+            public void run() {
+                //显示二级菜单
+                enterMenuDetailAnim(menuDetailView);
+                isMenuDetailShow = true;
+            }
+        });
+    }
+
+    /**
+     * 二级菜单的进入动画
+     * @param containerMenuDetail
+     */
+    private void enterMenuDetailAnim(View containerMenuDetail) {
+        ObjectAnimator.ofFloat(containerMenuDetail,"translationX",dp2px(-200f),0).start();
+    }
+
+    /**
+     * 二级菜单的退出动画
+     * @param containerMenuDetail
+     */
+    private void hideMenuDetailEnterAnim(View containerMenuDetail, final Configs.OnAnimEndListener onAnimEndListener) {
+        hideMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", 0, dp2px(-200f));
+        hideMenuDetailAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (onAnimEndListener!=null){
+                    onAnimEndListener.onAnimEnd();
+                }
+            }
+        });
+        hideMenuDetailAnim.start();
     }
 
     /**
@@ -616,7 +665,14 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         containerMenuDetailVoice.setVisibility(View.GONE);
         containerMenuDetailPay.setVisibility(View.VISIBLE);
         windowManager.addView(menuDetailView, mMenuDetailParams);
-        isMenuDetailShow = true;
+        containerMenuDetailVoice.post(new Runnable() {
+            @Override
+            public void run() {
+                //显示二级菜单
+                enterMenuDetailAnim(menuDetailView);
+                isMenuDetailShow = true;
+            }
+        });
     }
 
 
@@ -684,16 +740,16 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     /**
      * 隐藏菜单
      */
-    private void hideMenuContainer(final Configs.Position selectPos) {
+    private void hideMenuContainer(final Configs.Position selectPos, final Configs.OnAnimEndListener onAnimEndListener) {
         menuView.post(new Runnable() {
             @Override
             public void run() {
-                if (!selectPos.equals(Configs.Position.NONE)&&!selectPos.equals(Configs.Position.MAIN)) {
-                    hideMenuBallAnim(ivTouchBall, Configs.Position.MAIN, false);
+                if (!selectPos.equals(Configs.Position.NONE)) {
+                    hideMenuBallAnim(ivTouchBall, Configs.Position.NONE, false, null);
                 }
-                hideMenuBallAnim(ivMenuBall1, Configs.Position.TOP, selectPos.equals(Configs.Position.TOP));
-                hideMenuBallAnim(ivMenuBall2, Configs.Position.MID, selectPos.equals(Configs.Position.MID));
-                hideMenuBallAnim(ivMenuBall3, Configs.Position.BOTTOM, selectPos.equals(Configs.Position.BOTTOM));
+                hideMenuBallAnim(ivMenuBall1, Configs.Position.TOP, selectPos.equals(Configs.Position.TOP), null);
+                hideMenuBallAnim(ivMenuBall2, Configs.Position.MID, selectPos.equals(Configs.Position.MID), null);
+                hideMenuBallAnim(ivMenuBall3, Configs.Position.BOTTOM, selectPos.equals(Configs.Position.BOTTOM), onAnimEndListener);
             }
         });
 
@@ -705,7 +761,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
      * @param view
      * @param position
      */
-    private void hideMenuBallAnim(final View view, Configs.Position position, boolean isSelected) {
+    private void hideMenuBallAnim(final View view, Configs.Position position, boolean isSelected, final Configs.OnAnimEndListener onAnimEndListener) {
 
         ballMenuAnimSet = new AnimatorSet();
         float transXFrom = 0;
@@ -780,19 +836,26 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                if (!curPos.equals(Configs.Position.MAIN)) {
-                    ObjectAnimator.ofFloat(view, "translationX", finalTransXFrom, finalTransXTo).start();
-                    ObjectAnimator.ofFloat(view, "translationY", finalTransYFrom, finalTransYTo).start();
-                }
 
                 ObjectAnimator.ofFloat(view, "scaleX", finalScaleXTo, finalScaleXFrom).start();
                 ObjectAnimator.ofFloat(view, "scaleY", finalScaleYTo, finalScaleYFrom).start();
                 ObjectAnimator.ofFloat(view, "alpha", finalAlphTo, finalAlphFrom).start();
-                if (curPos.equals(Configs.Position.BOTTOM)) {
+
+                if (!curPos.equals(Configs.Position.NONE)) {
+                    ObjectAnimator.ofFloat(view, "translationX", finalTransXFrom, finalTransXTo).start();
+                    ObjectAnimator.ofFloat(view, "translationY", finalTransYFrom, finalTransYTo).start();
+                    if (curPos.equals(Configs.Position.BOTTOM)) {
+                        windowManager.removeView(menuView);
+                        isMenuShow = false;
+                    }
+                } else {
                     windowManager.removeView(touchView);
-                    windowManager.removeView(menuView);
                     isMenuShow = false;
                 }
+                if (onAnimEndListener != null) {
+                    onAnimEndListener.onAnimEnd();
+                }
+
             }
         });
         ballMenuAnimSet.start();

@@ -59,6 +59,15 @@
         app:title="悬浮条主题"
         app:value="方块"/>
 
+    <com.skkk.easytouch.View.SettingItemView
+        android:id="@id/settings_item_touch_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="15dp"
+        app:title="定制功能区域"
+        app:value="当前悬浮类型：悬浮条"/>
+
     <TextView
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
