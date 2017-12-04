@@ -1,42 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="220dp"
+    android:layout_width="420dp"
     android:layout_height="200dp"
     android:orientation="vertical">
 
     <LinearLayout
-        android:background="@drawable/shape_react_corners_top_menu_bg"
         android:id="@id/container_ball_menu_detail_voice"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:background="@drawable/shape_react_corners_top_menu_bg"
         android:orientation="vertical"
-        android:paddingStart="10dp">
+        android:paddingStart="10dp"
+        android:visibility="gone">
 
         <RelativeLayout
-            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
             <TextView
-                android:textColor="@color/colorWhite"
-                android:text="静音"
-                android:layout_alignTop="@id/switch_mode"
-                android:layout_alignBottom="@id/switch_mode"
                 android:id="@id/tv_audio_mode"
-                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@id/switch_mode"
+                android:layout_alignTop="@id/switch_mode"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/switch_mode"
+                android:gravity="center_vertical"
                 android:src="@drawable/ic_notifications"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:text="静音"
+                android:textColor="@color/colorWhite" />
 
             <Switch
-                android:paddingEnd="5dp"
-                android:layout_centerVertical="true"
                 android:id="@id/switch_mode"
-                android:layout_alignParentEnd="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:paddingEnd="5dp" />
 
         </RelativeLayout>
 
@@ -47,15 +48,15 @@
 
             <ImageView
                 android:id="@id/iv_audio_system"
-                android:src="@drawable/ic_notifications"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_notifications" />
 
             <SeekBar
-                android:layout_toRightOf="@id/iv_audio_system"
                 android:id="@id/sb_system_audio"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/iv_audio_system" />
 
         </RelativeLayout>
 
@@ -66,15 +67,15 @@
 
             <ImageView
                 android:id="@id/iv_audio_media"
-                android:src="@drawable/ic_media"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_media" />
 
             <SeekBar
-                android:layout_toRightOf="@id/iv_audio_media"
                 android:id="@id/sb_media_audio"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/iv_audio_media" />
 
         </RelativeLayout>
 
@@ -85,25 +86,25 @@
 
             <ImageView
                 android:id="@id/iv_audio_alarm"
-                android:src="@drawable/ic_alarm"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_alarm" />
 
             <SeekBar
-                android:layout_toRightOf="@id/iv_audio_alarm"
                 android:id="@id/sb_alarm_audio"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/iv_audio_alarm" />
 
         </RelativeLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:background="@drawable/shape_react_corners_top_menu_bg"
         android:id="@id/container_ball_menu_detail_pay"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:background="@drawable/shape_react_corners_top_menu_bg"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -114,19 +115,19 @@
 
             <ImageView
                 android:id="@id/iv_scan_alipay"
-                android:layout_gravity="center"
-                android:src="@drawable/vector_drawable_scan_alipay"
-                android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="40dp" />
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/vector_drawable_scan_alipay" />
 
             <ImageView
                 android:id="@id/iv_pay_alipay"
-                android:layout_gravity="center"
-                android:src="@drawable/vector_drawable_pay_alipay"
-                android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="50dp" />
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/vector_drawable_pay_alipay" />
 
         </LinearLayout>
 
@@ -137,34 +138,138 @@
 
             <ImageView
                 android:id="@id/iv_scan_weixin"
-                android:layout_gravity="center"
-                android:src="@drawable/vector_drawable_scan_weixin"
-                android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="40dp" />
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/vector_drawable_scan_weixin" />
 
             <ImageView
-                android:layout_gravity="center"
-                android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="50dp" />
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_weight="1" />
 
         </LinearLayout>
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@id/container_ball_menu_detail_apps"
+        android:layout_width="300dp"
+        android:layout_height="120dp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/shape_react_corners_top_menu_bg"
+        android:orientation="vertical"
+        android:visibility="visible">
+        <LinearLayout
+            android:id="@id/container_ball_menu_detail_short_cut"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_white_48dp" />
+
+            <ImageView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_white_48dp" />
+
+            <ImageView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_white_48dp" />
+
+            <ImageView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_white_48dp" />
+
+            <ImageView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_white_48dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_white_48dp" />
+
+            <ImageView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_white_48dp" />
+
+            <ImageView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_white_48dp" />
+
+            <ImageView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_white_48dp" />
+
+            <ImageView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_white_48dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+
     <RelativeLayout
-        android:id="@id/containerMenuDetailBack"
-        android:layout_marginStart="200dp"
+        android:id="@id/containerAppsMenuDetailBack"
         android:layout_width="20dp"
-        android:layout_height="200dp">
+        android:layout_height="200dp"
+        android:layout_marginStart="300dp">
+
         <ImageView
-            android:background="@drawable/shape_react_corners_top_bottom"
-            android:src="@drawable/ic_arrow_left"
-            android:layout_centerVertical="true"
             android:id="@id/iv_menu_detail_back"
             android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:layout_height="100dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shape_react_corners_top_bottom"
+            android:src="@drawable/ic_arrow_left" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@id/containerMenuDetailBack"
+        android:layout_width="20dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="200dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@id/iv_menu_detail_back"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shape_react_corners_top_bottom"
+            android:src="@drawable/ic_arrow_left" />
+
     </RelativeLayout>
 
 

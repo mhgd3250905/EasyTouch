@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     SettingItemView settingsItemLock;
     @Bind(R.id.settings_item_touch_detail)
     SettingItemView settingsItemTouchDetail;
+    @Bind(R.id.test)
+    TextView test;
     private ArrayList<String> needRequestPermissions = new ArrayList<>();
     // 所需的全部权限
     private static final String[] PERMISSIONS = new String[]{
@@ -95,7 +97,21 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+//        test.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                sendKeyCode(KeyEvent.KEYCODE_POWER);
+//                try {
+//                    Thread.sleep(200);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                sendKeyCode(KeyEvent.KEYCODE_VOLUME_DOWN);
+//            }
+//        });
     }
+
+
 
 
     /**
@@ -194,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         settingsItemTouchDetail.setSettingItemClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,AppSelectActivity.class));
+                startActivity(new Intent(MainActivity.this, AppSelectActivity.class));
             }
         });
 

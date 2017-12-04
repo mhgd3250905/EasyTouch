@@ -46,4 +46,10 @@
     <item name="tv_app_name" type="id">tv_app_name</item>
     <item name="tv_item_app_name" type="id">tv_item_app_name</item>
     <item name="settings_item_touch_detail" type="id">settings_item_touch_detail</item>
+    <item name="test" type="id">test</item>
+    <item name="containerAppsMenuDetailBack" type="id">containerAppsMenuDetailBack</item>
+    <item name="container_ball_menu_detail_apps" type="id">container_ball_menu_detail_apps</item>
+    <item name="container_ball_menu_detail_short_cut" type="id">
+        container_ball_menu_detail_short_cut
+    </item>
 </resources>

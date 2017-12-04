@@ -37,6 +37,10 @@ public class Configs {
     public static final String KEY_TOUCH_UI_DIRECTION = "key_touch_ui_direction";
 
 
+    public static final String KEY_BALL_MENU_SHORT_CUT_APPS_="key_ball_menu_short_cut_apps_";
+    public static final String KEY_BALL_MENU_RECENT_APPS_="key_ball_menu_recent_apps_";
+
+
     //自定义
     public static final int DEFAULT_TOUCH_WIDTH = 15;
     public static final int DEFAULT_TOUCH_HEIGHT = 240;
