@@ -11,6 +11,7 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.media.AudioManager;
@@ -19,6 +20,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -36,11 +38,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.skkk.easytouch.Bean.AppInfoBean;
+import com.skkk.easytouch.AppSelectActivity;
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
 import com.skkk.easytouch.Utils.IntentUtils;
+import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 
 import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_LEFT;
@@ -112,7 +115,8 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     private AudioManager audioManager;
     private LinearLayout containerMenuDetailPay;
     private LinearLayout containerMenuDetailApps;
-    private RelativeLayout containerAppsMenuDetailBack;
+    private LinearLayout containerMenuDetailAppsTop;
+    private RelativeLayout containerMenuDetailAppsBack;
 
     private ImageView ivAlipayScan;
     private ImageView ivAlipayPay;
@@ -120,6 +124,11 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     private ImageView ivMenuDetailBack;
     private RelativeLayout containerMenuDetailBack;
     private ObjectAnimator hideMenuDetailAnim;
+    private LinearLayout containerMenuDetailAppsBottom;
+    private final int HIDE_MENU_DETAIL_FAST = 100;
+    private final int HIDE_MENU_DETAIL_SLOW = 200;
+    private ObjectAnimator touchBallScaleXAnim;
+    private ObjectAnimator touchBallScaleYAnim;
 
 
     @Override
@@ -260,10 +269,13 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         ivWeixinScan = (ImageView) menuDetailView.findViewById(R.id.iv_scan_weixin);
 
         containerMenuDetailApps = (LinearLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_apps);
-        containerAppsMenuDetailBack = (RelativeLayout) menuDetailView.findViewById(R.id.containerAppsMenuDetailBack);
-
         ivMenuDetailBack = (ImageView) menuDetailView.findViewById(R.id.iv_menu_detail_back);
+
+        containerMenuDetailAppsBack = (RelativeLayout) menuDetailView.findViewById(R.id.containerAppsMenuDetailBack);
         containerMenuDetailBack = (RelativeLayout) menuDetailView.findViewById(R.id.containerMenuDetailBack);
+
+        containerMenuDetailAppsTop = (LinearLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_app_top);
+        containerMenuDetailAppsBottom = (LinearLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_app_bottom);
 
         llMenuContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -280,7 +292,14 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
      */
     private void initTouchUI() {
         initEvent();
-        windowManager.updateViewLayout(touchView, mParams);
+        //如果二级菜单打开
+        if (isMenuDetailShow) {
+            windowManager.updateViewLayout(menuDetailView, mMenuDetailParams);
+        } else if (isMenuShow) {//如果一级菜单打开
+            windowManager.updateViewLayout(menuView, mMenuParams);
+        } else {//如果没有菜单打开
+            windowManager.updateViewLayout(touchView, mParams);
+        }
     }
 
 
@@ -291,12 +310,75 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         initTouchBallEvent();
         initMenuEvent();
         initMenuDetailVoiceEvent();
+        initMneuDetailPayEvent();
+        initMenuDetailAppEvent();
+    }
+
+    private void initMneuDetailPayEvent() {
+        /*
+        * 设置支付事件监听
+        * */
+        containerMenuDetailPay.post(new Runnable() {
+            @Override
+            public void run() {
+
+                containerMenuDetailBack.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                            @Override
+                            public void onAnimEnd() {
+                                hideMenuDetailContainer();
+                            }
+                        }, false);
+                    }
+                });
+            }
+        });
+        ivAlipayScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtils.toAliPayScan(getApplicationContext());
+            }
+        });
+
+        ivAlipayPay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtils.toAliPayCode(getApplicationContext());
+            }
+        });
+
+        ivWeixinScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtils.toWeChatScanDirect(getApplicationContext());
+            }
+        });
+
+
     }
 
     /**
      * 设置声音设置详情菜单事件
      */
     private void initMenuDetailVoiceEvent() {
+        containerMenuDetailVoice.post(new Runnable() {
+            @Override
+            public void run() {
+                containerMenuDetailBack.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                            @Override
+                            public void onAnimEnd() {
+                                hideMenuDetailContainer();
+                            }
+                        }, true);
+                    }
+                });
+            }
+        });
         //设置静音模式切换监听
         switchMode.post(new Runnable() {
             @Override
@@ -407,84 +489,117 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
             }
         });
 
-        /*
-        * 设置支付事件监听
-        * */
-        ivAlipayScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IntentUtils.toAliPayScan(getApplicationContext());
-            }
-        });
 
-        ivAlipayPay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IntentUtils.toAliPayCode(getApplicationContext());
-            }
-        });
-
-        ivWeixinScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IntentUtils.toWeChatScanDirect(getApplicationContext());
-            }
-        });
-
-        containerMenuDetailBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideMenuDetailEnterAnim(menuDetailView, new Configs.OnAnimEndListener() {
-                    @Override
-                    public void onAnimEnd() {
-                        hideMenuDetailContainer();
-                    }
-                }, false);
-            }
-        });
-
-        containerAppsMenuDetailBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideMenuDetailEnterAnim(menuDetailView, new Configs.OnAnimEndListener() {
-                    @Override
-                    public void onAnimEnd() {
-                        hideMenuDetailContainer();
-                    }
-                }, true);
-            }
-        });
-
-        initMenuAppDetailsEvent();
     }
 
     /**
      * 设置APP点击事件
      */
-    private void initMenuAppDetailsEvent() {
-        String shortCut1Str = SpUtils.getString(getApplicationContext(), Configs.KEY_BALL_MENU_SHORT_CUT_APPS_ + 1, "");
-        String shortCut2Str = SpUtils.getString(getApplicationContext(), Configs.KEY_BALL_MENU_SHORT_CUT_APPS_ + 2, "");
-        String shortCut3Str = SpUtils.getString(getApplicationContext(), Configs.KEY_BALL_MENU_SHORT_CUT_APPS_ + 3, "");
-        String shortCut4Str = SpUtils.getString(getApplicationContext(), Configs.KEY_BALL_MENU_SHORT_CUT_APPS_ + 4, "");
-        String shortCut5Str = SpUtils.getString(getApplicationContext(), Configs.KEY_BALL_MENU_SHORT_CUT_APPS_ + 5, "");
-        if (!shortCut1Str.isEmpty()){
-            AppInfoBean models = new Gson().fromJson(shortCut1Str, AppInfoBean.class);
+    private void initMenuDetailAppEvent() {
+        containerMenuDetailApps.post(new Runnable() {
+            @Override
+            public void run() {
+                containerMenuDetailAppsBack.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                            @Override
+                            public void onAnimEnd() {
+                                hideMenuDetailContainer();
+                            }
+                        }, true);
+                    }
+                });
+            }
+        });
+        for (int i = 0; i <= 4; i++) {
+            ImageView ivApp = (ImageView) containerMenuDetailAppsTop.getChildAt(i);
+            String shortCutStr = SpUtils.getString(getApplicationContext(), Configs.KEY_BALL_MENU_TOP_APPS_ + i, "");
+            final int finalIndex = i;
+            if (TextUtils.isEmpty(shortCutStr)) {
+                ivApp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue());
+                    }
+                });
 
+            } else {
+                final ResolveInfo appInfo = new Gson().fromJson(shortCutStr, ResolveInfo.class);
+                if (appInfo != null) {
+                    ivApp.setImageDrawable(PackageUtils.getInstance(getApplicationContext()).getShortCutIcon(appInfo));
+                    ivApp.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_FAST, new Configs.OnAnimEndListener() {
+                                @Override
+                                public void onAnimEnd() {
+                                    hideMenuDetailContainer();
+                                }
+                            }, false);
+                            PackageUtils.getInstance(getApplicationContext()).startAppActivity(appInfo);
+                        }
+                    });
+                    ivApp.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue());
+                            return true;
+                        }
+                    });
+                }
+            }
+        }
+
+        for (int i = 0; i <= 4; i++) {
+            ImageView ivApp = (ImageView) containerMenuDetailAppsBottom.getChildAt(i);
+            String shortCutStr = SpUtils.getString(getApplicationContext(), Configs.KEY_BALL_MENU_BOTTOM_APPS_ + i, "");
+            final int finalIndex = i;
+            if (TextUtils.isEmpty(shortCutStr)) {
+                ivApp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startSelectAppActivity(finalIndex, Configs.AppType.SHORTCUT.getValue());
+                    }
+                });
+            } else {
+                final ResolveInfo appInfo = new Gson().fromJson(shortCutStr, ResolveInfo.class);
+                if (appInfo != null) {
+                    ivApp.setImageDrawable(PackageUtils.getInstance(getApplicationContext()).getShortCutIcon(appInfo));
+                    ivApp.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_FAST, new Configs.OnAnimEndListener() {
+                                @Override
+                                public void onAnimEnd() {
+                                    hideMenuDetailContainer();
+                                }
+                            }, false);
+                            PackageUtils.getInstance(getApplicationContext()).startAppActivity(appInfo);
+                        }
+                    });
+                    ivApp.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            startSelectAppActivity(finalIndex, Configs.AppType.SHORTCUT.getValue());
+                            return true;
+                        }
+                    });
+                }
+            }
         }
     }
 
-    private void hideMenuDetailContainer() {
-        menuDetailView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (isMenuDetailShow) {
-                    windowManager.removeView(menuDetailView);
-                    windowManager.addView(touchView, mParams);
-                    isMenuDetailShow = false;
-                }
-            }
-        });
+    private void startSelectAppActivity(int finalIndex, int value) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(getApplicationContext(), AppSelectActivity.class);
+        intent.putExtra(Configs.KEY_APP_TYPE, value);
+        intent.putExtra(Configs.KEY_BALL_MENU_SELECT_APP_INDEX, finalIndex);
+        startActivity(intent);
     }
+
+
 
     /**
      * 设置悬浮球事件
@@ -537,7 +652,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
                 if (!isMenuShow) {
                     vibrator.vibrate(vibrateLevel);
                     showTouchBall();
-                    recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
+                    monitorSystemAction(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
                 }
                 return false;
             }
@@ -549,7 +664,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
                     showTouchBall();
                     refreshMovePlace(e2);
                     if (isMenuShow) {
-                        isMenuShow=false;
+                        isMenuShow = false;
                         hideMenuContainer(Configs.Position.NONE, null);
                     }
                 }
@@ -570,30 +685,25 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
                     if (!canMove) {//右划
                         //震动30毫秒
                         vibrator.vibrate(vibrateLevel);
-                        recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_RECENTS);
+                        monitorSystemAction(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_RECENTS);
                     }
                 } else if (e1.getX() - e2.getX() > 10 && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 2)) {
                     if (!canMove) {//左滑
                         //震动30毫秒
                         vibrator.vibrate(vibrateLevel);
-                        recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_HOME);
+                        monitorSystemAction(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_HOME);
                     }
                 } else if (e1.getY() - e2.getY() > 10 && Math.abs(e1.getY() - e2.getY()) > (Math.abs(e1.getX() - e2.getX()) * 2)) {
                     //上滑
                     if (!canMove) {
-                        //震动30毫秒
-                        if (mDPM.isAdminActive(mAdminName)) {
-                            //震动30毫秒
-                            vibrator.vibrate(vibrateLevel);
-                            mDPM.lockNow();
-                        }
+                        jump2LastApp();
                     }
                 } else if (e2.getY() - e1.getY() > 10 && Math.abs(e1.getY() - e2.getY()) > (Math.abs(e1.getX() - e2.getX()) * 2)) {
                     //下滑
                     if (!canMove) {
                         //震动30毫秒
                         vibrator.vibrate(vibrateLevel);
-                        recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
+                        monitorSystemAction(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
                     }
                 }
 
@@ -603,6 +713,17 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         });
 
         ballDetector.setIsLongpressEnabled(false);
+
+    }
+
+    private void jump2LastApp() {
+        monitorSystemAction(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_RECENTS);
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        monitorSystemAction(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_RECENTS);
     }
 
     /**
@@ -666,14 +787,17 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     private void showMenuDetailVoice() {
         mMenuDetailParams.x = mParams.x;
         mMenuDetailParams.y = mParams.y - dp2px(80);
-        containerMenuDetailVoice.setVisibility(View.VISIBLE);
-        containerMenuDetailApps.setVisibility(View.GONE);
-        containerMenuDetailPay.setVisibility(View.GONE);
+
         windowManager.addView(menuDetailView, mMenuDetailParams);
-        containerMenuDetailVoice.post(new Runnable() {
+        menuDetailView.post(new Runnable() {
             @Override
             public void run() {
                 //显示二级菜单
+                containerMenuDetailVoice.setVisibility(View.VISIBLE);
+                containerMenuDetailApps.setVisibility(View.GONE);
+                containerMenuDetailPay.setVisibility(View.GONE);
+                containerMenuDetailBack.setVisibility(View.VISIBLE);
+                containerMenuDetailAppsBack.setVisibility(View.GONE);
                 enterMenuDetailAnim(menuDetailView);
                 isMenuDetailShow = true;
             }
@@ -694,7 +818,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
      *
      * @param containerMenuDetail
      */
-    private void hideMenuDetailEnterAnim(View containerMenuDetail, final Configs.OnAnimEndListener onAnimEndListener, boolean isAppsMenu) {
+    private void hideMenuDetailEnterAnim(View containerMenuDetail, int duration, final Configs.OnAnimEndListener onAnimEndListener, boolean isAppsMenu) {
         int transX = dp2px(-200f);
         if (isAppsMenu) {
             transX = dp2px(-300f);
@@ -709,6 +833,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
                 }
             }
         });
+        hideMenuDetailAnim.setDuration(duration);
         hideMenuDetailAnim.start();
     }
 
@@ -718,14 +843,17 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     private void showMenuDetailPay() {
         mMenuDetailParams.x = mParams.x;
         mMenuDetailParams.y = mParams.y - dp2px(80);
-        containerMenuDetailVoice.setVisibility(View.GONE);
-        containerMenuDetailApps.setVisibility(View.GONE);
-        containerMenuDetailPay.setVisibility(View.VISIBLE);
+
         windowManager.addView(menuDetailView, mMenuDetailParams);
-        containerMenuDetailVoice.post(new Runnable() {
+        containerMenuDetailPay.post(new Runnable() {
             @Override
             public void run() {
                 //显示二级菜单
+                containerMenuDetailVoice.setVisibility(View.GONE);
+                containerMenuDetailApps.setVisibility(View.GONE);
+                containerMenuDetailPay.setVisibility(View.VISIBLE);
+                containerMenuDetailBack.setVisibility(View.VISIBLE);
+                containerMenuDetailAppsBack.setVisibility(View.GONE);
                 enterMenuDetailAnim(menuDetailView);
                 isMenuDetailShow = true;
             }
@@ -738,14 +866,17 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     private void showMenuDetailApp() {
         mMenuDetailParams.x = mParams.x;
         mMenuDetailParams.y = mParams.y - dp2px(80);
-        containerMenuDetailVoice.setVisibility(View.GONE);
-        containerMenuDetailApps.setVisibility(View.VISIBLE);
-        containerMenuDetailPay.setVisibility(View.GONE);
+
         windowManager.addView(menuDetailView, mMenuDetailParams);
-        containerMenuDetailVoice.post(new Runnable() {
+        containerMenuDetailApps.post(new Runnable() {
             @Override
             public void run() {
                 //显示二级菜单
+                containerMenuDetailVoice.setVisibility(View.GONE);
+                containerMenuDetailApps.setVisibility(View.VISIBLE);
+                containerMenuDetailPay.setVisibility(View.GONE);
+                containerMenuDetailBack.setVisibility(View.GONE);
+                containerMenuDetailAppsBack.setVisibility(View.VISIBLE);
                 enterMenuDetailAnim(menuDetailView);
                 isMenuDetailShow = true;
             }
@@ -962,15 +1093,10 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
      * @param e2
      */
     private void refreshMovePlace(MotionEvent e2) {
-//        dx = e2.getRawX() - lastX;
         dy = e2.getRawY() - lastY;
         mParams.y += dy;
-//        mParams.x += dx;
         mMenuParams.y += dy;
-//        mMenuParams.x += dx;
         windowManager.updateViewLayout(touchView, mParams);
-//        windowManager.updateViewLayout(menuView, mMenuParams);
-//        lastX = e2.getRawX();
         lastY = e2.getRawY();
     }
 
@@ -981,13 +1107,34 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        llTouchContainer.post(new Runnable() {
-            @Override
-            public void run() {
-                initTouchUI();
-            }
-        });
-        windowManager.updateViewLayout(touchView, mParams);
+
+        //如果二级菜单打开
+        if (isMenuDetailShow) {
+            containerMenuDetailApps.post(new Runnable() {
+                @Override
+                public void run() {
+                    initTouchUI();
+                }
+            });
+            windowManager.updateViewLayout(menuDetailView, mMenuDetailParams);
+        } else if (isMenuShow) {//如果一级菜单打开
+            menuContainer.post(new Runnable() {
+                @Override
+                public void run() {
+                    initTouchUI();
+                }
+            });
+            windowManager.updateViewLayout(menuView, mMenuParams);
+        } else {//如果没有菜单打开
+            llTouchContainer.post(new Runnable() {
+                @Override
+                public void run() {
+                    initTouchUI();
+                }
+            });
+            windowManager.updateViewLayout(touchView, mParams);
+        }
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -1001,7 +1148,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
      *
      * @param service
      */
-    public static void recentApps(AccessibilityService service, int action) {
+    public static void monitorSystemAction(AccessibilityService service, int action) {
         if (Build.VERSION.SDK_INT < 16) {
             Toast.makeText(service, "Android 4.1及以上系统才支持此功能，请升级后重试", Toast.LENGTH_SHORT).show();
         } else {
@@ -1009,6 +1156,11 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         }
     }
 
+    /**
+     * 工具 dip 2 px
+     * @param dp
+     * @return
+     */
     private int dp2px(float dp) {
         final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.1f);
@@ -1024,6 +1176,9 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         return ballDetector.onTouchEvent(e);
     }
 
+    /**
+     * 如果悬浮球被拖拽到非屏幕边缘 那么放手的时候会有一个回弹的动画 现在未使用
+     */
     private void showAcionUpAnim() {
         float startF = 0f;
         float endF = 0f;
@@ -1063,6 +1218,42 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         valueAnim.setInterpolator(new BounceInterpolator());
         valueAnim.setDuration(500);
         valueAnim.start();
+    }
+
+    /**
+     * 展示悬浮球的显示动画
+     * @param view 对象
+     * @param duration  动画持续时间
+     * @param startDelay 动画延迟时间
+     */
+    private void showTouchBallEnterAnim(View view, int duration, int startDelay) {
+        touchBallScaleXAnim = ObjectAnimator.ofFloat(view, "scaleX", 0, 1f);
+        touchBallScaleYAnim = ObjectAnimator.ofFloat(view, "scaleY", 0, 1f);
+        AnimatorSet ballAnimSet = new AnimatorSet();
+        ballAnimSet.play(touchBallScaleXAnim).with(touchBallScaleYAnim);
+        ballAnimSet.setDuration(duration);
+        ballAnimSet.setStartDelay(startDelay);
+        ballAnimSet.start();
+    }
+
+    /**
+     * 隐藏二级菜单显示悬浮球
+     */
+    private void hideMenuDetailContainer() {
+        menuDetailView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isMenuDetailShow) {
+                    //移除二级菜单
+                    windowManager.removeView(menuDetailView);
+                    //加入悬浮球
+                    windowManager.addView(touchView, mParams);
+                    //显示悬浮球加入动画
+                    showTouchBallEnterAnim(ivTouchBall,HIDE_MENU_DETAIL_FAST,0);
+                    isMenuDetailShow = false;
+                }
+            }
+        });
     }
 
     @Override

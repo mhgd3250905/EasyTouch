@@ -18,7 +18,10 @@ public class AppSelectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_app_select);
         ButterKnife.bind(this);
 
-        AppFragment appFragment = AppFragment.newInstance("", "");
+        int appIndex=getIntent().getIntExtra(Configs.KEY_BALL_MENU_SELECT_APP_INDEX,0);
+        int appType=getIntent().getIntExtra(Configs.KEY_APP_TYPE,0);
+
+        AppFragment appFragment = AppFragment.newInstance(appIndex, appType);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fl_app_select, appFragment)
                 .commit();

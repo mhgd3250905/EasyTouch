@@ -161,9 +161,9 @@
         android:layout_centerVertical="true"
         android:background="@drawable/shape_react_corners_top_menu_bg"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
         <LinearLayout
-            android:id="@id/container_ball_menu_detail_short_cut"
+            android:id="@id/container_ball_menu_detail_app_top"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -200,6 +200,7 @@
                 android:src="@drawable/ic_add_white_48dp" />
         </LinearLayout>
         <LinearLayout
+            android:id="@id/container_ball_menu_detail_app_bottom"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -239,6 +240,7 @@
 
 
     <RelativeLayout
+        android:visibility="gone"
         android:id="@id/containerAppsMenuDetailBack"
         android:layout_width="20dp"
         android:layout_height="200dp"

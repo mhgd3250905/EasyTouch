@@ -2,6 +2,7 @@ package com.skkk.easytouch.View;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
@@ -19,6 +20,11 @@ import java.util.List;
 public abstract class BaseAdapter<T,V extends BaseViewHolder> extends RecyclerView.Adapter<V>{
     protected List<T> mDataList;
     protected Context context;
+    protected OnItemClickListener onItemClickListener;
+
+    public interface OnItemClickListener{
+        void onItemClick(View view, int pos);
+    }
 
     public BaseAdapter(Context context, List<T> mDataList) {
         this.context = context;
@@ -32,7 +38,15 @@ public abstract class BaseAdapter<T,V extends BaseViewHolder> extends RecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(V holder, int position) {
+    public void onBindViewHolder(final V holder, int position) {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onItemClickListener!=null){
+                    onItemClickListener.onItemClick(v,holder.getAdapterPosition());
+                }
+            }
+        });
         setViewHolder(holder,position);
     }
 
@@ -115,5 +129,9 @@ public abstract class BaseAdapter<T,V extends BaseViewHolder> extends RecyclerVi
 
     public void setmDataList(List<T> mDataList) {
         this.mDataList = mDataList;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 }

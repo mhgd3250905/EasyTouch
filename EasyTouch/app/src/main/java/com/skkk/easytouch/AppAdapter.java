@@ -1,11 +1,13 @@
 package com.skkk.easytouch;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.skkk.easytouch.Bean.AppInfoBean;
+import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.View.BaseAdapter;
 
 import java.util.List;
@@ -20,9 +22,9 @@ import java.util.List;
 * 作    者：ksheng
 * 时    间：2017/12/3$ 23:32$.
 */
-public class AppAdapter extends BaseAdapter<AppInfoBean,AppViewHolder> {
+public class AppAdapter extends BaseAdapter<ResolveInfo,AppViewHolder> {
 
-    public AppAdapter(Context context, List<AppInfoBean> mDataList) {
+    public AppAdapter(Context context, List<ResolveInfo> mDataList) {
         super(context, mDataList);
     }
 
@@ -33,11 +35,20 @@ public class AppAdapter extends BaseAdapter<AppInfoBean,AppViewHolder> {
 
     @Override
     protected void setViewHolder(AppViewHolder holder, int position) {
-        AppInfoBean bean = mDataList.get(position);
-        if (bean.getIcon()!=null) {
-            holder.ivItemIcon.setImageDrawable(bean.getIcon());
-        }
-        holder.tvItemAppName.setText(bean.getAppName());
+        PackageManager packageManager=context.getPackageManager();
+        ResolveInfo bean = mDataList.get(position);
+        holder.ivItemIcon.setImageDrawable(PackageUtils.getInstance(context).getShortCutIcon(bean));
+//        // 拿到包名
+//        String pkg = info.activityInfo.packageName;
+//// 拿到运行的Cls名
+//        String cls = info.activityInfo.name;
+//// 拿到应用程序的信息
+//        ApplicationInfo appInfo = info.activityInfo.applicationInfo;
+//// 拿到应用程序的图标
+//        Drawable icon = getAppIcon(info);
+//// 拿到应用名
+//        String appName=info.loadLabel(packageManager).toString();
+        holder.tvItemAppName.setText(bean.loadLabel(packageManager).toString());
         holder.ivItemAppAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

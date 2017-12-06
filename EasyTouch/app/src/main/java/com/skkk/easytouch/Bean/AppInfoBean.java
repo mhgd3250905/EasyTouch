@@ -1,7 +1,5 @@
 package com.skkk.easytouch.Bean;
 
-import android.graphics.drawable.Drawable;
-
 /**
  * 创建于 2017/12/3
  * 作者 admin
@@ -16,15 +14,10 @@ public class AppInfoBean {
     private String pkgName;
     private String appName;
     private String className;
-    private Drawable icon;
+    private String activityName;
+    private int flag;
+    private String shortCutName;
 
-    public Drawable getIcon() {
-        return icon;
-    }
-
-    public void setIcon(Drawable icon) {
-        this.icon = icon;
-    }
 
     public String getPkgName() {
         return pkgName;
@@ -48,5 +41,29 @@ public class AppInfoBean {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public String getActivityName() {
+        return activityName;
+    }
+
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
+
+    public int getFlag() {
+        return flag;
+    }
+
+    public void setFlag(int flag) {
+        this.flag = flag;
+    }
+
+    public String getShortCutName() {
+        return shortCutName;
+    }
+
+    public void setShortCutName(String shortCutName) {
+        this.shortCutName = shortCutName;
     }
 }

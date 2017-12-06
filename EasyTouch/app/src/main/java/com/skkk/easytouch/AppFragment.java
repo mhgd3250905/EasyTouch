@@ -1,6 +1,8 @@
 package com.skkk.easytouch;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,23 +12,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+import com.skkk.easytouch.Services.EasyTouchBallService;
 import com.skkk.easytouch.Utils.PackageUtils;
+import com.skkk.easytouch.Utils.SpUtils;
+import com.skkk.easytouch.View.BaseAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
 public class AppFragment extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String APP_INDEX = "app_index";
+    private static final String APP_TYPE = "app_type";
     @Bind(R.id.rv_apps)
     RecyclerView rvApps;
 
     private AppAdapter adapter;
     private LinearLayoutManager layoutManager;
 
-    private String mParam1;
-    private String mParam2;
+    private int appIndex;
+    private int appType;
+    private List<ResolveInfo> allApps;
 
 
     public AppFragment() {
@@ -34,9 +44,11 @@ public class AppFragment extends Fragment {
     }
 
 
-    public static AppFragment newInstance(String param1, String param2) {
+    public static AppFragment newInstance(int appIndex, int appType) {
         AppFragment fragment = new AppFragment();
         Bundle args = new Bundle();
+        args.putInt(APP_INDEX, appIndex);
+        args.putInt(APP_TYPE, appType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,8 +57,8 @@ public class AppFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            appIndex = getArguments().getInt(APP_INDEX);
+            appType = getArguments().getInt(APP_TYPE);
         }
     }
 
@@ -62,10 +74,34 @@ public class AppFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapter=new AppAdapter(getContext(), PackageUtils.getInstance(getContext().getApplicationContext()).getAllApps());
-        layoutManager=new LinearLayoutManager(getContext());
+        allApps = new ArrayList<>();
+        if (appType == Configs.AppType.APP.getValue()) {
+            allApps = PackageUtils.getInstance(getContext().getApplicationContext()).getAllApps();
+        } else if (appType == Configs.AppType.SHORTCUT.getValue()) {
+            allApps = PackageUtils.getInstance(getContext().getApplicationContext()).getAllShortCuts();
+        }
+        adapter = new AppAdapter(getContext(), allApps);
+        layoutManager = new LinearLayoutManager(getContext());
         rvApps.setAdapter(adapter);
         rvApps.setLayoutManager(layoutManager);
+        initEvent();
+    }
+
+    private void initEvent() {
+        adapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int pos) {
+                ResolveInfo appInfoBean = adapter.getmDataList().get(pos);
+                String appInfoJson = new Gson().toJson(appInfoBean);
+                if (appType == Configs.AppType.APP.getValue()) {
+                    SpUtils.saveString(getContext(), Configs.KEY_BALL_MENU_TOP_APPS_ + appIndex, appInfoJson);
+                } else if (appType == Configs.AppType.SHORTCUT.getValue()) {
+                    SpUtils.saveString(getContext(), Configs.KEY_BALL_MENU_BOTTOM_APPS_ + appIndex, appInfoJson);
+                }
+                getActivity().startService(new Intent(getActivity(), EasyTouchBallService.class));
+                getActivity().finish();
+            }
+        });
     }
 
     @Override

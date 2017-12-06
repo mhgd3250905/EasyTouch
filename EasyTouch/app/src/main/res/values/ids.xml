@@ -52,4 +52,9 @@
     <item name="container_ball_menu_detail_short_cut" type="id">
         container_ball_menu_detail_short_cut
     </item>
+    <item name="container_ball_menu_detail_app_top" type="id">container_ball_menu_detail_app_top
+    </item>
+    <item name="container_ball_menu_detail_app_bottom" type="id">
+        container_ball_menu_detail_app_bottom
+    </item>
 </resources>
