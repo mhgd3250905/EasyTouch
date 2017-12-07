@@ -12,6 +12,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.media.AudioManager;
@@ -284,7 +285,52 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
             }
         });
 
+
         windowManager.addView(touchView, mParams);
+    }
+
+    /**
+     * 根据横竖屏幕切换悬浮球对应的位置
+     * @param newConfig
+     */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        try {
+            if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                //横屏
+                // 1.获取当前的位置
+                if (isMenuDetailShow){
+                    mMenuDetailParams.y=mMenuDetailParams.y*screenWidth/screenHeight;
+                    windowManager.updateViewLayout(menuDetailView,mMenuDetailParams);
+                }else if (isMenuShow){
+                    mMenuParams.y=mMenuParams.y*screenWidth/screenHeight;
+                    windowManager.updateViewLayout(menuView,mMenuParams);
+                }else {
+
+
+                    mParams.y=mParams.y*screenWidth/screenHeight;
+                    windowManager.updateViewLayout(touchView,mParams);
+                }
+
+            } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                //竖屏
+                if (isMenuDetailShow){
+                    mMenuDetailParams.y=mMenuDetailParams.y*screenHeight/screenWidth;
+                    windowManager.updateViewLayout(menuDetailView,mMenuDetailParams);
+                }else if (isMenuShow){
+                    mMenuParams.y=mMenuParams.y*screenHeight/screenWidth;
+                    windowManager.updateViewLayout(menuView,mMenuParams);
+                }else {
+                    mParams.y=mParams.y*screenHeight/screenWidth;
+                    windowManager.updateViewLayout(touchView,mParams);
+                }
+
+            }
+        } catch (Exception ex) {
+
+        }
+
     }
 
     /**
