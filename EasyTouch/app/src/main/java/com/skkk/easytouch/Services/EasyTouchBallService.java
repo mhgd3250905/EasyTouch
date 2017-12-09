@@ -95,7 +95,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     private boolean isMenuDetailShow = false;
     private View menuView;
     private View menuDetailView;
-    private ImageView ivMenuBall1, ivMenuBall2, ivMenuBall3;
+    private ImageView ivMenuBall1, ivMenuBall2, ivMenuBall3, ivMenuBall4;
     private ObjectAnimator transXAnimShow;
     private ObjectAnimator transXAnimHide;
     private ObjectAnimator transYAnimShow;
@@ -251,6 +251,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         ivMenuBall1 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_1);
         ivMenuBall2 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_2);
         ivMenuBall3 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_3);
+        ivMenuBall4 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_4);
 
         menuDetailView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball_menu_detail, null);
 
@@ -291,6 +292,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
 
     /**
      * 根据横竖屏幕切换悬浮球对应的位置
+     *
      * @param newConfig
      */
     @Override
@@ -300,30 +302,30 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
             if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 //横屏
                 // 1.获取当前的位置
-                if (isMenuDetailShow){
-                    mMenuDetailParams.y=mMenuDetailParams.y*screenWidth/screenHeight;
-                    windowManager.updateViewLayout(menuDetailView,mMenuDetailParams);
-                }else if (isMenuShow){
-                    mMenuParams.y=mMenuParams.y*screenWidth/screenHeight;
-                    windowManager.updateViewLayout(menuView,mMenuParams);
-                }else {
+                if (isMenuDetailShow) {
+                    mMenuDetailParams.y = mMenuDetailParams.y * screenWidth / screenHeight;
+                    windowManager.updateViewLayout(menuDetailView, mMenuDetailParams);
+                } else if (isMenuShow) {
+                    mMenuParams.y = mMenuParams.y * screenWidth / screenHeight;
+                    windowManager.updateViewLayout(menuView, mMenuParams);
+                } else {
 
 
-                    mParams.y=mParams.y*screenWidth/screenHeight;
-                    windowManager.updateViewLayout(touchView,mParams);
+                    mParams.y = mParams.y * screenWidth / screenHeight;
+                    windowManager.updateViewLayout(touchView, mParams);
                 }
 
             } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 //竖屏
-                if (isMenuDetailShow){
-                    mMenuDetailParams.y=mMenuDetailParams.y*screenHeight/screenWidth;
-                    windowManager.updateViewLayout(menuDetailView,mMenuDetailParams);
-                }else if (isMenuShow){
-                    mMenuParams.y=mMenuParams.y*screenHeight/screenWidth;
-                    windowManager.updateViewLayout(menuView,mMenuParams);
-                }else {
-                    mParams.y=mParams.y*screenHeight/screenWidth;
-                    windowManager.updateViewLayout(touchView,mParams);
+                if (isMenuDetailShow) {
+                    mMenuDetailParams.y = mMenuDetailParams.y * screenHeight / screenWidth;
+                    windowManager.updateViewLayout(menuDetailView, mMenuDetailParams);
+                } else if (isMenuShow) {
+                    mMenuParams.y = mMenuParams.y * screenHeight / screenWidth;
+                    windowManager.updateViewLayout(menuView, mMenuParams);
+                } else {
+                    mParams.y = mParams.y * screenHeight / screenWidth;
+                    windowManager.updateViewLayout(touchView, mParams);
                 }
 
             }
@@ -646,7 +648,6 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     }
 
 
-
     /**
      * 设置悬浮球事件
      */
@@ -711,7 +712,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
                     refreshMovePlace(e2);
                     if (isMenuShow) {
                         isMenuShow = false;
-                        hideMenuContainer(Configs.Position.NONE, null);
+                        hideMenuContainer(-1, null);
                     }
                 }
 
@@ -779,7 +780,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         menuContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                hideMenuContainer(Configs.Position.NONE, null);
+                hideMenuContainer(-1, null);
                 return false;
             }
         });
@@ -787,7 +788,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         ivMenuBall1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideMenuContainer(Configs.Position.TOP, new Configs.OnAnimEndListener() {
+                hideMenuContainer(0, new Configs.OnAnimEndListener() {
                     @Override
                     public void onAnimEnd() {
                         if (!isMenuDetailShow) {
@@ -801,7 +802,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         ivMenuBall2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideMenuContainer(Configs.Position.MID, new Configs.OnAnimEndListener() {
+                hideMenuContainer(1, new Configs.OnAnimEndListener() {
                     @Override
                     public void onAnimEnd() {
                         if (!isMenuDetailShow) {
@@ -815,11 +816,29 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         ivMenuBall3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideMenuContainer(Configs.Position.BOTTOM, new Configs.OnAnimEndListener() {
+                hideMenuContainer(3, new Configs.OnAnimEndListener() {
                     @Override
                     public void onAnimEnd() {
                         if (!isMenuDetailShow) {
                             showMenuDetailPay();
+                        }
+                    }
+                });
+            }
+        });
+
+        ivMenuBall4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideMenuContainer(-1, new Configs.OnAnimEndListener() {
+                    @Override
+                    public void onAnimEnd() {
+                        if (!isMenuDetailShow) {
+                            if (mDPM.isAdminActive(mAdminName)) {
+                                //震动30毫秒
+                                vibrator.vibrate(vibrateLevel);
+                                mDPM.lockNow();
+                            }
                         }
                     }
                 });
@@ -941,9 +960,10 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         menuView.post(new Runnable() {
             @Override
             public void run() {
-                shouMenuBallAnim(ivMenuBall1, Configs.Position.TOP);
-                shouMenuBallAnim(ivMenuBall2, Configs.Position.MID);
-                shouMenuBallAnim(ivMenuBall3, Configs.Position.BOTTOM);
+                shouMenuBallAnim(ivMenuBall1, 0);
+                shouMenuBallAnim(ivMenuBall2, 1);
+                shouMenuBallAnim(ivMenuBall3, 2);
+                shouMenuBallAnim(ivMenuBall4, 3);
             }
         });
     }
@@ -952,35 +972,22 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
      * 针对不同的位置的菜单按钮进行不同的动画弹出方式
      *
      * @param view
-     * @param position
+     * @param index
      */
-    private void shouMenuBallAnim(View view, Configs.Position position) {
+    private void shouMenuBallAnim(View view, int index) {
         ballMenuAnimSet = new AnimatorSet();
         int transXFrom = 0;
         int transYFrom = 0;
         int transXTo = 0;
         int transYTo = 0;
-        switch (position) {
-            case TOP://上方菜单按钮
-                transXFrom = 0;
-                transYFrom = 0;
-                transXTo = dp2px((float) (100 * Math.cos(Math.PI / 4)));
-                transYTo = dp2px((float) (100 * Math.sin(-Math.PI / 4)));
 
-                break;
-            case MID://中部菜单按钮
-                transXFrom = 0;
-                transYFrom = 0;
-                transXTo = dp2px((float) (100 * Math.cos(0)));
-                transYTo = dp2px((float) (100 * Math.sin(0)));
-                break;
-            case BOTTOM://下方菜单按钮
-                transXFrom = 0;
-                transYFrom = 0;
-                transXTo = dp2px((float) (100 * Math.cos(Math.PI / 4)));
-                transYTo = dp2px((float) (100 * Math.sin(Math.PI / 4)));
-                break;
-        }
+        int count = menuContainer.getChildCount();
+
+        transXFrom = 0;
+        transYFrom = 0;
+        double radius = -(Math.PI / 4) + index * (Math.PI / 2) / (count - 1);
+        transXTo = dp2px((float) (100 * Math.cos(radius)));
+        transYTo = dp2px((float) (100 * Math.sin(radius)));
 
         transXAnimShow = ObjectAnimator.ofFloat(view, "translationX", transXFrom, transXTo);
         transYAnimShow = ObjectAnimator.ofFloat(view, "translationY", transYFrom, transYTo);
@@ -994,16 +1001,17 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
     /**
      * 隐藏菜单
      */
-    private void hideMenuContainer(final Configs.Position selectPos, final Configs.OnAnimEndListener onAnimEndListener) {
+    private void hideMenuContainer(final int index, final Configs.OnAnimEndListener onAnimEndListener) {
         menuView.post(new Runnable() {
             @Override
             public void run() {
-                if (!selectPos.equals(Configs.Position.NONE)) {
-                    hideMenuBallAnim(ivTouchBall, Configs.Position.NONE, false, null);
+                if (index!=-1) {
+                    hideMenuBallAnim(ivTouchBall, -1, false, null);
                 }
-                hideMenuBallAnim(ivMenuBall1, Configs.Position.TOP, selectPos.equals(Configs.Position.TOP), null);
-                hideMenuBallAnim(ivMenuBall2, Configs.Position.MID, selectPos.equals(Configs.Position.MID), null);
-                hideMenuBallAnim(ivMenuBall3, Configs.Position.BOTTOM, selectPos.equals(Configs.Position.BOTTOM), onAnimEndListener);
+                hideMenuBallAnim(ivMenuBall1, 0, index==0, null);
+                hideMenuBallAnim(ivMenuBall2, 1, index==1, null);
+                hideMenuBallAnim(ivMenuBall3, 2, index==2, null);
+                hideMenuBallAnim(ivMenuBall4, 3, index==3, onAnimEndListener);
             }
         });
 
@@ -1013,9 +1021,9 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
      * 根据不同位置的菜单按钮进行动画执行
      *
      * @param view
-     * @param position
+     * @param index
      */
-    private void hideMenuBallAnim(final View view, Configs.Position position, boolean isSelected, final Configs.OnAnimEndListener onAnimEndListener) {
+    private void hideMenuBallAnim(final View view,int index, boolean isSelected, final Configs.OnAnimEndListener onAnimEndListener) {
 
         ballMenuAnimSet = new AnimatorSet();
         float transXFrom = 0;
@@ -1049,31 +1057,17 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
         menuBallScaleYAnim = ObjectAnimator.ofFloat(view, "scaleY", scaleYFrom, scaleYTo);
         menuBallAlphAnim = ObjectAnimator.ofFloat(view, "alpha", alphFrom, alphTo);
 
+        final int count = menuContainer.getChildCount();
 
-        switch (position) {
-            case TOP://上方菜单按钮
-                transXFrom = dp2px((float) (100 * Math.cos(Math.PI / 4)));
-                transYFrom = dp2px((float) (100 * Math.sin(-Math.PI / 4)));
-                transXTo = 0;
-                transYTo = 0;
+        transXTo = 0;
+        transYTo = 0;
 
-                break;
-            case MID://中部菜单按钮
-                transXFrom = dp2px((float) (100 * Math.cos(0)));
-                transYFrom = dp2px((float) (100 * Math.sin(0)));
-                transXTo = 0;
-                transYTo = 0;
-                break;
-            case BOTTOM://下方菜单按钮
-                transXFrom = dp2px((float) (100 * Math.cos(Math.PI / 4)));
-                transYFrom = dp2px((float) (100 * Math.sin(Math.PI / 4)));
-                transXTo = 0;
-                transYTo = 0;
-                break;
-        }
+        double radius = -(Math.PI / 4) + index * (Math.PI / 2) / (count - 1);
+        transXFrom = dp2px((float) (100 * Math.cos(radius)));
+        transYFrom = dp2px((float) (100 * Math.sin(radius)));
 
 
-        final Configs.Position curPos = position;
+        final int curIndex=index;
         ballMenuAnimSet.play(menuBallScaleXAnim).with(menuBallScaleYAnim).with(menuBallAlphAnim);
         ballMenuAnimSet.setDuration(200);
         final float finalTransXFrom = transXFrom;
@@ -1095,10 +1089,10 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
                 ObjectAnimator.ofFloat(view, "scaleY", finalScaleYTo, finalScaleYFrom).start();
                 ObjectAnimator.ofFloat(view, "alpha", finalAlphTo, finalAlphFrom).start();
 
-                if (!curPos.equals(Configs.Position.NONE)) {
+                if (curIndex!=-1) {
                     ObjectAnimator.ofFloat(view, "translationX", finalTransXFrom, finalTransXTo).start();
                     ObjectAnimator.ofFloat(view, "translationY", finalTransYFrom, finalTransYTo).start();
-                    if (curPos.equals(Configs.Position.BOTTOM)) {
+                    if (curIndex==(count-1)) {
                         windowManager.removeView(menuView);
                         isMenuShow = false;
                     }
@@ -1204,6 +1198,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
 
     /**
      * 工具 dip 2 px
+     *
      * @param dp
      * @return
      */
@@ -1268,8 +1263,9 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
 
     /**
      * 展示悬浮球的显示动画
-     * @param view 对象
-     * @param duration  动画持续时间
+     *
+     * @param view       对象
+     * @param duration   动画持续时间
      * @param startDelay 动画延迟时间
      */
     private void showTouchBallEnterAnim(View view, int duration, int startDelay) {
@@ -1295,7 +1291,7 @@ public class EasyTouchBallService extends Service implements View.OnTouchListene
                     //加入悬浮球
                     windowManager.addView(touchView, mParams);
                     //显示悬浮球加入动画
-                    showTouchBallEnterAnim(ivTouchBall,HIDE_MENU_DETAIL_FAST,0);
+                    showTouchBallEnterAnim(ivTouchBall, HIDE_MENU_DETAIL_FAST, 0);
                     isMenuDetailShow = false;
                 }
             }

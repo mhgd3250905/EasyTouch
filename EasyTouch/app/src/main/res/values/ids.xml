@@ -57,4 +57,5 @@
     <item name="container_ball_menu_detail_app_bottom" type="id">
         container_ball_menu_detail_app_bottom
     </item>
+    <item name="iv_menu_ball_4" type="id">iv_menu_ball_4</item>
 </resources>
