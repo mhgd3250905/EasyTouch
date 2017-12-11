@@ -12,23 +12,26 @@ package com.skkk.easytouch;
 */
 public class Configs {
 
-    public enum Position{
-        NONE,
-        TOP,
-        MID,
-        BOTTOM;
-    }
+    public enum Position {
+        LEFT,
+        RIGHT;
 
-    public enum AppType{
-        APP,
-        SHORTCUT;
-
-        public int getValue(){
+        public int getValue() {
             return this.ordinal();
         }
     }
 
-    public interface OnAnimEndListener{
+
+    public enum AppType {
+        APP,
+        SHORTCUT;
+
+        public int getValue() {
+            return this.ordinal();
+        }
+    }
+
+    public interface OnAnimEndListener {
         void onAnimEnd();
     }
 
@@ -46,12 +49,12 @@ public class Configs {
     public static final String KEY_TOUCH_UI_DIRECTION = "key_touch_ui_direction";
 
 
-    public static final String KEY_BALL_MENU_TOP_APPS_="key_ball_menu_top_apps_";
-    public static final String KEY_BALL_MENU_BOTTOM_APPS_="key_ball_menu_bottom_apps_";
+    public static final String KEY_BALL_MENU_TOP_APPS_ = "key_ball_menu_top_apps_";
+    public static final String KEY_BALL_MENU_BOTTOM_APPS_ = "key_ball_menu_bottom_apps_";
 
-    public static final String KEY_BALL_MENU_SELECT_APP_INDEX="key_ball_menu_select_app_index";
+    public static final String KEY_BALL_MENU_SELECT_APP_INDEX = "key_ball_menu_select_app_index";
 
-    public static final String KEY_APP_TYPE="key_app_type";
+    public static final String KEY_APP_TYPE = "key_app_type";
 
     //自定义
     public static final int DEFAULT_TOUCH_WIDTH = 15;
@@ -66,7 +69,6 @@ public class Configs {
 
     public static final int TOUCH_UI_DIRECTION_LEFT = 0;
     public static final int TOUCH_UI_DIRECTION_RIGHT = 1;
-
 
 
 }

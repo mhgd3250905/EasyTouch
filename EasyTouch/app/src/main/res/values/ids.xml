@@ -58,4 +58,6 @@
         container_ball_menu_detail_app_bottom
     </item>
     <item name="iv_menu_ball_4" type="id">iv_menu_ball_4</item>
+    <item name="iv_menu_ball_0" type="id">iv_menu_ball_0</item>
+    <item name="iv_menu_ball_5" type="id">iv_menu_ball_5</item>
 </resources>

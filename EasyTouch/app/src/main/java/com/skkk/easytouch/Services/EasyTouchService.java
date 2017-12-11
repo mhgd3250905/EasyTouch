@@ -1,7 +1,6 @@
 package com.skkk.easytouch.Services;
 
 import android.accessibilityservice.AccessibilityService;
-import android.app.Service;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -46,17 +45,13 @@ import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_LEFT;
 import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_RIGHT;
 
 
-public class EasyTouchService extends Service implements View.OnTouchListener {
+public class EasyTouchService extends EasyTouchBaseService implements View.OnTouchListener {
     private static final String TAG = "EasyTouchService";
-    private WindowManager windowManager;
     private WindowManager.LayoutParams mParams;
     private View touchView;
     private float lastX;
     private float lastY;
-    private ComponentName mAdminName;
-    private DevicePolicyManager mDPM;
     private boolean isMove;
-    private Vibrator vibrator;
     private ImageView ivTouchBottom;
     private ImageView ivTouchMid;
     private ImageView ivTouchTop;
@@ -70,7 +65,6 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
 
     private int touchWidth = Configs.DEFAULT_TOUCH_WIDTH;//悬浮条的宽度 单位dp
     private int touchHeight = Configs.DEFAULT_TOUCH_HEIGHT;//悬浮条的高度 单位dp
-    private int vibrateLevel = Configs.DEFAULT_VIBRATE_LEVEL;//震动等级
     private
     @DrawableRes
     int topDrawable = R.drawable.shape_react_corners_top;//上方触摸块背景
@@ -92,7 +86,6 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
     private int directionX;
 
     private int minTouchSlop = 10;    //触摸滑动最小触发距离
-    private AudioManager audioManager;  //音量管理器
     private LinearLayout llMenuContainer;
     private SeekBar sbSystemAudio, sbMediaAudio, sbAlarmAudio;
     private boolean isTopMenuShow=false;//Top菜单是否打开
@@ -319,8 +312,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
                     isTopMenuShow = false;
                     hideMenuContainer();
                 } else {
-                    vibrator.vibrate(vibrateLevel);
-                    recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_RECENTS);
+                    enterRecents();
                 }
                 return false;
             }
@@ -339,8 +331,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 if (e2.getY() - e1.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
                     //下滑
-                    vibrator.vibrate(vibrateLevel);
-                    recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
+                    enterNotification();
                 } else if (e1.getY() - e2.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
                     //上滑
                     setTopMenuEvent();
@@ -421,9 +412,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
                     isBottomMenuShow=false;
                     hideBottomMenuContainer();
                 }else {
-                    //震动30毫秒
-                    vibrator.vibrate(vibrateLevel);
-                    recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_BACK);
+                    enterBack();
                 }
                 return false;
             }
@@ -443,11 +432,7 @@ public class EasyTouchService extends Service implements View.OnTouchListener {
                 if (e1.getY() - e2.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
                     //上滑
                     //锁屏
-                    if (mDPM.isAdminActive(mAdminName)) {
-                        //震动30毫秒
-                        vibrator.vibrate(vibrateLevel);
-                        mDPM.lockNow();
-                    }
+                    lockScreen();
                 }else if (e2.getY() - e1.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
                     //下滑
                     //呼出菜单
