@@ -60,4 +60,23 @@
     <item name="iv_menu_ball_4" type="id">iv_menu_ball_4</item>
     <item name="iv_menu_ball_0" type="id">iv_menu_ball_0</item>
     <item name="iv_menu_ball_5" type="id">iv_menu_ball_5</item>
+    <item name="container_ball_menu_detail_app_back" type="id">container_ball_menu_detail_app_back
+    </item>
+    <item name="container_ball_menu_detail_pay_content" type="id">
+        container_ball_menu_detail_pay_content
+    </item>
+    <item name="container_ball_menu_detail_pay_back" type="id">container_ball_menu_detail_pay_back
+    </item>
+    <item name="container_ball_menu_detail_voice_content" type="id">
+        container_ball_menu_detail_voice_content
+    </item>
+    <item name="container_ball_menu_detail_voice_back" type="id">
+        container_ball_menu_detail_voice_back
+    </item>
+    <item name="container_ball_menu_detail_app_content" type="id">
+        container_ball_menu_detail_app_content
+    </item>
+    <item name="iv_menu_detail_pay_back" type="id">iv_menu_detail_pay_back</item>
+    <item name="iv_menu_detail_app_back" type="id">iv_menu_detail_app_back</item>
+    <item name="iv_menu_detail_voice_back" type="id">iv_menu_detail_voice_back</item>
 </resources>

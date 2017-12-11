@@ -65,8 +65,7 @@ public class MainActivity extends AppCompatActivity {
     SettingItemView settingsItemLock;
     @Bind(R.id.settings_item_touch_detail)
     SettingItemView settingsItemTouchDetail;
-    @Bind(R.id.test)
-    TextView test;
+
     private ArrayList<String> needRequestPermissions = new ArrayList<>();
     // 所需的全部权限
     private static final String[] PERMISSIONS = new String[]{
