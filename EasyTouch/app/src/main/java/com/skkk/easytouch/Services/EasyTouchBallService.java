@@ -239,8 +239,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         direction = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
         if (direction == Configs.Position.LEFT.getValue()) {
             directionX = leftBorder;
-        }
-        if (direction == Configs.Position.RIGHT.getValue()) {
+        } else if (direction == Configs.Position.RIGHT.getValue()) {
             directionX = rightBorder;
         }
 
@@ -797,11 +796,19 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 Log.i(TAG, "onFling: ");
                 if (e2.getX() - e1.getX() > 10 && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 2)) {
                     if (!canMove) {//右划
-                        enterRecents();//任务列表
+                        if (direction == Configs.Position.LEFT.getValue()) {
+                            enterRecents();//任务列表
+                        } else if (direction == Configs.Position.RIGHT.getValue()) {
+                            enterHome();//home键
+                        }
                     }
                 } else if (e1.getX() - e2.getX() > 10 && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 2)) {
                     if (!canMove) {//左滑
-                        enterHome();//home键
+                        if (direction == Configs.Position.LEFT.getValue()) {
+                            enterHome();//home键
+                        } else if (direction == Configs.Position.RIGHT.getValue()) {
+                            enterRecents();//任务列表
+                        }
                     }
                 } else if (e1.getY() - e2.getY() > 10 && Math.abs(e1.getY() - e2.getY()) > (Math.abs(e1.getX() - e2.getX()) * 2)) {
                     //上滑
@@ -927,11 +934,11 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 containerMenuDetailVoice.setVisibility(View.VISIBLE);
                 containerMenuDetailApps.setVisibility(View.GONE);
                 containerMenuDetailPay.setVisibility(View.GONE);
-                if (direction== Configs.Position.LEFT.getValue()){
+                if (direction == Configs.Position.LEFT.getValue()) {
                     setMenuBallDetailAlignStartLayoutParams(containerMenuDetailVoiceContent);
                     setMenuBallDetailAlignEndLayoutParams(containerMenuDetailVoiceBack);
                     ivMenuDetailVoiceBack.setImageResource(R.drawable.ic_arrow_left);
-                }else if (direction== Configs.Position.RIGHT.getValue()){
+                } else if (direction == Configs.Position.RIGHT.getValue()) {
                     setMenuBallDetailAlignEndLayoutParams(containerMenuDetailVoiceContent);
                     setMenuBallDetailAlignStartLayoutParams(containerMenuDetailVoiceBack);
                     ivMenuDetailVoiceBack.setImageResource(R.drawable.ic_arrwo_right);
@@ -1007,11 +1014,11 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 containerMenuDetailVoice.setVisibility(View.GONE);
                 containerMenuDetailApps.setVisibility(View.GONE);
                 containerMenuDetailPay.setVisibility(View.VISIBLE);
-                if (direction== Configs.Position.LEFT.getValue()){
+                if (direction == Configs.Position.LEFT.getValue()) {
                     setMenuBallDetailAlignStartLayoutParams(containerMenuDetailPayContent);
                     setMenuBallDetailAlignEndLayoutParams(containerMenuDetailPayBack);
                     ivMenuDetailPayBack.setImageResource(R.drawable.ic_arrow_left);
-                }else if (direction== Configs.Position.RIGHT.getValue()){
+                } else if (direction == Configs.Position.RIGHT.getValue()) {
                     setMenuBallDetailAlignEndLayoutParams(containerMenuDetailPayContent);
                     setMenuBallDetailAlignStartLayoutParams(containerMenuDetailPayBack);
                     ivMenuDetailPayBack.setImageResource(R.drawable.ic_arrwo_right);
@@ -1038,12 +1045,12 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 containerMenuDetailVoice.setVisibility(View.GONE);
                 containerMenuDetailApps.setVisibility(View.VISIBLE);
                 containerMenuDetailPay.setVisibility(View.GONE);
-                if (direction== Configs.Position.LEFT.getValue()){
+                if (direction == Configs.Position.LEFT.getValue()) {
                     setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsContent);
                     setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsBack);
                     ivMenuDetailAppBack.setImageResource(R.drawable.ic_arrow_left);
 
-                }else if (direction== Configs.Position.RIGHT.getValue()){
+                } else if (direction == Configs.Position.RIGHT.getValue()) {
                     setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsContent);
                     setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsBack);
                     ivMenuDetailAppBack.setImageResource(R.drawable.ic_arrwo_right);
