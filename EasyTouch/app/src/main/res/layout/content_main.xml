@@ -5,173 +5,141 @@
     android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
     android:background="@color/colorGrayLight"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.skkk.easytouch.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_margin="10dp"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:orientation="vertical">
 
-    <TextView
-        android:textSize="30sp"
-        android:text="功能权限"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:text="功能权限"
+            android:textSize="30sp" />
 
-    <android.support.v7.widget.CardView
-        app:cardElevation="1.5dp"
-        app:cardCornerRadius="5dp"
-        android:background="@color/colorPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_gravity="center"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@color/colorPrimary"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="1.5dp">
 
-            <com.skkk.easytouch.View.SettingItemView
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:id="@id/settings_item_float"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:title="悬浮窗权限"
-                app:value="未打开"/>
+                android:layout_gravity="center"
+                android:orientation="vertical">
 
-            <com.skkk.easytouch.View.SettingItemView
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:id="@id/settings_item_assist"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:title="辅助功能"
-                app:value="未打开"/>
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/settings_item_float"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="悬浮窗权限"
+                    app:value="未打开" />
 
-            <com.skkk.easytouch.View.SettingItemView
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:id="@id/settings_item_lock"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:title="锁屏功能"
-                app:value="未开启"/>
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/settings_item_assist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="辅助功能"
+                    app:value="未打开" />
 
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-
-    <TextView
-        android:textSize="30sp"
-        android:text="自定义"
-        android:layout_margin="5dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <android.support.v7.widget.CardView
-        app:cardElevation="1.5dp"
-        app:cardCornerRadius="5dp"
-        android:background="@color/colorPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.skkk.easytouch.View.SettingItemView
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:id="@id/settings_item_shape"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:title="悬浮条外观"
-                app:value="15*240"/>
-
-            <com.skkk.easytouch.View.SettingItemView
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:id="@id/settings_item_shape"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:title="悬浮球外观"
-                app:value="15*240"/>
-
-            <com.skkk.easytouch.View.SettingItemView
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:id="@id/settings_item_theme"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:title="一级菜单"
-                app:value="方块"/>
-
-            <com.skkk.easytouch.View.SettingItemView
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:id="@id/settings_item_theme"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:title="二级菜单"
-                app:value="方块"/>
-
-            <com.skkk.easytouch.View.SettingItemView
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:id="@id/settings_item_theme"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:title="三级菜单"
-                app:value="方块"/>
-
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/settings_item_lock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="锁屏功能"
+                    app:value="未开启" />
 
             </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+        </android.support.v7.widget.CardView>
 
-    <TextView
-        android:layout_marginTop="10dp"
-        android:foreground="?attr/selectableItemBackground"
-        android:textSize="25sp"
-        android:gravity="center"
-        android:text="悬浮条"
-        android:padding="10dp"
-        android:id="@id/btn_touch_line"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
-    <TextView
-        android:foreground="?attr/selectableItemBackground"
-        android:textSize="25sp"
-        android:gravity="center"
-        android:text="悬浮球"
-        android:padding="10dp"
-        android:id="@id/btn_touch_ball"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="自定义"
+            android:textSize="30sp" />
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="1.5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/settings_item_shape"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="外观设置"
+                    app:value="点击设置" />
+
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/settings_item_func"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="功能设置"
+                    app:value="点击设置" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@id/btn_touch_line"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="悬浮条"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@id/btn_touch_ball"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="悬浮球"
+            android:textSize="25sp" />
 
 
     </LinearLayout>

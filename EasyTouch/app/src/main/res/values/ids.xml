@@ -82,4 +82,5 @@
     <item name="rg_touch_style" type="id">rg_touch_style</item>
     <item name="rb_touch_style_linear" type="id">rb_touch_style_linear</item>
     <item name="rb_touch_style_ball" type="id">rb_touch_style_ball</item>
+    <item name="settings_item_func" type="id">settings_item_func</item>
 </resources>
