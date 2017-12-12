@@ -79,4 +79,7 @@
     <item name="iv_menu_detail_pay_back" type="id">iv_menu_detail_pay_back</item>
     <item name="iv_menu_detail_app_back" type="id">iv_menu_detail_app_back</item>
     <item name="iv_menu_detail_voice_back" type="id">iv_menu_detail_voice_back</item>
+    <item name="rg_touch_style" type="id">rg_touch_style</item>
+    <item name="rb_touch_style_linear" type="id">rb_touch_style_linear</item>
+    <item name="rb_touch_style_ball" type="id">rb_touch_style_ball</item>
 </resources>

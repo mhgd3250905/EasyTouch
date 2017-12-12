@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,7 +22,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
@@ -60,11 +60,10 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.btn_touch_ball)
     TextView btnTouchBall;
     @Bind(R.id.content_main)
-    LinearLayout contentMain;
+    NestedScrollView contentMain;
     @Bind(R.id.settings_item_lock)
     SettingItemView settingsItemLock;
-    @Bind(R.id.settings_item_touch_detail)
-    SettingItemView settingsItemTouchDetail;
+
 
     private ArrayList<String> needRequestPermissions = new ArrayList<>();
     // 所需的全部权限
@@ -88,29 +87,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
                 && !notificationManager.isNotificationPolicyAccessGranted()) {
-
             Intent intent = new Intent(
-                    Settings
-                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-
+                    Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
             startActivity(intent);
         }
-
-//        test.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                sendKeyCode(KeyEvent.KEYCODE_POWER);
-//                try {
-//                    Thread.sleep(200);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                sendKeyCode(KeyEvent.KEYCODE_VOLUME_DOWN);
-//            }
-//        });
     }
-
-
 
 
     /**
@@ -206,12 +187,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        settingsItemTouchDetail.setSettingItemClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, AppSelectActivity.class));
-            }
-        });
 
         btnTouchLine.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,6 +209,8 @@ public class MainActivity extends AppCompatActivity {
                 startService(new Intent(MainActivity.this, FloatService.class));
             }
         });
+
+
     }
 
 
