@@ -48,6 +48,13 @@ public class Configs {
     public static final String KEY_TOUCH_UI_THEME = "key_touch_ui_theme";
     public static final String KEY_TOUCH_UI_DIRECTION = "key_touch_ui_direction";
 
+    public static final String KEY_TOUCH_UI_RADIUS = "key_touch_ui_radius";
+    public static final String KEY_TOUCH_UI_VIBRATE_LEVEL_BALL = "key_touch_ui_vibrate_level_ball";
+    public static final String KEY_TOUCH_UI_COLOR_ALPHA_BALL = "key_touch_ui_color_alpha";
+    public static final String key_touch_ui_background_ball = "key_touch_ui_background_ball";
+
+
+
 
     public static final String KEY_BALL_MENU_TOP_APPS_ = "key_ball_menu_top_apps_";
     public static final String KEY_BALL_MENU_BOTTOM_APPS_ = "key_ball_menu_bottom_apps_";

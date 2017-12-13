@@ -51,18 +51,18 @@ public class MainActivity extends AppCompatActivity {
     SettingItemView settingsItemFloat;
     @Bind(R.id.settings_item_assist)
     SettingItemView settingsItemAssist;
-    @Bind(R.id.settings_item_theme)
-    SettingItemView settingsItemTheme;
+    @Bind(R.id.settings_item_lock)
+    SettingItemView settingsItemLock;
     @Bind(R.id.settings_item_shape)
     SettingItemView settingsItemShape;
+    @Bind(R.id.settings_item_func)
+    SettingItemView settingsItemFunc;
     @Bind(R.id.btn_touch_line)
     TextView btnTouchLine;
     @Bind(R.id.btn_touch_ball)
     TextView btnTouchBall;
     @Bind(R.id.content_main)
     NestedScrollView contentMain;
-    @Bind(R.id.settings_item_lock)
-    SettingItemView settingsItemLock;
 
 
     private ArrayList<String> needRequestPermissions = new ArrayList<>();

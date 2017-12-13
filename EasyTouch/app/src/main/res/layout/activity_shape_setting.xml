@@ -20,7 +20,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@id/tb_shape_settings"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
         </android.support.design.widget.AppBarLayout>
@@ -28,225 +28,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center">
-
-                    <include layout="@layout/layout_easy_touch" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="高度"
-                        android:textColor="@color/colorBlackBody"
-                        android:textSize="25sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentStart="true"
-                            android:gravity="center"
-                            android:text="短"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="15sp" />
-
-                        <android.support.v7.widget.AppCompatSeekBar
-                            android:id="@+id/sb_height"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentEnd="true"
-                            android:gravity="center"
-                            android:text="长"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="15sp" />
-                    </LinearLayout>
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="宽度"
-                        android:textColor="@color/colorBlackBody"
-                        android:textSize="25sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentStart="true"
-                            android:gravity="center"
-                            android:text="窄"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="15sp" />
-
-                        <android.support.v7.widget.AppCompatSeekBar
-                            android:id="@+id/sb_width"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentEnd="true"
-                            android:gravity="center"
-                            android:text="厚"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="15sp" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="按键震动"
-                        android:textColor="@color/colorBlackBody"
-                        android:textSize="25sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentStart="true"
-                            android:gravity="center"
-                            android:text="弱"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="15sp" />
-
-                        <android.support.v7.widget.AppCompatSeekBar
-                            android:id="@+id/sb_vibrate"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentEnd="true"
-                            android:gravity="center"
-                            android:text="强"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="15sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="透明度"
-                            android:textColor="@color/colorBlackBody"
-                            android:textSize="25sp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_alignParentStart="true"
-                                android:gravity="center"
-                                android:text="透"
-                                android:textColor="@color/colorAccent"
-                                android:textSize="15sp" />
-
-                            <android.support.v7.widget.AppCompatSeekBar
-                                android:id="@+id/sb_alpha"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_alignParentEnd="true"
-                                android:gravity="center"
-                                android:text="实"
-                                android:textColor="@color/colorAccent"
-                                android:textSize="15sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:orientation="vertical">
-
-                        <com.skkk.easytouch.View.SettingItemView
-                            android:id="@+id/sivTheme"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            app:title="主题"
-                            app:value="圆角"></com.skkk.easytouch.View.SettingItemView>
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
+            android:orientation="vertical">
+            <android.support.design.widget.TabLayout
+                app:tabMode="fixed"
+                app:tabGravity="fill"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@id/tl_setting_shape"/>
+            <android.support.v4.view.ViewPager
+                android:id="@id/vp_setting_shape"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
+
+
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
