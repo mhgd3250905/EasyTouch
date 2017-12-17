@@ -83,11 +83,11 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private boolean isRepeat = false;
 
     private Runnable pressRunnable;
-    private RelativeLayout menuContainer;
     private boolean isMenuShow = false;
     private boolean isMenuDetailShow = false;
     private View menuView;
     private View menuDetailView;
+    private RelativeLayout menuContainer;
     private ImageView ivMenuBall0, ivMenuBall1, ivMenuBall2, ivMenuBall3, ivMenuBall4;
     private ObjectAnimator transXAnimShow;
     private ObjectAnimator transXAnimHide;
@@ -251,7 +251,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         ivTouchBall = (ImageView) touchView.findViewById(R.id.ivTouchBall);
         llMenuContainer = (LinearLayout) touchView.findViewById(R.id.ll_menu_container);
 
-        menuView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball_menu_left, null);
+        menuView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball_menu, null);
         menuContainer = (RelativeLayout) menuView.findViewById(R.id.container_menu_ball);
         ivMenuBall0 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_0);
         ivMenuBall1 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_1);
@@ -430,49 +430,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         initMenuDetailAppEvent();
     }
 
-    private void initMneuDetailPayEvent() {
-        /*
-        * 设置支付事件监听
-        * */
-        containerMenuDetailPay.post(new Runnable() {
-            @Override
-            public void run() {
-                containerMenuDetailPayBack.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
-                            @Override
-                            public void onAnimEnd() {
-                                hideMenuDetailContainer();
-                            }
-                        }, false);
-                    }
-                });
-            }
-        });
-        ivAlipayScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IntentUtils.toAliPayScan(getApplicationContext());
-            }
-        });
 
-        ivAlipayPay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IntentUtils.toAliPayCode(getApplicationContext());
-            }
-        });
-
-        ivWeixinScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IntentUtils.toWeChatScanDirect(getApplicationContext());
-            }
-        });
-
-
-    }
 
     /**
      * 设置声音设置详情菜单事件
@@ -705,6 +663,58 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         }
     }
 
+    /**
+     * 设置支付点击事件
+     */
+    private void initMneuDetailPayEvent() {
+        /*
+        * 设置支付事件监听
+        * */
+        containerMenuDetailPay.post(new Runnable() {
+            @Override
+            public void run() {
+                containerMenuDetailPayBack.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                            @Override
+                            public void onAnimEnd() {
+                                hideMenuDetailContainer();
+                            }
+                        }, false);
+                    }
+                });
+            }
+        });
+        ivAlipayScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtils.toAliPayScan(getApplicationContext());
+            }
+        });
+
+        ivAlipayPay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtils.toAliPayCode(getApplicationContext());
+            }
+        });
+
+        ivWeixinScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtils.toWeChatScanDirect(getApplicationContext());
+            }
+        });
+
+
+    }
+
+    /**
+     * 打开App选择界面
+     * @param finalIndex
+     * @param value
+     */
     private void startSelectAppActivity(int finalIndex, int value) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
