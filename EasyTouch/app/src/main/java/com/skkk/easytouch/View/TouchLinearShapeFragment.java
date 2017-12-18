@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
-import com.skkk.easytouch.Services.EasyTouchService;
+import com.skkk.easytouch.Services.EasyTouchLinearService;
 import com.skkk.easytouch.Utils.ServiceUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 
@@ -164,7 +164,7 @@ public class TouchLinearShapeFragment extends Fragment {
         initEvent();
         initUI();
 
-        if (ServiceUtils.isServiceRun(getContext().getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchService")) {
+        if (ServiceUtils.isServiceRun(getContext().getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchLinearService")) {
             llTouchContainer.setVisibility(View.INVISIBLE);
             isServiceRunning = true;
         } else {
@@ -377,7 +377,7 @@ public class TouchLinearShapeFragment extends Fragment {
      */
     public void upDateTouchViewShape(int length, int width) {
         if (isServiceRunning) {
-            getContext().startService(new Intent(getContext(), EasyTouchService.class));
+            getContext().startService(new Intent(getContext(), EasyTouchLinearService.class));
         } else {
             ViewGroup.LayoutParams layoutParams = llTouchContainer.getLayoutParams();
             if (length != 0) {

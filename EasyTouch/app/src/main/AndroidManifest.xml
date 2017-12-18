@@ -35,7 +35,7 @@
                 android:resource="@xml/accessibilityservice" />
         </service>
         <service
-            android:name=".Services.EasyTouchService"
+            android:name=".Services.EasyTouchLinearService"
             android:enabled="true"
             android:exported="true" />
         <service

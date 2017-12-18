@@ -10,6 +10,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
@@ -52,11 +53,9 @@ import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_HEIGHT;
 import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_WIDTH;
 import static com.skkk.easytouch.Configs.DEFAULT_VIBRATE_LEVEL;
 import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_LEFT;
-import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_RIGHT;
 
-
-public class EasyTouchService extends EasyTouchBaseService implements View.OnTouchListener {
-    private static final String TAG = "EasyTouchService";
+public class EasyTouchLinearService extends EasyTouchBaseService implements View.OnTouchListener {
+    private static final String TAG = "EasyTouchLinearService";
     private WindowManager.LayoutParams mParams;
     private WindowManager.LayoutParams mMenuDetailParams;
     private WindowManager.LayoutParams mMenuParams;
@@ -76,8 +75,8 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
     private float dx;
     private float dy;
 
-    private int touchWidth = Configs.DEFAULT_TOUCH_WIDTH;//悬浮条的宽度 单位dp
-    private int touchHeight = Configs.DEFAULT_TOUCH_HEIGHT;//悬浮条的高度 单位dp
+    private int touchWidth = DEFAULT_TOUCH_WIDTH;//悬浮条的宽度 单位dp
+    private int touchHeight = DEFAULT_TOUCH_HEIGHT;//悬浮条的高度 单位dp
     private
     @DrawableRes
     int topDrawable = R.drawable.shape_react_corners_top;//上方触摸块背景
@@ -146,6 +145,8 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
     private ObjectAnimator menuBallAlphAnim;
     private ObjectAnimator transXAnimShow;
     private ObjectAnimator transYAnimShow;
+    private int lastAnimX;
+    private int lastAnimY;
 
 
     @Override
@@ -380,6 +381,51 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
         initMenuDetailAppEvent();
     }
 
+    /**
+     * 根据横竖屏幕切换悬浮球对应的位置
+     *
+     * @param newConfig
+     */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        try {
+            if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                //横屏
+                // 1.获取当前的位置
+                if (isMenuDetailShow) {
+                    mMenuDetailParams.y = mMenuDetailParams.y * screenWidth / screenHeight;
+                    windowManager.updateViewLayout(menuDetailView, mMenuDetailParams);
+                } else if (isMenuShow) {
+                    mMenuParams.y = mMenuParams.y * screenWidth / screenHeight;
+                    windowManager.updateViewLayout(menuView, mMenuParams);
+                } else {
+
+
+                    mParams.y = mParams.y * screenWidth / screenHeight;
+                    windowManager.updateViewLayout(touchView, mParams);
+                }
+
+            } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                //竖屏
+                if (isMenuDetailShow) {
+                    mMenuDetailParams.y = mMenuDetailParams.y * screenHeight / screenWidth;
+                    windowManager.updateViewLayout(menuDetailView, mMenuDetailParams);
+                } else if (isMenuShow) {
+                    mMenuParams.y = mMenuParams.y * screenHeight / screenWidth;
+                    windowManager.updateViewLayout(menuView, mMenuParams);
+                } else {
+                    mParams.y = mParams.y * screenHeight / screenWidth;
+                    windowManager.updateViewLayout(touchView, mParams);
+                }
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
     private void initMenuEvent() {
         menuContainer.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -510,8 +556,16 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
             public boolean onSingleTapUp(MotionEvent e) {
                 Log.d(TAG, "onSingleTapUp() called with: e = [" + e + "]");
                 //震动30毫秒
-                if (isMenuShow) {
-                    vibrator.vibrate(vibrateLevel);
+                vibrator.vibrate(vibrateLevel);
+                if (isMenuDetailShow) {
+                    hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                        @Override
+                        public void onAnimEnd() {
+                            hideMenuDetailContainer();
+                        }
+                    }, true);
+                } else if (isMenuShow) {
+                    isMenuShow = false;
                     hideMenuContainer(-1, null);
                 } else {
                     enterRecents();
@@ -533,10 +587,34 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 if (e2.getY() - e1.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
                     //下滑
-                    enterNotification();
+                    if (isMenuDetailShow) {
+                        hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                            @Override
+                            public void onAnimEnd() {
+                                hideMenuDetailContainer();
+                            }
+                        }, true);
+                    } else if (isMenuShow) {
+                        isMenuShow = false;
+                        hideMenuContainer(-1, null);
+                    } else {
+                        enterNotification();
+                    }
                 } else if (e1.getY() - e2.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
                     //上滑
-                    showVoiceAdjustView();
+                    if (isMenuDetailShow) {
+                        hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                            @Override
+                            public void onAnimEnd() {
+                                hideMenuDetailContainer();
+                            }
+                        }, true);
+                    } else if (isMenuShow) {
+                        isMenuShow = false;
+                        hideMenuContainer(-1, null);
+                    } else {
+                        jump2LastApp();
+                    }
                 }
                 return false;
             }
@@ -546,6 +624,18 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
             @Override
             public boolean onDown(MotionEvent e) {
                 //记录move down坐标
+                //刷新悬浮条位置
+                if (isMenuDetailShow) {
+                    hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                        @Override
+                        public void onAnimEnd() {
+                            hideMenuDetailContainer();
+                        }
+                    }, true);
+                } else if (isMenuShow) {
+                    isMenuShow = false;
+                    hideMenuContainer(-1, null);
+                }
                 setMoveDownXY(e);
                 return false;
             }
@@ -559,13 +649,25 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
             public boolean onSingleTapUp(MotionEvent e) {
                 //震动30毫秒
                 vibrator.vibrate(vibrateLevel);
-                recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_HOME);
+                if (isMenuDetailShow) {
+                    hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                        @Override
+                        public void onAnimEnd() {
+                            hideMenuDetailContainer();
+                        }
+                    }, true);
+                } else if (isMenuShow) {
+                    isMenuShow = false;
+                    hideMenuContainer(-1, null);
+                } else {
+                    recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_HOME);
+                }
                 return false;
             }
 
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                //刷新悬浮条位置
+
                 refreshMovePlace(e2);
                 return false;
             }
@@ -577,21 +679,6 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (e2.getX() - e1.getX() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 3)) {
-                    if (direction == TOUCH_UI_DIRECTION_LEFT) {
-                        direction = TOUCH_UI_DIRECTION_RIGHT;
-                        SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_RIGHT);
-                        mParams.x = rightBorder;
-                        windowManager.updateViewLayout(touchView, mParams);
-                    }
-                } else if (e1.getX() - e2.getX() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 3)) {
-                    if (direction == TOUCH_UI_DIRECTION_RIGHT) {
-                        direction = TOUCH_UI_DIRECTION_LEFT;
-                        SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
-                        mParams.x = leftBorder;
-                        windowManager.updateViewLayout(touchView, mParams);
-                    }
-                }
                 return false;
             }
         });
@@ -609,7 +696,15 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
 
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
-                if (isMenuShow) {
+                if (isMenuDetailShow) {
+                    hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                        @Override
+                        public void onAnimEnd() {
+                            hideMenuDetailContainer();
+                        }
+                    }, true);
+                } else if (isMenuShow) {
+                    isMenuShow = false;
                     hideMenuContainer(-1, null);
                 } else {
                     enterBack();
@@ -632,11 +727,19 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
                 if (e1.getY() - e2.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
                     //上滑
                     //锁屏
-                    showMenuContainer();
-                } else if (e2.getY() - e1.getY() > minTouchSlop && Math.abs(e1.getY() - e2.getY()) / 3 > Math.abs(e1.getX() - e2.getX())) {
-                    //下滑
-                    //呼出菜单
-                    showPaySelectView();
+                    if (isMenuDetailShow) {
+                        hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                            @Override
+                            public void onAnimEnd() {
+                                hideMenuDetailContainer();
+                            }
+                        }, true);
+                    } else if (isMenuShow) {
+                        isMenuShow = false;
+                        hideMenuContainer(-1, null);
+                    } else {
+                        showMenuContainer();
+                    }
                 }
                 return false;
             }
@@ -821,7 +924,7 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
         });
         for (int i = 0; i <= 4; i++) {
             ImageView ivApp = (ImageView) containerMenuDetailAppsTop.getChildAt(i);
-            String shortCutStr = SpUtils.getString(getApplicationContext(), Configs.KEY_BALL_MENU_TOP_APPS_ + i, "");
+            String shortCutStr = SpUtils.getString(getApplicationContext(), Configs.KEY_LINEAR_MENU_TOP_APPS_ + i, "");
             final int finalIndex = i;
             if (TextUtils.isEmpty(shortCutStr)) {
                 ivApp.setOnClickListener(new View.OnClickListener() {
@@ -860,7 +963,7 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
 
         for (int i = 0; i <= 4; i++) {
             ImageView ivApp = (ImageView) containerMenuDetailAppsBottom.getChildAt(i);
-            String shortCutStr = SpUtils.getString(getApplicationContext(), Configs.KEY_BALL_MENU_BOTTOM_APPS_ + i, "");
+            String shortCutStr = SpUtils.getString(getApplicationContext(), Configs.KEY_LINEAR_MENU_BOTTOM_APPS_ + i, "");
             final int finalIndex = i;
             if (TextUtils.isEmpty(shortCutStr)) {
                 ivApp.setOnClickListener(new View.OnClickListener() {
@@ -909,6 +1012,7 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
         intent.setClass(getApplicationContext(), AppSelectActivity.class);
         intent.putExtra(Configs.KEY_APP_TYPE, value);
         intent.putExtra(Configs.KEY_BALL_MENU_SELECT_APP_INDEX, finalIndex);
+        intent.putExtra(Configs.KEY_TOUCH_TYPE, Configs.TouchType.LINEAR.getValue());
         startActivity(intent);
     }
 
@@ -964,7 +1068,7 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
      * 显示隐藏菜单
      */
     private void showMenuContainer() {
-        mMenuParams.x = mParams.x;
+        mMenuParams.x = mParams.x + dp2px(touchWidth + 5);
         mMenuParams.y = mParams.y;
         windowManager.addView(menuView, mMenuParams);
         isMenuShow = true;
@@ -991,11 +1095,15 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
 //                if (index != -1) {
 //                    hideMenuBallAnim(ivTouchBall, -1, false, null);
 //                }
-                hideMenuBallAnim(ivMenuBall0, 0, index == 0, null);
-                hideMenuBallAnim(ivMenuBall1, 1, index == 1, null);
-                hideMenuBallAnim(ivMenuBall2, 2, index == 2, null);
-                hideMenuBallAnim(ivMenuBall3, 3, index == 3, null);
-                hideMenuBallAnim(ivMenuBall4, 4, index == 4, onAnimEndListener);
+                try {
+                    hideMenuBallAnim(ivMenuBall0, 0, index == 0, null);
+                    hideMenuBallAnim(ivMenuBall1, 1, index == 1, null);
+                    hideMenuBallAnim(ivMenuBall2, 2, index == 2, null);
+                    hideMenuBallAnim(ivMenuBall3, 3, index == 3, null);
+                    hideMenuBallAnim(ivMenuBall4, 4, index == 4, onAnimEndListener);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -1007,22 +1115,21 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
      * @param view
      * @param index
      */
-    private void showMenuBallAnim(View view, int index) {
+    private void showMenuBallAnim(final View view, final int index) {
         ballMenuAnimSet = new AnimatorSet();
-        int transXFrom = 0;
-        int transYFrom = 0;
-        int transXTo = 0;
-        int transYTo = 0;
+        float[] transXFloat = new float[180];
+        float[] transYFloat = new float[180];
 
-        int count = menuContainer.getChildCount();
+        final int count = menuContainer.getChildCount();
+        float radius = (float) (index * Math.PI / (count - 1));
 
-        transXFrom = 0;
-        transYFrom = 0;
-        transXTo = 0;
-        transYTo = transYFrom + index * menuHeight / count;
+        for (int i = 0; i < 180; i++) {
+            transXFloat[i] = (float) (Math.sin(radius * i / 180) * menuWidth / 2);
+            transYFloat[i] = (float) (menuWidth / 2 - Math.cos(radius * i / 180) * menuWidth / 2);
+        }
 
-        transXAnimShow = ObjectAnimator.ofFloat(view, "translationX", transXFrom, transXTo);
-        transYAnimShow = ObjectAnimator.ofFloat(view, "translationY", transYFrom, transYTo);
+        transXAnimShow = ObjectAnimator.ofFloat(view, "translationX", transXFloat);
+        transYAnimShow = ObjectAnimator.ofFloat(view, "translationY", transYFloat);
 
         ballMenuAnimSet.play(transXAnimShow).with(transYAnimShow);
         ballMenuAnimSet.setDuration(200);
@@ -1036,7 +1143,7 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
      * @param view
      * @param index
      */
-    private void hideMenuBallAnim(final View view, int index, boolean isSelected, final Configs.OnAnimEndListener onAnimEndListener) {
+    private void hideMenuBallAnim(final View view, int index, boolean isSelected, final Configs.OnAnimEndListener onAnimEndListener) throws Exception {
 
         ballMenuAnimSet = new AnimatorSet();
         float transXFrom = 0;
@@ -1063,7 +1170,7 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
             scaleYTo = 0f;
         }
         alphFrom = 1f;
-        alphTo = 0.2f;
+        alphTo = 0f;
 
 
         menuBallScaleXAnim = ObjectAnimator.ofFloat(view, "scaleX", scaleXFrom, scaleXTo);
@@ -1072,22 +1179,10 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
 
         final int count = menuContainer.getChildCount();
 
+        transXFrom = 0;
+        transYFrom = transYFrom + index * menuHeight / count;
         transXTo = 0;
         transYTo = 0;
-
-        if (direction == Configs.Position.LEFT.getValue()) {
-            double radius = -(Math.PI / 2) + index * Math.PI / (count - 1);
-            transXFrom = 0 + dp2px((float) (80 * Math.cos(radius)));
-            transYFrom = 0 + dp2px((float) (80 * Math.sin(radius)));
-            transXTo = 0;
-            transYTo = 0;
-        } else if (direction == Configs.Position.RIGHT.getValue()) {
-            double radius = -(Math.PI / 2) + index * Math.PI / (count - 1);
-            transXFrom = menuWidth - dp2px(40) - dp2px((float) (80 * Math.cos(radius)));
-            transYFrom = menuWidth + dp2px((float) (80 * Math.sin(radius)));
-            transXTo = menuWidth;
-            transYTo = 0;
-        }
 
 
         final int curIndex = index;
@@ -1207,7 +1302,7 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
      */
     private void showMenuDetailVoice() {
         mMenuDetailParams.x = mParams.x + dp2px(touchWidth);
-        mMenuDetailParams.y = mParams.y;
+        mMenuDetailParams.y = mParams.y + dp2px((touchHeight - 200) / 2);
 
         windowManager.addView(menuDetailView, mMenuDetailParams);
         menuDetailView.post(new Runnable() {
@@ -1238,7 +1333,7 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
      */
     private void showMenuDetailApp() {
         mMenuDetailParams.x = mParams.x + dp2px(touchWidth);
-        mMenuDetailParams.y = mParams.y;
+        mMenuDetailParams.y = mParams.y + dp2px((touchHeight - 120) / 2);
 
         windowManager.addView(menuDetailView, mMenuDetailParams);
         containerMenuDetailApps.post(new Runnable() {
@@ -1270,7 +1365,7 @@ public class EasyTouchService extends EasyTouchBaseService implements View.OnTou
      */
     private void showMenuDetailPay() {
         mMenuDetailParams.x = mParams.x + dp2px(touchWidth);
-        mMenuDetailParams.y = mParams.y;
+        mMenuDetailParams.y = mParams.y + dp2px((touchHeight - 200) / 2);
 
         windowManager.addView(menuDetailView, mMenuDetailParams);
         containerMenuDetailPay.post(new Runnable() {

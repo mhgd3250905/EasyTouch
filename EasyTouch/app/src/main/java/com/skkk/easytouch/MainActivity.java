@@ -26,7 +26,7 @@ import android.widget.TextView;
 
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
 import com.skkk.easytouch.Services.EasyTouchBallService;
-import com.skkk.easytouch.Services.EasyTouchService;
+import com.skkk.easytouch.Services.EasyTouchLinearService;
 import com.skkk.easytouch.Services.FloatService;
 import com.skkk.easytouch.Utils.DialogUtils;
 import com.skkk.easytouch.Utils.ServiceUtils;
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, ShapeSettingActivity.class));
-                stopService(new Intent(MainActivity.this, EasyTouchService.class));
+                stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
             }
         });
 
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                 if (ServiceUtils.isServiceRun(getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchBallService")) {
                     stopService(new Intent(MainActivity.this, EasyTouchBallService.class));
                 }
-                startService(new Intent(MainActivity.this, EasyTouchService.class));
+                startService(new Intent(MainActivity.this, EasyTouchLinearService.class));
                 startService(new Intent(MainActivity.this, FloatService.class));
             }
         });
@@ -202,8 +202,8 @@ public class MainActivity extends AppCompatActivity {
         btnTouchBall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ServiceUtils.isServiceRun(getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchService")) {
-                    stopService(new Intent(MainActivity.this, EasyTouchService.class));
+                if (ServiceUtils.isServiceRun(getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchLinearService")) {
+                    stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
                 }
                 startService(new Intent(MainActivity.this, EasyTouchBallService.class));
                 startService(new Intent(MainActivity.this, FloatService.class));

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 import com.skkk.easytouch.Services.EasyTouchBallService;
+import com.skkk.easytouch.Services.EasyTouchLinearService;
 import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.BaseAdapter;
@@ -28,6 +29,7 @@ import butterknife.ButterKnife;
 public class AppFragment extends Fragment {
     private static final String APP_INDEX = "app_index";
     private static final String APP_TYPE = "app_type";
+    private static final String TOUCH_TYPE = "touch_type";
     @Bind(R.id.rv_apps)
     RecyclerView rvApps;
 
@@ -36,6 +38,7 @@ public class AppFragment extends Fragment {
 
     private int appIndex;
     private int appType;
+    private int touchType;
     private List<ResolveInfo> allApps;
 
 
@@ -44,11 +47,12 @@ public class AppFragment extends Fragment {
     }
 
 
-    public static AppFragment newInstance(int appIndex, int appType) {
+    public static AppFragment newInstance(int appIndex, int appType,int touchType) {
         AppFragment fragment = new AppFragment();
         Bundle args = new Bundle();
         args.putInt(APP_INDEX, appIndex);
         args.putInt(APP_TYPE, appType);
+        args.putInt(TOUCH_TYPE, touchType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,6 +63,7 @@ public class AppFragment extends Fragment {
         if (getArguments() != null) {
             appIndex = getArguments().getInt(APP_INDEX);
             appType = getArguments().getInt(APP_TYPE);
+            touchType = getArguments().getInt(TOUCH_TYPE);
         }
     }
 
@@ -94,11 +99,25 @@ public class AppFragment extends Fragment {
                 ResolveInfo appInfoBean = adapter.getmDataList().get(pos);
                 String appInfoJson = new Gson().toJson(appInfoBean);
                 if (appType == Configs.AppType.APP.getValue()) {
-                    SpUtils.saveString(getContext(), Configs.KEY_BALL_MENU_TOP_APPS_ + appIndex, appInfoJson);
+                    if (touchType== Configs.TouchType.LINEAR.getValue()){
+                        SpUtils.saveString(getContext(), Configs.KEY_LINEAR_MENU_TOP_APPS_ + appIndex, appInfoJson);
+                    }else if (touchType== Configs.TouchType.BALL.getValue()) {
+                        SpUtils.saveString(getContext(), Configs.KEY_BALL_MENU_TOP_APPS_ + appIndex, appInfoJson);
+                    }
                 } else if (appType == Configs.AppType.SHORTCUT.getValue()) {
-                    SpUtils.saveString(getContext(), Configs.KEY_BALL_MENU_BOTTOM_APPS_ + appIndex, appInfoJson);
+                    if (touchType== Configs.TouchType.LINEAR.getValue()){
+                        SpUtils.saveString(getContext(), Configs.KEY_LINEAR_MENU_BOTTOM_APPS_ + appIndex, appInfoJson);
+                    }else if (touchType== Configs.TouchType.BALL.getValue()) {
+                        SpUtils.saveString(getContext(), Configs.KEY_BALL_MENU_BOTTOM_APPS_ + appIndex, appInfoJson);
+                    }
                 }
-                getActivity().startService(new Intent(getActivity(), EasyTouchBallService.class));
+                if (touchType== Configs.TouchType.LINEAR.getValue()){
+                    getActivity().startService(new Intent(getActivity(), EasyTouchLinearService.class));
+
+                }else if (touchType== Configs.TouchType.BALL.getValue()) {
+                    getActivity().startService(new Intent(getActivity(), EasyTouchBallService.class));
+
+                }
                 getActivity().finish();
             }
         });
