@@ -218,6 +218,7 @@
                     android:orientation="vertical">
 
                     <com.skkk.easytouch.View.SettingItemView
+                        android:visibility="gone"
                         android:id="@+id/sivTheme"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

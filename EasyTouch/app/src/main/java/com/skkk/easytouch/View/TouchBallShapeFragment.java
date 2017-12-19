@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
@@ -24,6 +23,8 @@ import butterknife.ButterKnife;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Context.VIBRATOR_SERVICE;
+import static com.skkk.easytouch.View.TouchLinearShapeFragment.ITEM_HEIGHT_MIN;
+import static com.skkk.easytouch.View.TouchLinearShapeFragment.ITEM_HEIGHT_STEP;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,8 +36,7 @@ public class TouchBallShapeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    @Bind(R.id.ll_menu_container)
-    LinearLayout llMenuContainer;
+
     @Bind(R.id.ivTouchBall)
     ImageView ivTouchBall;
     @Bind(R.id.ll_touch_container)
@@ -55,10 +55,8 @@ public class TouchBallShapeFragment extends Fragment {
     private int vibrate;
     private int alpha;
 
-    public static final int ITEM_HEIGHT_MIN = 40;
-    public static final int ITEM_HEIGHT_STEP = 20;
-    public static final int ITEM_WIDTH_MIN = 11;
-    public static final int ITEM_WIDTH_STEP = 3;
+    public static final int RADIUS_MIN=15;
+    public static final int RADIUS_STEP=5;
     public static final int VIBRATE_MIN = 0;
     public static final int VIBRATE_STEP = 10;
     private Vibrator vibrator;
@@ -116,13 +114,13 @@ public class TouchBallShapeFragment extends Fragment {
      * 初始化UI
      */
     private void initUI() {
-        radius = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS,dp2px(20));
-        sbRadius.setProgress(((radius / 3) - ITEM_HEIGHT_MIN) / ITEM_HEIGHT_STEP);
+        radius = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS, dp2px(20));
+        sbRadius.setProgress(((radius / 3) - RADIUS_MIN) / RADIUS_STEP);
 
-        vibrate = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL_BALL,Configs.DEFAULT_VIBRATE_LEVEL);
+        vibrate = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL_BALL, Configs.DEFAULT_VIBRATE_LEVEL);
         sbVibrate.setProgress((vibrate - VIBRATE_MIN) / VIBRATE_STEP);
 
-        alpha=SpUtils.getInt(getContext().getApplicationContext(),Configs.KEY_TOUCH_UI_COLOR_ALPHA_BALL,Configs.DEFAULT_ALPHA);
+        alpha = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA_BALL, Configs.DEFAULT_ALPHA);
         sbAlpha.setProgress(alpha);
     }
 
@@ -131,14 +129,15 @@ public class TouchBallShapeFragment extends Fragment {
      */
     private void initEvent() {
         /**
-         * 设置高度
+         * 设置半径
          */
         sbRadius.setMax(5);
         sbRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.i(TAG, "onProgressChanged: -->" + (ITEM_HEIGHT_MIN + progress * ITEM_HEIGHT_STEP) * 3);
-                SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS, (ITEM_HEIGHT_MIN + progress * ITEM_HEIGHT_STEP) * 3);
+                Log.i(TAG, "onProgressChanged: -->" + (RADIUS_MIN + progress * RADIUS_STEP) * 3);
+                upDateTouchViewShape((RADIUS_MIN + progress * RADIUS_STEP) * 3);
+                SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS, (RADIUS_MIN + progress * RADIUS_STEP) * 3);
             }
 
             @Override
@@ -151,7 +150,6 @@ public class TouchBallShapeFragment extends Fragment {
 
             }
         });
-
 
 
         /**
@@ -198,6 +196,21 @@ public class TouchBallShapeFragment extends Fragment {
 
             }
         });
+    }
+
+    /**
+     * 更新形状
+     *
+     * @param radius
+     */
+    public void upDateTouchViewShape(int radius) {
+        ViewGroup.LayoutParams layoutParams = llTouchContainer.getLayoutParams();
+        if (radius != 0) {
+            layoutParams.width = 2 * dp2px(radius);
+            layoutParams.height = 2 * dp2px(radius);
+        }
+        llTouchContainer.setLayoutParams(layoutParams);
+
     }
 
     @Override

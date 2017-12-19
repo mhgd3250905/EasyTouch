@@ -20,8 +20,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.Switch;
-import android.widget.TextView;
 
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
@@ -51,32 +49,6 @@ public class TouchLinearShapeFragment extends Fragment {
     ImageView ivTouchMid;
     @Bind(R.id.iv_touch_bottom)
     ImageView ivTouchBottom;
-    @Bind(R.id.tv_audio_mode)
-    TextView tvAudioMode;
-    @Bind(R.id.switch_mode)
-    Switch switchMode;
-    @Bind(R.id.iv_audio_system)
-    ImageView ivAudioSystem;
-    @Bind(R.id.sb_system_audio)
-    SeekBar sbSystemAudio;
-    @Bind(R.id.iv_audio_media)
-    ImageView ivAudioMedia;
-    @Bind(R.id.sb_media_audio)
-    SeekBar sbMediaAudio;
-    @Bind(R.id.iv_audio_alarm)
-    ImageView ivAudioAlarm;
-    @Bind(R.id.sb_alarm_audio)
-    SeekBar sbAlarmAudio;
-    @Bind(R.id.ll_menu_container)
-    LinearLayout llMenuContainer;
-    @Bind(R.id.iv_scan_alipay)
-    ImageView ivScanAlipay;
-    @Bind(R.id.iv_pay_alipay)
-    ImageView ivPayAlipay;
-    @Bind(R.id.iv_scan_weixin)
-    ImageView ivScanWeixin;
-    @Bind(R.id.ll_menu_bottom_container)
-    LinearLayout llMenuBottomContainer;
     @Bind(R.id.ll_touch_container)
     LinearLayout llTouchContainer;
     @Bind(R.id.sb_height)
@@ -89,6 +61,7 @@ public class TouchLinearShapeFragment extends Fragment {
     AppCompatSeekBar sbAlpha;
     @Bind(R.id.sivTheme)
     SettingItemView sivTheme;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -186,7 +159,7 @@ public class TouchLinearShapeFragment extends Fragment {
         setVibrate = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL, Configs.DEFAULT_VIBRATE_LEVEL);
         sbVibrate.setProgress((setHeight - VIBRATE_MIN) / VIBRATE_STEP);
 
-        alpha=SpUtils.getInt(getContext().getApplicationContext(),Configs.KEY_TOUCH_UI_COLOR_ALPHA,Configs.DEFAULT_ALPHA);
+        alpha = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA, Configs.DEFAULT_ALPHA);
         sbAlpha.setProgress(alpha);
     }
 
@@ -348,8 +321,8 @@ public class TouchLinearShapeFragment extends Fragment {
         sivTheme.setSettingItemClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
-                String[] themeTitleArr=new String[]{
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                String[] themeTitleArr = new String[]{
                         "主题1",
                         "主题2",
                 };
@@ -357,9 +330,9 @@ public class TouchLinearShapeFragment extends Fragment {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        theme=which;
-                        SpUtils.saveInt(getContext().getApplicationContext(),Configs.KEY_TOUCH_UI_THEME,which);
-                        upDateTouchViewShape(0,0);
+                        theme = which;
+                        SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_THEME, which);
+                        upDateTouchViewShape(0, 0);
                         dialog.dismiss();
                     }
                 });
@@ -388,19 +361,19 @@ public class TouchLinearShapeFragment extends Fragment {
             }
             llTouchContainer.setLayoutParams(layoutParams);
 
-            if (theme==Configs.TOUCH_UI_THEME_0){
-                topDrawable=R.drawable.shape_react_corners_top;
-                midDrawable=R.drawable.shape_react_corners_mid;
-                bottomDrawable=R.drawable.shape_react_corners_bottom;
-            }else if (theme==Configs.TOUCH_UI_THEME_1){
-                topDrawable=R.drawable.shape_react_top;
-                midDrawable=R.drawable.shape_react_mid;
-                bottomDrawable=R.drawable.shape_react_bottom;
+            if (theme == Configs.TOUCH_UI_THEME_0) {
+                topDrawable = R.drawable.shape_react_corners_top;
+                midDrawable = R.drawable.shape_react_corners_mid;
+                bottomDrawable = R.drawable.shape_react_corners_bottom;
+            } else if (theme == Configs.TOUCH_UI_THEME_1) {
+                topDrawable = R.drawable.shape_react_top;
+                midDrawable = R.drawable.shape_react_mid;
+                bottomDrawable = R.drawable.shape_react_bottom;
             }
 
-            setImageViewDrawableColor(ivTouchTop,topDrawable,topColor,alpha);
-            setImageViewDrawableColor(ivTouchMid,midDrawable,midColor,alpha);
-            setImageViewDrawableColor(ivTouchBottom,bottomDrawable,bottomColor,alpha);
+            setImageViewDrawableColor(ivTouchTop, topDrawable, topColor, alpha);
+            setImageViewDrawableColor(ivTouchMid, midDrawable, midColor, alpha);
+            setImageViewDrawableColor(ivTouchBottom, bottomDrawable, bottomColor, alpha);
         }
     }
 

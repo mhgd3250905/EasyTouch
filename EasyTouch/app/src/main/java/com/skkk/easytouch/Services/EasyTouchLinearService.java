@@ -180,8 +180,9 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         leftBorder = 0;
         rightBorder = screenWidth;
 
-        menuWidth = dp2px(200f);
-        menuHeight = dp2px(300f);
+        menuWidth = 200;
+        menuHeight = 300;
+
 
         //设置布局管理器
         mParams = new WindowManager.LayoutParams();
@@ -311,9 +312,9 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         touchHeight = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_HEIGHT, DEFAULT_TOUCH_HEIGHT);
         vibrateLevel = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL, DEFAULT_VIBRATE_LEVEL);
 
-        topDrawable = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_DRAWABLE, R.drawable.shape_react_corners_top);
-        midDrawable = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_MID_DRAWABLE, R.drawable.shape_react_corners_mid);
-        bottomDrawable = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_DRAWABLE, R.drawable.shape_react_corners_bottom);
+        topDrawable = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_DRAWABLE, R.drawable.shape_react_top);
+        midDrawable = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_MID_DRAWABLE, R.drawable.shape_react_mid);
+        bottomDrawable = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_DRAWABLE, R.drawable.shape_react_bottom);
 
         topColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_COLOR, R.color.colorRecent);
         midColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_MID_COLOR, R.color.colorHome);
@@ -346,6 +347,21 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         setImageViewDrawableColor(ivTouchTop, topDrawable, topColor, colorAlpha);
         setImageViewDrawableColor(ivTouchMid, midDrawable, midColor, colorAlpha);
         setImageViewDrawableColor(ivTouchBottom, bottomDrawable, bottomColor, colorAlpha);
+
+        //设置二级菜单对齐位置
+        if (direction == Configs.Position.LEFT.getValue()) {
+            setMenuBallLeftLayoutParams(ivMenuBall0);
+            setMenuBallLeftLayoutParams(ivMenuBall1);
+            setMenuBallLeftLayoutParams(ivMenuBall2);
+            setMenuBallLeftLayoutParams(ivMenuBall3);
+            setMenuBallLeftLayoutParams(ivMenuBall4);
+        } else if (direction == Configs.Position.RIGHT.getValue()) {
+            setMenuBallRightLayoutParams(ivMenuBall0);
+            setMenuBallRightLayoutParams(ivMenuBall1);
+            setMenuBallRightLayoutParams(ivMenuBall2);
+            setMenuBallRightLayoutParams(ivMenuBall3);
+            setMenuBallRightLayoutParams(ivMenuBall4);
+        }
 
         initEvent();
 
@@ -614,6 +630,9 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                         hideMenuContainer(-1, null);
                     } else {
                         jump2LastApp();
+//                        Instrumentation instrumentation=new Instrumentation();
+//                        UiAutomation uiAutomation = instrumentation.getUiAutomation();
+//                        uiAutomation.takeScreenshot();
                     }
                 }
                 return false;
@@ -1068,7 +1087,11 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      * 显示隐藏菜单
      */
     private void showMenuContainer() {
-        mMenuParams.x = mParams.x + dp2px(touchWidth + 5);
+        if (direction == Configs.Position.LEFT.getValue()) {
+            mMenuParams.x = mParams.x + dp2px(touchWidth + 5);
+        } else if (direction == Configs.Position.RIGHT.getValue()) {
+            mMenuParams.x = screenWidth - dp2px(menuWidth) - dp2px(touchWidth + 5);
+        }
         mMenuParams.y = mParams.y;
         windowManager.addView(menuView, mMenuParams);
         isMenuShow = true;
@@ -1124,8 +1147,12 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         float radius = (float) (index * Math.PI / (count - 1));
 
         for (int i = 0; i < 180; i++) {
-            transXFloat[i] = (float) (Math.sin(radius * i / 180) * menuWidth / 2);
-            transYFloat[i] = (float) (menuWidth / 2 - Math.cos(radius * i / 180) * menuWidth / 2);
+            if (direction == Configs.Position.LEFT.getValue()) {
+                transXFloat[i] = (float) (Math.sin(radius * i / 180) * dp2px(menuWidth) / 2);
+            } else if (direction == Configs.Position.RIGHT.getValue()) {
+                transXFloat[i] = -(float) (Math.sin(radius * i / 180) * dp2px(menuWidth) / 2);
+            }
+            transYFloat[i] = (float) (dp2px(menuWidth) / 2 - Math.cos(radius * i / 180) * dp2px(menuWidth) / 2);
         }
 
         transXAnimShow = ObjectAnimator.ofFloat(view, "translationX", transXFloat);
@@ -1180,7 +1207,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         final int count = menuContainer.getChildCount();
 
         transXFrom = 0;
-        transYFrom = transYFrom + index * menuHeight / count;
+        transYFrom = transYFrom + index * dp2px(menuHeight) / count;
         transXTo = 0;
         transYTo = 0;
 
@@ -1301,7 +1328,11 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      * 显示详细菜单-声音设置
      */
     private void showMenuDetailVoice() {
-        mMenuDetailParams.x = mParams.x + dp2px(touchWidth);
+        if (direction == Configs.Position.LEFT.getValue()) {
+            mMenuDetailParams.x = mParams.x + dp2px(touchWidth);
+        } else if (direction == Configs.Position.RIGHT.getValue()) {
+            mMenuDetailParams.x = screenWidth - dp2px(220) - dp2px(touchWidth);
+        }
         mMenuDetailParams.y = mParams.y + dp2px((touchHeight - 200) / 2);
 
         windowManager.addView(menuDetailView, mMenuDetailParams);
@@ -1332,7 +1363,11 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      * 显示详细菜单-App设置
      */
     private void showMenuDetailApp() {
-        mMenuDetailParams.x = mParams.x + dp2px(touchWidth);
+        if (direction == Configs.Position.LEFT.getValue()) {
+            mMenuDetailParams.x = mParams.x + dp2px(touchWidth);
+        } else if (direction == Configs.Position.RIGHT.getValue()) {
+            mMenuDetailParams.x = screenWidth - dp2px(320) - dp2px(touchWidth);
+        }
         mMenuDetailParams.y = mParams.y + dp2px((touchHeight - 120) / 2);
 
         windowManager.addView(menuDetailView, mMenuDetailParams);
@@ -1364,7 +1399,11 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      * 显示详细菜单-支付设置
      */
     private void showMenuDetailPay() {
-        mMenuDetailParams.x = mParams.x + dp2px(touchWidth);
+        if (direction == Configs.Position.LEFT.getValue()) {
+            mMenuDetailParams.x = mParams.x + dp2px(touchWidth);
+        } else if (direction == Configs.Position.RIGHT.getValue()) {
+            mMenuDetailParams.x = screenWidth - dp2px(220) - dp2px(touchWidth);
+        }
         mMenuDetailParams.y = mParams.y + dp2px((touchHeight - 200) / 2);
 
         windowManager.addView(menuDetailView, mMenuDetailParams);
@@ -1510,7 +1549,9 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      */
     private void setMenuBallLeftLayoutParams(View v) {
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) v.getLayoutParams();
-        lp.addRule(RelativeLayout.CENTER_VERTICAL | RelativeLayout.ALIGN_PARENT_LEFT);
+        lp.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         v.setLayoutParams(lp);
     }
 
@@ -1521,7 +1562,9 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      */
     private void setMenuBallRightLayoutParams(View v) {
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) v.getLayoutParams();
-        lp.addRule(RelativeLayout.CENTER_VERTICAL | RelativeLayout.ALIGN_PARENT_RIGHT);
+        lp.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 
         v.setLayoutParams(lp);
     }
