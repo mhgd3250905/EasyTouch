@@ -113,13 +113,15 @@ public class TouchBallShapeFragment extends Fragment {
      */
     private void initUI() {
         radius = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS, dp2px(20));
-        sbRadius.setProgress(((radius / 3) - RADIUS_MIN) / RADIUS_STEP);
+        sbRadius.setProgress((radius - RADIUS_MIN) / RADIUS_STEP);
 
         vibrate = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL_BALL, Configs.DEFAULT_VIBRATE_LEVEL);
         sbVibrate.setProgress((vibrate - VIBRATE_MIN) / VIBRATE_STEP);
 
         alpha = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA_BALL, Configs.DEFAULT_ALPHA);
         sbAlpha.setProgress(alpha);
+
+        upDateTouchViewShape(radius);
     }
 
     /**

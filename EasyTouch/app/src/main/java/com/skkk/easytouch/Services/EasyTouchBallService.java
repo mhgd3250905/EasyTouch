@@ -295,7 +295,6 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         containerMenuDetailAppsBottom = (LinearLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_app_bottom);
 
         windowManager.addView(touchView, mParams);
-
     }
 
     /**
