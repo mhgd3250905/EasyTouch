@@ -23,8 +23,6 @@ import butterknife.ButterKnife;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Context.VIBRATOR_SERVICE;
-import static com.skkk.easytouch.View.TouchLinearShapeFragment.ITEM_HEIGHT_MIN;
-import static com.skkk.easytouch.View.TouchLinearShapeFragment.ITEM_HEIGHT_STEP;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -135,9 +133,9 @@ public class TouchBallShapeFragment extends Fragment {
         sbRadius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.i(TAG, "onProgressChanged: -->" + (RADIUS_MIN + progress * RADIUS_STEP) * 3);
-                upDateTouchViewShape((RADIUS_MIN + progress * RADIUS_STEP) * 3);
-                SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS, (RADIUS_MIN + progress * RADIUS_STEP) * 3);
+                Log.i(TAG, "onProgressChanged: -->" + (RADIUS_MIN + progress * RADIUS_STEP));
+                upDateTouchViewShape(RADIUS_MIN + progress * RADIUS_STEP);
+                SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS, RADIUS_MIN + progress * RADIUS_STEP);
             }
 
             @Override

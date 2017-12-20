@@ -24,6 +24,7 @@ import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.BounceInterpolator;
 import android.widget.CompoundButton;
@@ -43,6 +44,7 @@ import com.skkk.easytouch.Utils.IntentUtils;
 import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 
+import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_WIDTH;
 import static com.skkk.easytouch.Configs.DEFAULT_VIBRATE_LEVEL;
 import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_LEFT;
 
@@ -62,7 +64,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private float dx;
     private float dy;
 
-    private int touchWidth = Configs.DEFAULT_TOUCH_WIDTH;//悬浮条的宽度 单位dp
+    private int touchWidth = DEFAULT_TOUCH_WIDTH;//悬浮条的宽度 单位dp
     private int touchHeight = Configs.DEFAULT_TOUCH_HEIGHT;//悬浮条的高度 单位dp
 
 
@@ -73,7 +75,6 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private int direction;
     private int directionX;
     private ImageView ivTouchBall;
-    private LinearLayout llMenuContainer;
     private boolean canMove = false;
     private AnimatorSet set;
     private ObjectAnimator scaleXAnim;
@@ -249,7 +250,6 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         touchView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball, null);
         llTouchContainer = (RelativeLayout) touchView.findViewById(R.id.ll_touch_container);
         ivTouchBall = (ImageView) touchView.findViewById(R.id.ivTouchBall);
-        llMenuContainer = (LinearLayout) touchView.findViewById(R.id.ll_menu_container);
 
         menuView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball_menu, null);
         menuContainer = (RelativeLayout) menuView.findViewById(R.id.container_menu_ball);
@@ -293,14 +293,6 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
         containerMenuDetailAppsTop = (LinearLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_app_top);
         containerMenuDetailAppsBottom = (LinearLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_app_bottom);
-
-        llMenuContainer.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return false;
-            }
-        });
-
 
         windowManager.addView(touchView, mParams);
 
@@ -404,6 +396,12 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private void initTouchUI() {
         //初始化震动等级
         vibrateLevel = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL, DEFAULT_VIBRATE_LEVEL);
+        touchWidth=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_RADIUS,DEFAULT_TOUCH_WIDTH);
+
+        ViewGroup.LayoutParams containerLp = llTouchContainer.getLayoutParams();
+        containerLp.width = 2*dp2px(touchWidth);
+        containerLp.height = 2*dp2px(touchWidth);
+        llTouchContainer.setLayoutParams(containerLp);
 
         //设置是件监听
         initEvent();
