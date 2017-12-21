@@ -134,6 +134,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private ObjectAnimator touchBallScaleXAnim;
     private ObjectAnimator touchBallScaleYAnim;
     private int menuWidth;
+    private float touchAlpha;
 
 
     @Override
@@ -395,11 +396,13 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private void initTouchUI() {
         //初始化震动等级
         vibrateLevel = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL, DEFAULT_VIBRATE_LEVEL);
-        touchWidth=SpUtils.getInt(getApplicationContext(),Configs.KEY_TOUCH_UI_RADIUS,DEFAULT_TOUCH_WIDTH);
+        touchWidth = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS, DEFAULT_TOUCH_WIDTH);
+        touchAlpha = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA_BALL, Configs.DEFAULT_ALPHA)*1f;
+        ivTouchBall.setAlpha(touchAlpha/255f);
 
         ViewGroup.LayoutParams containerLp = llTouchContainer.getLayoutParams();
-        containerLp.width = 2*dp2px(touchWidth);
-        containerLp.height = 2*dp2px(touchWidth);
+        containerLp.width = 2 * dp2px(touchWidth);
+        containerLp.height = 2 * dp2px(touchWidth);
         llTouchContainer.setLayoutParams(containerLp);
 
         //设置是件监听
@@ -426,7 +429,6 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         initMneuDetailPayEvent();
         initMenuDetailAppEvent();
     }
-
 
 
     /**
@@ -709,6 +711,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
     /**
      * 打开App选择界面
+     *
      * @param finalIndex
      * @param value
      */
@@ -1256,7 +1259,8 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      * 显示点击效果
      */
     private void showTouchBall() {
-        ivTouchBall.setImageResource(R.drawable.vector_drawable_ball_press);
+        ivTouchBall.setAlpha(1f);
+//        ivTouchBall.setImageResource(R.drawable.vector_drawable_ball_press);
         handler.removeCallbacks(pressRunnable);
         handler.postDelayed(pressRunnable, 1000);
     }
@@ -1265,7 +1269,9 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      * 隐藏
      */
     private void hideTouchBall() {
-        ivTouchBall.setImageResource(R.drawable.vector_drawable_ball);
+        ivTouchBall.setAlpha(touchAlpha/255f);
+
+//        ivTouchBall.setImageResource(R.drawable.vector_drawable_ball);
     }
 
     /**

@@ -184,6 +184,7 @@ public class TouchBallShapeFragment extends Fragment {
                 Log.d(TAG, "onProgressChanged() called with: progress = [" + progress + "]");
                 alpha = progress;
                 SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA_BALL, progress);
+                upDateTouchViewShape(0);
             }
 
             @Override
@@ -211,6 +212,7 @@ public class TouchBallShapeFragment extends Fragment {
         }
         llTouchContainer.setLayoutParams(layoutParams);
 
+        ivTouchBall.setAlpha((float) alpha/255);
     }
 
     @Override
