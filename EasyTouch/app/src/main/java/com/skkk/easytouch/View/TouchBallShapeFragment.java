@@ -1,6 +1,7 @@
 package com.skkk.easytouch.View;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
@@ -11,12 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
+import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.SpUtils;
+import com.skkk.easytouch.View.BallDrawableSelect.BallDrawableSelectActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,6 +50,12 @@ public class TouchBallShapeFragment extends Fragment {
     AppCompatSeekBar sbVibrate;
     @Bind(R.id.sb_alpha)
     AppCompatSeekBar sbAlpha;
+    @Bind(R.id.rb_ball_drawable_system)
+    RadioButton rbBallDrawableSystem;
+    @Bind(R.id.rb_ball_drawable_custom)
+    RadioButton rbBallDrawableCustom;
+    @Bind(R.id.rg_ball_drawable)
+    RadioGroup rgBallDrawable;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -53,11 +64,12 @@ public class TouchBallShapeFragment extends Fragment {
     private int vibrate;
     private int alpha;
 
-    public static final int RADIUS_MIN=15;
-    public static final int RADIUS_STEP=5;
+    public static final int RADIUS_MIN = 15;
+    public static final int RADIUS_STEP = 5;
     public static final int VIBRATE_MIN = 0;
     public static final int VIBRATE_STEP = 10;
     private Vibrator vibrator;
+    private String drawableName;
 
 
     public TouchBallShapeFragment() {
@@ -108,6 +120,12 @@ public class TouchBallShapeFragment extends Fragment {
         initEvent();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        initUI();
+    }
+
     /**
      * 初始化UI
      */
@@ -121,6 +139,7 @@ public class TouchBallShapeFragment extends Fragment {
         alpha = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA_BALL, Configs.DEFAULT_ALPHA);
         sbAlpha.setProgress(alpha);
 
+        drawableName = SpUtils.getString(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_BACKGROUND_BALL, "ball_0");
         upDateTouchViewShape(radius);
     }
 
@@ -197,6 +216,17 @@ public class TouchBallShapeFragment extends Fragment {
 
             }
         });
+
+        rgBallDrawable.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.rb_ball_drawable_system) {
+                    startActivity(new Intent(getContext(), BallDrawableSelectActivity.class));
+                } else if (checkedId == R.id.rb_ball_drawable_custom) {
+
+                }
+            }
+        });
     }
 
     /**
@@ -211,8 +241,8 @@ public class TouchBallShapeFragment extends Fragment {
             layoutParams.height = 2 * dp2px(radius);
         }
         llTouchContainer.setLayoutParams(layoutParams);
-
-        ivTouchBall.setAlpha((float) alpha/255);
+        ivTouchBall.setImageResource(PackageUtils.getResource(getContext(), drawableName));
+        ivTouchBall.setAlpha((float) alpha / 255);
     }
 
     @Override

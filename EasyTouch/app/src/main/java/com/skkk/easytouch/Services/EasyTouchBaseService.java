@@ -62,7 +62,6 @@ public class EasyTouchBaseService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        vibrateLevel = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL,Configs.DEFAULT_VIBRATE_LEVEL);
         direction = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
         return super.onStartCommand(intent, flags, startId);
     }

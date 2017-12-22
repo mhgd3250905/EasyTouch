@@ -135,6 +135,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private ObjectAnimator touchBallScaleYAnim;
     private int menuWidth;
     private float touchAlpha;
+    private String drawableName;
 
 
     @Override
@@ -395,15 +396,17 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      */
     private void initTouchUI() {
         //初始化震动等级
-        vibrateLevel = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL, DEFAULT_VIBRATE_LEVEL);
+        vibrateLevel = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL_BALL, DEFAULT_VIBRATE_LEVEL);
         touchWidth = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS, DEFAULT_TOUCH_WIDTH);
         touchAlpha = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA_BALL, Configs.DEFAULT_ALPHA)*1f;
-        ivTouchBall.setAlpha(touchAlpha/255f);
+        drawableName = SpUtils.getString(getApplicationContext(), Configs.KEY_TOUCH_UI_BACKGROUND_BALL,"ball_0");
 
         ViewGroup.LayoutParams containerLp = llTouchContainer.getLayoutParams();
         containerLp.width = 2 * dp2px(touchWidth);
         containerLp.height = 2 * dp2px(touchWidth);
         llTouchContainer.setLayoutParams(containerLp);
+        ivTouchBall.setAlpha(touchAlpha/255f);
+        ivTouchBall.setImageResource(PackageUtils.getResource(getApplicationContext(),drawableName));
 
         //设置是件监听
         initEvent();
@@ -1260,7 +1263,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      */
     private void showTouchBall() {
         ivTouchBall.setAlpha(1f);
-//        ivTouchBall.setImageResource(R.drawable.vector_drawable_ball_press);
+//        ivTouchBall.setImageResource(R.drawable.ball_0);
         handler.removeCallbacks(pressRunnable);
         handler.postDelayed(pressRunnable, 1000);
     }

@@ -152,5 +152,11 @@ public class PackageUtils {
         return icon;
     }
 
+    public static int getResource(Context context, String imageName) {
+        int resId = context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
+        //如果没有在"mipmap"下找到imageName,将会返回0
+        return resId;
+    }
+
 
 }

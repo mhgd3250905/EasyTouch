@@ -52,7 +52,7 @@ public class Configs {
     public static final String KEY_TOUCH_UI_TOP_DRAWABLE = "key_touch_ui_top_drawable";
     public static final String KEY_TOUCH_UI_MID_DRAWABLE = "key_touch_ui_mid_drawable";
     public static final String KEY_TOUCH_UI_BOTTOM_DRAWABLE = "key_touch_ui_bottom_drawable";
-    public static final String KEY_TOUCH_UI_VIBRATE_LEVEL = "key_touch_ui_vibrate_level";
+    public static final String KEY_TOUCH_UI_VIBRATE_LEVEL_LINEAR = "key_touch_ui_vibrate_level_linear";
     public static final String KEY_TOUCH_UI_COLOR_ALPHA = "key_touch_ui_color_alpha";
     public static final String KEY_TOUCH_UI_THEME = "key_touch_ui_theme";
     public static final String KEY_TOUCH_UI_DIRECTION = "key_touch_ui_direction";
@@ -60,7 +60,7 @@ public class Configs {
     public static final String KEY_TOUCH_UI_RADIUS = "key_touch_ui_radius";
     public static final String KEY_TOUCH_UI_VIBRATE_LEVEL_BALL = "key_touch_ui_vibrate_level_ball";
     public static final String KEY_TOUCH_UI_COLOR_ALPHA_BALL = "key_touch_ui_color_alpha";
-    public static final String key_touch_ui_background_ball = "key_touch_ui_background_ball";
+    public static final String KEY_TOUCH_UI_BACKGROUND_BALL = "key_touch_ui_background_ball";
 
 
 

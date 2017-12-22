@@ -59,7 +59,10 @@
         <activity
             android:name=".ShapeSettingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AppSelectActivity"></activity>
+        <activity android:name=".AppSelectActivity" />
+        <activity
+            android:name=".View.BallDrawableSelect.BallDrawableSelectActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

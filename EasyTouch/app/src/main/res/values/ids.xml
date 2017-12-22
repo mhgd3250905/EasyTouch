@@ -86,4 +86,12 @@
     <item name="tl_setting_shape" type="id">tl_setting_shape</item>
     <item name="vp_setting_shape" type="id">vp_setting_shape</item>
     <item name="sb_radius" type="id">sb_radius</item>
+    <item name="tb_ball_drawable_select" type="id">tb_ball_drawable_select</item>
+    <item name="rv_ball_drawable_select" type="id">rv_ball_drawable_select</item>
+    <item name="item_drawable_select" type="id">item_drawable_select</item>
+    <item name="iv_item_drawable_select" type="id">iv_item_drawable_select</item>
+    <item name="rg_ball_drawable" type="id">rg_ball_drawable</item>
+    <item name="rb_ball_theme" type="id">rb_ball_theme</item>
+    <item name="rb_ball_drawable_system" type="id">rb_ball_drawable_system</item>
+    <item name="rb_ball_drawable_custom" type="id">rb_ball_drawable_custom</item>
 </resources>

@@ -156,7 +156,7 @@ public class TouchLinearShapeFragment extends Fragment {
         setWidth = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_WIDTH, Configs.DEFAULT_TOUCH_WIDTH);
         sbWidth.setProgress((setWidth - ITEM_WIDTH_MIN) / ITEM_WIDTH_STEP);
 
-        setVibrate = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL, Configs.DEFAULT_VIBRATE_LEVEL);
+        setVibrate = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL_LINEAR, Configs.DEFAULT_VIBRATE_LEVEL);
         sbVibrate.setProgress((setHeight - VIBRATE_MIN) / VIBRATE_STEP);
 
         alpha = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA, Configs.DEFAULT_ALPHA);
@@ -223,7 +223,7 @@ public class TouchLinearShapeFragment extends Fragment {
                 Log.d(TAG, "onProgressChanged() called with: progress = [" + progress + "]");
                 vibrator.vibrate(VIBRATE_MIN + progress * VIBRATE_STEP);
                 upDateTouchViewShape(0, 0);
-                SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL, (VIBRATE_MIN + progress * 10));
+                SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL_LINEAR, (VIBRATE_MIN + progress * 10));
             }
 
             @Override
