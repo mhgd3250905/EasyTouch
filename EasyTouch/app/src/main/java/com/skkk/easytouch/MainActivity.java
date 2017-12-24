@@ -183,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, ShapeSettingActivity.class));
-                stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
             }
         });
 

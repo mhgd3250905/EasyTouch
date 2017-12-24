@@ -12,14 +12,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
+import com.skkk.easytouch.Services.EasyTouchBallService;
 import com.skkk.easytouch.Utils.PackageUtils;
+import com.skkk.easytouch.Utils.ServiceUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.BallDrawableSelect.BallDrawableSelectActivity;
 
@@ -50,12 +51,9 @@ public class TouchBallShapeFragment extends Fragment {
     AppCompatSeekBar sbVibrate;
     @Bind(R.id.sb_alpha)
     AppCompatSeekBar sbAlpha;
-    @Bind(R.id.rb_ball_drawable_system)
-    RadioButton rbBallDrawableSystem;
-    @Bind(R.id.rb_ball_drawable_custom)
-    RadioButton rbBallDrawableCustom;
-    @Bind(R.id.rg_ball_drawable)
-    RadioGroup rgBallDrawable;
+    @Bind(R.id.tv_ball_drawable)
+    TextView tvBallDrawable;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -70,6 +68,7 @@ public class TouchBallShapeFragment extends Fragment {
     public static final int VIBRATE_STEP = 10;
     private Vibrator vibrator;
     private String drawableName;
+    private boolean isServiceRunning = false;
 
 
     public TouchBallShapeFragment() {
@@ -124,6 +123,15 @@ public class TouchBallShapeFragment extends Fragment {
     public void onStart() {
         super.onStart();
         initUI();
+        //如果悬浮球存在，那么就更新悬浮球
+        if (ServiceUtils.isServiceRun(getContext().getApplicationContext(), Configs.NAME_SERVICE_TOUCH_BALL)) {
+            ivTouchBall.setVisibility(View.INVISIBLE);
+            getActivity().stopService(new Intent(getActivity(), EasyTouchBallService.class));
+            getActivity().startService(new Intent(getActivity(), EasyTouchBallService.class));
+            isServiceRunning = true;
+        } else {
+            isServiceRunning = false;
+        }
     }
 
     /**
@@ -217,16 +225,16 @@ public class TouchBallShapeFragment extends Fragment {
             }
         });
 
-        rgBallDrawable.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        /**
+         * 点击选择图片
+         */
+        tvBallDrawable.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.rb_ball_drawable_system) {
-                    startActivity(new Intent(getContext(), BallDrawableSelectActivity.class));
-                } else if (checkedId == R.id.rb_ball_drawable_custom) {
-
-                }
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), BallDrawableSelectActivity.class));
             }
         });
+
     }
 
     /**
@@ -235,14 +243,18 @@ public class TouchBallShapeFragment extends Fragment {
      * @param radius
      */
     public void upDateTouchViewShape(int radius) {
-        ViewGroup.LayoutParams layoutParams = llTouchContainer.getLayoutParams();
-        if (radius != 0) {
-            layoutParams.width = 2 * dp2px(radius);
-            layoutParams.height = 2 * dp2px(radius);
+        if (isServiceRunning) {
+            getActivity().startService(new Intent(getActivity(), EasyTouchBallService.class));
+        } else {
+            ViewGroup.LayoutParams layoutParams = llTouchContainer.getLayoutParams();
+            if (radius != 0) {
+                layoutParams.width = 2 * dp2px(radius);
+                layoutParams.height = 2 * dp2px(radius);
+            }
+            llTouchContainer.setLayoutParams(layoutParams);
+            ivTouchBall.setImageResource(PackageUtils.getResource(getContext(), drawableName));
+            ivTouchBall.setAlpha((float) alpha / 255);
         }
-        llTouchContainer.setLayoutParams(layoutParams);
-        ivTouchBall.setImageResource(PackageUtils.getResource(getContext(), drawableName));
-        ivTouchBall.setAlpha((float) alpha / 255);
     }
 
     @Override

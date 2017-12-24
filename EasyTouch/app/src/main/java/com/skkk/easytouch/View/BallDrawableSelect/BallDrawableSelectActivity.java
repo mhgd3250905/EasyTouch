@@ -28,7 +28,7 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
     private GridLayoutManager layoutManager;
     private BallDrawableSelectAdapter adapter;
     private List<String> mDataList;
-    private final int COLUMN_COUNT=4;
+    private final int COLUMN_COUNT = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +54,7 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
 
         layoutManager = new GridLayoutManager(BallDrawableSelectActivity.this, COLUMN_COUNT);
         mDataList = getDrawableList();
+        mDataList.add(0,"ic_add_gray");
         adapter = new BallDrawableSelectAdapter(BallDrawableSelectActivity.this, mDataList);
         rvBallDrawableSelect.setLayoutManager(layoutManager);
         rvBallDrawableSelect.setAdapter(adapter);
@@ -66,7 +67,7 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int pos) {
-                SpUtils.saveString(getApplicationContext(), Configs.KEY_TOUCH_UI_BACKGROUND_BALL,mDataList.get(pos));
+                SpUtils.saveString(getApplicationContext(), Configs.KEY_TOUCH_UI_BACKGROUND_BALL, mDataList.get(pos));
                 finish();
             }
         });
@@ -74,12 +75,13 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
 
     /**
      * 获取所有图片的名字
+     *
      * @return
      */
     public List<String> getDrawableList() {
-        List<String> names=new ArrayList<>();
+        List<String> names = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            names.add("ball_"+i);
+            names.add("ball_" + i);
         }
         return names;
     }

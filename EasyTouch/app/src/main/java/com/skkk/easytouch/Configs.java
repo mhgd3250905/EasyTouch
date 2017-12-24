@@ -44,6 +44,9 @@ public class Configs {
         void onAnimEnd();
     }
 
+    public static final String NAME_SERVICE_TOUCH_BALL="com.skkk.easytouch.Services.EasyTouchBallService";
+    public static final String NAME_SERVICE_TOUCH_LINEAR="com.skkk.easytouch.Services.EasyTouchLinearService";
+
     public static final String KEY_TOUCH_UI_WIDTH = "key_touch_ui_width";
     public static final String KEY_TOUCH_UI_HEIGHT = "key_touch_ui_height";
     public static final String KEY_TOUCH_UI_TOP_COLOR = "key_touch_ui_top_color";
