@@ -30,11 +30,9 @@ public class FunctionDetailSelectActivity extends AppCompatActivity {
     @Bind(R.id.vp_function_detail_select)
     ViewPager vpFunctionDetailSelect;
 
-
     private ArrayList<Fragment> fragmentList;
-    private String[] TITLE = new String[]{"悬浮条", "悬浮球"};
+    private String[] TITLE = new String[]{"基础操作", "应用"};
     private ViewPagerAdapter adapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +47,7 @@ public class FunctionDetailSelectActivity extends AppCompatActivity {
      * 初始化UI
      */
     private void initUI() {
-        tbFunctionDetailSelect.setTitle("外观设置");
+        tbFunctionDetailSelect.setTitle("功能选择");
         tbFunctionDetailSelect.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
