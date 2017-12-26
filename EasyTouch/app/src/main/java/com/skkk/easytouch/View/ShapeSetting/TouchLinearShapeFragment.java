@@ -1,4 +1,4 @@
-package com.skkk.easytouch.View;
+package com.skkk.easytouch.View.ShapeSetting;
 
 
 import android.content.Context;
@@ -26,6 +26,8 @@ import com.skkk.easytouch.R;
 import com.skkk.easytouch.Services.EasyTouchLinearService;
 import com.skkk.easytouch.Utils.ServiceUtils;
 import com.skkk.easytouch.Utils.SpUtils;
+import com.skkk.easytouch.View.ColorPickerDialog;
+import com.skkk.easytouch.View.SettingItemView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

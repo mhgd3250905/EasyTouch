@@ -96,4 +96,17 @@
     <item name="rb_ball_drawable_custom" type="id">rb_ball_drawable_custom</item>
     <item name="tv_ball_drawable_system" type="id">tv_ball_drawable_system</item>
     <item name="tv_ball_drawable" type="id">tv_ball_drawable</item>
+    <item name="tb_function_select" type="id">tb_function_select</item>
+    <item name="tl_function_select" type="id">tl_function_select</item>
+    <item name="vp_function_select" type="id">vp_function_select</item>
+    <item name="siv_function_click" type="id">siv_function_click</item>
+    <item name="siv_function_long_click" type="id">siv_function_long_click</item>
+    <item name="siv_function_touch_left" type="id">siv_function_touch_left</item>
+    <item name="siv_function_touch_right" type="id">siv_function_touch_right</item>
+    <item name="siv_function_touch_up" type="id">siv_function_touch_up</item>
+    <item name="siv_function_touch_down" type="id">siv_function_touch_down</item>
+    <item name="siv_function_menu_number" type="id">siv_function_menu_number</item>
+    <item name="tb_function_detail_select" type="id">tb_function_detail_select</item>
+    <item name="vp_function_detail_select" type="id">vp_function_detail_select</item>
+    <item name="tl_function_detail_select" type="id">tl_function_detail_select</item>
 </resources>

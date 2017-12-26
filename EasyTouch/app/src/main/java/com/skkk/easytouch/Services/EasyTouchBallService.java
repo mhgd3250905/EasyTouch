@@ -36,7 +36,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.skkk.easytouch.AppSelectActivity;
+import com.skkk.easytouch.View.AppSelect.AppSelectActivity;
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
@@ -1081,7 +1081,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      */
     private void showMenuContainer() {
         mMenuParams.x = mParams.x;
-        mMenuParams.y = mParams.y - dp2px(80);
+        mMenuParams.y = mParams.y - menuWidth/2+dp2px(touchWidth);
         windowManager.addView(menuView, mMenuParams);
         isMenuShow = true;
         menuView.post(new Runnable() {

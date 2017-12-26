@@ -39,7 +39,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.skkk.easytouch.AppSelectActivity;
+import com.skkk.easytouch.View.AppSelect.AppSelectActivity;
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
@@ -48,7 +48,6 @@ import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 
 import static com.skkk.easytouch.Configs.DEFAULT_ALPHA;
-import static com.skkk.easytouch.Configs.DEFAULT_THEME;
 import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_HEIGHT;
 import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_WIDTH;
 import static com.skkk.easytouch.Configs.DEFAULT_VIBRATE_LEVEL;
@@ -322,17 +321,17 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 
         colorAlpha = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA, DEFAULT_ALPHA);
 
-        int theme = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_THEME, DEFAULT_THEME);
-
-        if (theme == Configs.TOUCH_UI_THEME_0) {
-            topDrawable = R.drawable.shape_react_corners_top;
-            midDrawable = R.drawable.shape_react_corners_mid;
-            bottomDrawable = R.drawable.shape_react_corners_bottom;
-        } else if (theme == Configs.TOUCH_UI_THEME_1) {
-            topDrawable = R.drawable.shape_react_top;
-            midDrawable = R.drawable.shape_react_mid;
-            bottomDrawable = R.drawable.shape_react_bottom;
-        }
+//        int theme = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_THEME, DEFAULT_THEME);
+//
+//        if (theme == Configs.TOUCH_UI_THEME_0) {
+//            topDrawable = R.drawable.shape_react_corners_top;
+//            midDrawable = R.drawable.shape_react_corners_mid;
+//            bottomDrawable = R.drawable.shape_react_corners_bottom;
+//        } else if (theme == Configs.TOUCH_UI_THEME_1) {
+//            topDrawable = R.drawable.shape_react_top;
+//            midDrawable = R.drawable.shape_react_mid;
+//            bottomDrawable = R.drawable.shape_react_bottom;
+//        }
 
         ViewGroup.LayoutParams containerLp = llTouchContainer.getLayoutParams();
         containerLp.width = dp2px(touchWidth);
@@ -1207,7 +1206,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         final int count = menuContainer.getChildCount();
 
         transXFrom = 0;
-        transYFrom = transYFrom + index * dp2px(menuHeight) / count;
+        transYFrom = transYFrom + index * dp2px(touchHeight) / count;
         transXTo = 0;
         transYTo = 0;
 

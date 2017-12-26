@@ -1,4 +1,4 @@
-package com.skkk.easytouch;
+package com.skkk.easytouch.View.ShapeSetting;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -9,8 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.skkk.easytouch.View.TouchBallShapeFragment;
-import com.skkk.easytouch.View.TouchLinearShapeFragment;
+import com.skkk.easytouch.R;
 
 import java.util.ArrayList;
 import java.util.List;

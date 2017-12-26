@@ -1,4 +1,4 @@
-package com.skkk.easytouch.View;
+package com.skkk.easytouch.View.ShapeSetting;
 
 
 import android.content.Intent;

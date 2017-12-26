@@ -1,8 +1,11 @@
-package com.skkk.easytouch;
+package com.skkk.easytouch.View.AppSelect;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
+
+import com.skkk.easytouch.Configs;
+import com.skkk.easytouch.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

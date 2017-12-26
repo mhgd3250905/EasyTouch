@@ -1,4 +1,4 @@
-package com.skkk.easytouch;
+package com.skkk.easytouch.View.AppSelect;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.gson.Gson;
+import com.skkk.easytouch.Configs;
+import com.skkk.easytouch.R;
 import com.skkk.easytouch.Services.EasyTouchBallService;
 import com.skkk.easytouch.Services.EasyTouchLinearService;
 import com.skkk.easytouch.Utils.PackageUtils;

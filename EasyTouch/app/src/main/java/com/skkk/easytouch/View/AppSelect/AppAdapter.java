@@ -1,4 +1,4 @@
-package com.skkk.easytouch;
+package com.skkk.easytouch.View.AppSelect;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.skkk.easytouch.AppViewHolder;
+import com.skkk.easytouch.R;
 import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.View.BaseAdapter;
 

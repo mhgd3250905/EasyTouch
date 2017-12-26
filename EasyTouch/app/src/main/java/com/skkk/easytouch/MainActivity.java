@@ -31,6 +31,7 @@ import com.skkk.easytouch.Services.FloatService;
 import com.skkk.easytouch.Utils.DialogUtils;
 import com.skkk.easytouch.Utils.ServiceUtils;
 import com.skkk.easytouch.View.SettingItemView;
+import com.skkk.easytouch.View.ShapeSetting.ShapeSettingActivity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
@@ -29,6 +30,8 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
     private BallDrawableSelectAdapter adapter;
     private List<String> mDataList;
     private final int COLUMN_COUNT = 4;
+
+    private final int MENU_BALL_RADIUS=20;//菜单球的半径
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +70,12 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int pos) {
-                SpUtils.saveString(getApplicationContext(), Configs.KEY_TOUCH_UI_BACKGROUND_BALL, mDataList.get(pos));
-                finish();
+                if (pos!=0) {
+                    SpUtils.saveString(getApplicationContext(), Configs.KEY_TOUCH_UI_BACKGROUND_BALL, mDataList.get(pos));
+                    finish();
+                }else {
+                    Toast.makeText(BallDrawableSelectActivity.this, "选择相册图片！", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

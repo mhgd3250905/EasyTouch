@@ -57,11 +57,17 @@
         </receiver>
 
         <activity
-            android:name=".ShapeSettingActivity"
+            android:name=".View.ShapeSetting.ShapeSettingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AppSelectActivity" />
+        <activity android:name=".View.AppSelect.AppSelectActivity" />
         <activity
             android:name=".View.BallDrawableSelect.BallDrawableSelectActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".View.FunctionSelect.FunctionSelectActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".View.AppSelect.FunctionDetailSelectActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
