@@ -40,12 +40,23 @@ public class Configs {
         }
     }
 
+    public enum TouchDirection {
+        UP,
+        LEFT,
+        DOWN,
+        RIGHT;
+        public int getValue() {
+            return this.ordinal();
+        }
+
+    }
+
     public interface OnAnimEndListener {
         void onAnimEnd();
     }
 
-    public static final String NAME_SERVICE_TOUCH_BALL="com.skkk.easytouch.Services.EasyTouchBallService";
-    public static final String NAME_SERVICE_TOUCH_LINEAR="com.skkk.easytouch.Services.EasyTouchLinearService";
+    public static final String NAME_SERVICE_TOUCH_BALL = "com.skkk.easytouch.Services.EasyTouchBallService";
+    public static final String NAME_SERVICE_TOUCH_LINEAR = "com.skkk.easytouch.Services.EasyTouchLinearService";
 
     public static final String KEY_TOUCH_UI_WIDTH = "key_touch_ui_width";
     public static final String KEY_TOUCH_UI_HEIGHT = "key_touch_ui_height";
@@ -64,8 +75,6 @@ public class Configs {
     public static final String KEY_TOUCH_UI_VIBRATE_LEVEL_BALL = "key_touch_ui_vibrate_level_ball";
     public static final String KEY_TOUCH_UI_COLOR_ALPHA_BALL = "key_touch_ui_color_alpha";
     public static final String KEY_TOUCH_UI_BACKGROUND_BALL = "key_touch_ui_background_ball";
-
-
 
 
     public static final String KEY_BALL_MENU_TOP_APPS_ = "key_ball_menu_top_apps_";
