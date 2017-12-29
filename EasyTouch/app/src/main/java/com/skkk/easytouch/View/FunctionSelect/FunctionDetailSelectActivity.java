@@ -1,4 +1,4 @@
-package com.skkk.easytouch.View.AppSelect;
+package com.skkk.easytouch.View.FunctionSelect;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;

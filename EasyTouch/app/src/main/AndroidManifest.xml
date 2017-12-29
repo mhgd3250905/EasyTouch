@@ -67,7 +67,7 @@
             android:name=".View.FunctionSelect.FunctionSelectActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".View.AppSelect.FunctionDetailSelectActivity"
+            android:name=".View.FunctionSelect.FunctionDetailSelectActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
