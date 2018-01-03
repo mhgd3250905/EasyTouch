@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -62,13 +64,21 @@
         <activity android:name=".View.AppSelect.AppSelectActivity" />
         <activity
             android:name=".View.BallDrawableSelect.BallDrawableSelectActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity
-            android:name=".View.FunctionSelect.FunctionSelectActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".View.FunctionSelect.FunctionDetailSelectActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!-- 适配Android7.0拍照 -->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.skkk.easytouch.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

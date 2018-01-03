@@ -29,8 +29,10 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class BallDrawableSelectActivity extends AppCompatActivity {
+import static android.os.Build.VERSION_CODES.M;
 
+public class BallDrawableSelectActivity extends AppCompatActivity {
+    private static final String TAG = "BallDrawableSelectActiv";
     @Bind(R.id.tb_ball_drawable_select)
     Toolbar tbBallDrawableSelect;
     @Bind(R.id.rv_ball_drawable_select)
@@ -118,7 +120,6 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
                     }
                     break;
                 case Configs.RESULT_PHOTO_REQUEST_CUT:
-                    SpUtils.saveString(getApplicationContext(), Configs.KEY_TOUCH_UI_BACKGROUND_BALL, Configs.KEY_PHOTO_CUSTOM_DRAWABLE);
                     finish();
                     break;
             }

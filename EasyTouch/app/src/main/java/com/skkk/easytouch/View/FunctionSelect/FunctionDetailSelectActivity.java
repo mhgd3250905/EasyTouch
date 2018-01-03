@@ -11,8 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.skkk.easytouch.R;
-import com.skkk.easytouch.View.ShapeSetting.TouchBallShapeFragment;
-import com.skkk.easytouch.View.ShapeSetting.TouchLinearShapeFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +29,7 @@ public class FunctionDetailSelectActivity extends AppCompatActivity {
     ViewPager vpFunctionDetailSelect;
 
     private ArrayList<Fragment> fragmentList;
-    private String[] TITLE = new String[]{"基础操作", "应用"};
+    private String[] TITLE = new String[]{"基础操作", "应用","快捷方式"};
     private ViewPagerAdapter adapter;
 
     @Override
@@ -57,8 +55,9 @@ public class FunctionDetailSelectActivity extends AppCompatActivity {
         tbFunctionDetailSelect.setNavigationIcon(R.drawable.ic_arrow_back_white);
 
         fragmentList = new ArrayList<Fragment>();
-        fragmentList.add(TouchLinearShapeFragment.newInstance("", ""));
-        fragmentList.add(TouchBallShapeFragment.newInstance("", ""));
+        fragmentList.add(FunctionDetailBaseFragment.newInstance("", ""));
+        fragmentList.add(FunctionDetailAppFragment.newInstance("", ""));
+        fragmentList.add(FunctionDetailShortCutFragment.newInstance("", ""));
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), fragmentList, TITLE);
         vpFunctionDetailSelect.setAdapter(adapter);

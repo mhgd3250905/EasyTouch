@@ -109,4 +109,10 @@
     <item name="tb_function_detail_select" type="id">tb_function_detail_select</item>
     <item name="vp_function_detail_select" type="id">vp_function_detail_select</item>
     <item name="tl_function_detail_select" type="id">tl_function_detail_select</item>
+    <item name="tv_item_back" type="id">tv_item_back</item>
+    <item name="tv_item_home" type="id">tv_item_home</item>
+    <item name="tv_item_location" type="id">tv_item_location</item>
+    <item name="tv_item_voice" type="id">tv_item_voice</item>
+    <item name="tv_item_pay" type="id">tv_item_pay</item>
+    <item name="tv_item_app" type="id">tv_item_app</item>
 </resources>

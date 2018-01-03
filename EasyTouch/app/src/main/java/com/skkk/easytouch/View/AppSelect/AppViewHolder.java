@@ -1,9 +1,10 @@
-package com.skkk.easytouch;
+package com.skkk.easytouch.View.AppSelect;
 
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.skkk.easytouch.R;
 import com.skkk.easytouch.View.BaseViewHolder;
 
 /**

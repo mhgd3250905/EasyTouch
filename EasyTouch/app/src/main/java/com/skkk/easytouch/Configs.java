@@ -1,5 +1,7 @@
 package com.skkk.easytouch;
 
+import android.os.Environment;
+
 /**
  * 创建于 2017/10/25
  * 作者 admin
@@ -11,6 +13,15 @@ package com.skkk.easytouch;
 * 时    间：2017/10/25$ 23:24$.
 */
 public class Configs {
+
+    public static final String SAVED_IMAGE_NAME = "touchDrawable.png";
+    public static final String KEY_TOUCH_UI_BACKGROUND_BALL_CUSTOM = "key_touch_ui_background_ball_custom";
+    public static final int RESULT_PHOTO_REQUEST_CUT = 100;
+    public static final int RESULT_PHOTO_REQUEST_TAKE_PHOTO = 101;
+    public static final int RESULT_PHOTO_REQUEST_GALLERY = 102;
+    public static String SAVED_IMAGE_DIR_PATH=
+            Environment.getExternalStorageDirectory().getPath()
+                    + "/EasyTouch/camera/";
 
     public enum Position {
         LEFT,
