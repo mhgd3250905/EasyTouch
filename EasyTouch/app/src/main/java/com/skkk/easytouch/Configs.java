@@ -19,6 +19,7 @@ public class Configs {
     public static final int RESULT_PHOTO_REQUEST_CUT = 100;
     public static final int RESULT_PHOTO_REQUEST_TAKE_PHOTO = 101;
     public static final int RESULT_PHOTO_REQUEST_GALLERY = 102;
+    public static final String KEY_PHOTO_CUSTOM_DRAWABLE = "key_photo_custom_drawable";
     public static String SAVED_IMAGE_DIR_PATH=
             Environment.getExternalStorageDirectory().getPath()
                     + "/EasyTouch/camera/";

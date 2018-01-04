@@ -116,10 +116,10 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
                     if (data != null) {
                         Uri uriImageFromGallery = data.getData();
                         IntentUtils.startPhotoZoom(BallDrawableSelectActivity.this,uriImageFromGallery,200);
-                        finish();
                     }
                     break;
                 case Configs.RESULT_PHOTO_REQUEST_CUT:
+                    SpUtils.saveString(getApplicationContext(), Configs.KEY_TOUCH_UI_BACKGROUND_BALL, Configs.KEY_PHOTO_CUSTOM_DRAWABLE);
                     finish();
                     break;
             }

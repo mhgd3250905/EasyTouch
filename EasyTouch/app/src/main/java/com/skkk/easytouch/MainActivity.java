@@ -30,6 +30,7 @@ import com.skkk.easytouch.Services.EasyTouchLinearService;
 import com.skkk.easytouch.Services.FloatService;
 import com.skkk.easytouch.Utils.DialogUtils;
 import com.skkk.easytouch.Utils.ServiceUtils;
+import com.skkk.easytouch.View.FunctionSelect.FunctionSelectActivity;
 import com.skkk.easytouch.View.SettingItemView;
 import com.skkk.easytouch.View.ShapeSetting.ShapeSettingActivity;
 
@@ -187,6 +188,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //设置功能
+        settingsItemFunc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, FunctionSelectActivity.class));
+            }
+        });
 
         btnTouchLine.setOnClickListener(new View.OnClickListener() {
             @Override

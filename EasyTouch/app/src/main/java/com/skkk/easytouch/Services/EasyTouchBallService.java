@@ -14,6 +14,7 @@ import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Vibrator;
@@ -410,7 +411,13 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         containerLp.height = 2 * dp2px(touchWidth);
         llTouchContainer.setLayoutParams(containerLp);
         ivTouchBall.setAlpha(touchAlpha / 255f);
-        ivTouchBall.setImageResource(PackageUtils.getResource(getApplicationContext(), drawableName));
+
+        if (drawableName.equals(Configs.KEY_PHOTO_CUSTOM_DRAWABLE)) {
+            ivTouchBall.setImageURI(Uri.parse(SpUtils.getString(getApplicationContext(),Configs.KEY_TOUCH_UI_BACKGROUND_BALL_CUSTOM,"ball_0")));
+        } else {
+            ivTouchBall.setImageResource(PackageUtils.getResource(getApplicationContext(), drawableName));
+        }
+
 
         //设置是件监听
         initEvent();

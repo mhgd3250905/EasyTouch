@@ -18,24 +18,24 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class FunctionDetailSelectActivity extends AppCompatActivity {
+public class FunctionSelectActivity extends AppCompatActivity {
 
-    private static final String TAG = "ShapeSettingActivity";
-    @Bind(R.id.tb_function_detail_select)
-    Toolbar tbFunctionDetailSelect;
-    @Bind(R.id.tl_function_detail_select)
-    TabLayout tlFunctionDetailSelect;
-    @Bind(R.id.vp_function_detail_select)
-    ViewPager vpFunctionDetailSelect;
+    private static final String TAG = "FunctionSelectActivity";
+    @Bind(R.id.tb_function_select)
+    Toolbar tbFunctionSelect;
+    @Bind(R.id.tl_function_select)
+    TabLayout tlFunctionSelect;
+    @Bind(R.id.vp_function_select)
+    ViewPager vpFunctionSelect;
 
     private ArrayList<Fragment> fragmentList;
-    private String[] TITLE = new String[]{"基础操作", "应用","快捷方式"};
+    private String[] TITLE = new String[]{"悬浮条", "悬浮球"};
     private ViewPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_function_detail_select);
+        setContentView(R.layout.activity_function_select);
         ButterKnife.bind(this);
 
         initUI();
@@ -45,32 +45,31 @@ public class FunctionDetailSelectActivity extends AppCompatActivity {
      * 初始化UI
      */
     private void initUI() {
-        tbFunctionDetailSelect.setTitle("功能选择");
-        tbFunctionDetailSelect.setNavigationOnClickListener(new View.OnClickListener() {
+        tbFunctionSelect.setTitle("功能选择");
+        tbFunctionSelect.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-        tbFunctionDetailSelect.setNavigationIcon(R.drawable.ic_arrow_back_white);
+        tbFunctionSelect.setNavigationIcon(R.drawable.ic_arrow_back_white);
 
         fragmentList = new ArrayList<Fragment>();
-        fragmentList.add(FunctionDetailBaseFragment.newInstance("", ""));
-        fragmentList.add(FunctionDetailAppFragment.newInstance("", ""));
-        fragmentList.add(FunctionDetailShortCutFragment.newInstance("", ""));
+        fragmentList.add(FunctionBallFragment.newInstance("", ""));
+        fragmentList.add(FunctionBallFragment.newInstance("", ""));
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), fragmentList, TITLE);
-        vpFunctionDetailSelect.setAdapter(adapter);
+        vpFunctionSelect.setAdapter(adapter);
 
         //实例化TabPageIndicator然后设置ViewPager与之关联
-        tlFunctionDetailSelect.setupWithViewPager(vpFunctionDetailSelect);
+        tlFunctionSelect.setupWithViewPager(vpFunctionSelect);
 
         //如果我们要对ViewPager设置监听，用indicator设置就行了
-        tlFunctionDetailSelect.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tlFunctionSelect.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                vpFunctionDetailSelect.setCurrentItem(tab.getPosition());
+                vpFunctionSelect.setCurrentItem(tab.getPosition());
             }
 
             @Override
