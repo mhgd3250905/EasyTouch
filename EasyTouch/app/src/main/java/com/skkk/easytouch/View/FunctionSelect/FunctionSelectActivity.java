@@ -1,5 +1,6 @@
 package com.skkk.easytouch.View.FunctionSelect;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -31,14 +32,22 @@ public class FunctionSelectActivity extends AppCompatActivity {
     private ArrayList<Fragment> fragmentList;
     private String[] TITLE = new String[]{"悬浮条", "悬浮球"};
     private ViewPagerAdapter adapter;
+    private Fragment ballfragment;
+    private Fragment linearfragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_function_select);
         ButterKnife.bind(this);
-
+        initData();
         initUI();
+    }
+
+    /**
+     * 初始化Data
+     */
+    private void initData() {
     }
 
     /**
@@ -55,8 +64,10 @@ public class FunctionSelectActivity extends AppCompatActivity {
         tbFunctionSelect.setNavigationIcon(R.drawable.ic_arrow_back_white);
 
         fragmentList = new ArrayList<Fragment>();
-        fragmentList.add(FunctionBallFragment.newInstance("", ""));
-        fragmentList.add(FunctionBallFragment.newInstance("", ""));
+        linearfragment = FunctionBallFragment.newInstance("","");
+        ballfragment = FunctionBallFragment.newInstance("","");
+        fragmentList.add(linearfragment);
+        fragmentList.add(ballfragment);
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), fragmentList, TITLE);
         vpFunctionSelect.setAdapter(adapter);
@@ -85,6 +96,12 @@ public class FunctionSelectActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        linearfragment.onActivityResult(requestCode,resultCode,data);
+        ballfragment.onActivityResult(requestCode,resultCode,data);
+    }
 
     public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private List<Fragment> fragments;

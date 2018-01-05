@@ -115,4 +115,6 @@
     <item name="tv_item_voice" type="id">tv_item_voice</item>
     <item name="tv_item_pay" type="id">tv_item_pay</item>
     <item name="tv_item_app" type="id">tv_item_app</item>
+    <item name="tv_item_notification" type="id">tv_item_notification</item>
+    <item name="tv_item_recent" type="id">tv_item_recent</item>
 </resources>

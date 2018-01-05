@@ -1,5 +1,6 @@
 package com.skkk.easytouch.View.FunctionSelect;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.skkk.easytouch.R;
+import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.SettingItemView;
 
 import butterknife.Bind;
@@ -82,7 +84,41 @@ public class FunctionBallFragment extends Fragment {
      * 初始化UI
      */
     private void initUI() {
+        setItemDesc(FuncConfigs.VALUE_FUNC_OP_CLICK, sivFunctionClick);
+        setItemDesc(FuncConfigs.VALUE_FUNC_OP_LONG_CLICK, sivFunctionLongClick);
+        setItemDesc(FuncConfigs.VALUE_FUNC_OP_FLING_UP, sivFunctionTouchUp);
+        setItemDesc(FuncConfigs.VALUE_FUNC_OP_FLING_LEFT, sivFunctionTouchLeft);
+        setItemDesc(FuncConfigs.VALUE_FUNC_OP_FLING_BOTTOM, sivFunctionTouchDown);
+        setItemDesc(FuncConfigs.VALUE_FUNC_OP_FLING_RIGHT, sivFunctionTouchRight);
+    }
 
+    /**
+     * 根据操作类型来确定对应保存的操作目的
+     *
+     * @param opType
+     * @param item
+     */
+    private void setItemDesc(String opType, SettingItemView item) {
+        int funcType = SpUtils.getInt(getContext().getApplicationContext(), opType, FuncConfigs.Func.BACK.getValue());
+        String funcDesc = "";
+        if (funcType == FuncConfigs.Func.BACK.getValue()) {//返回键
+            funcDesc = "返回";
+        } else if (funcType == FuncConfigs.Func.HOME.getValue()) {//Home键
+            funcDesc = "主页";
+        } else if (funcType == FuncConfigs.Func.RECENT.getValue()) {//任务键
+            funcDesc = "任务";
+        } else if (funcType == FuncConfigs.Func.NOTIFICATION.getValue()) {//通知栏
+            funcDesc = "通知";
+        } else if (funcType == FuncConfigs.Func.TRUN_POS.getValue()) {//切换位置
+            funcDesc = "切换位置";
+        } else if (funcType == FuncConfigs.Func.VOICE_MENU.getValue()) {//声音菜单
+            funcDesc = "音量菜单";
+        } else if (funcType == FuncConfigs.Func.PAY_MENU.getValue()) {//支付菜单
+            funcDesc = "支付菜单";
+        } else if (funcType == FuncConfigs.Func.APP_MENU.getValue()) {//app菜单
+            funcDesc = "快捷App菜单";
+        }
+        item.setValue(funcDesc);
     }
 
 
@@ -97,28 +133,46 @@ public class FunctionBallFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FuncConfigs.REQUEST_SELECT_FUNC_DETAIL) {
+            initUI();
+        }
+
+    }
+
     /**
      * 点击事件
+     *
      * @param view
      */
     @OnClick({R.id.siv_function_click, R.id.siv_function_long_click, R.id.siv_function_touch_left, R.id.siv_function_touch_right, R.id.siv_function_touch_up, R.id.siv_function_touch_down, R.id.siv_function_menu_number})
     public void onViewClicked(View view) {
+        Intent intent = new Intent();
         switch (view.getId()) {
             case R.id.siv_function_click:
-
+                intent.putExtra(FuncConfigs.KEY_FUNC_OP, FuncConfigs.VALUE_FUNC_OP_CLICK);
                 break;
             case R.id.siv_function_long_click:
+                intent.putExtra(FuncConfigs.KEY_FUNC_OP, FuncConfigs.VALUE_FUNC_OP_LONG_CLICK);
                 break;
             case R.id.siv_function_touch_left:
+                intent.putExtra(FuncConfigs.KEY_FUNC_OP, FuncConfigs.VALUE_FUNC_OP_FLING_LEFT);
                 break;
             case R.id.siv_function_touch_right:
+                intent.putExtra(FuncConfigs.KEY_FUNC_OP, FuncConfigs.VALUE_FUNC_OP_FLING_RIGHT);
                 break;
             case R.id.siv_function_touch_up:
+                intent.putExtra(FuncConfigs.KEY_FUNC_OP, FuncConfigs.VALUE_FUNC_OP_FLING_UP);
                 break;
             case R.id.siv_function_touch_down:
+                intent.putExtra(FuncConfigs.KEY_FUNC_OP, FuncConfigs.VALUE_FUNC_OP_FLING_BOTTOM);
                 break;
             case R.id.siv_function_menu_number:
                 break;
         }
+        intent.setClass(getActivity(), FunctionDetailSelectActivity.class);
+        getActivity().startActivityForResult(intent, FuncConfigs.REQUEST_SELECT_FUNC_DETAIL);
     }
 }

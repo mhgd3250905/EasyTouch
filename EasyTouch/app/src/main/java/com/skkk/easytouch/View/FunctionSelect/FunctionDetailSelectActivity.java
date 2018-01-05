@@ -31,14 +31,22 @@ public class FunctionDetailSelectActivity extends AppCompatActivity {
     private ArrayList<Fragment> fragmentList;
     private String[] TITLE = new String[]{"基础操作", "应用","快捷方式"};
     private ViewPagerAdapter adapter;
+    private String opType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_function_detail_select);
         ButterKnife.bind(this);
-
+        initData();
         initUI();
+    }
+
+    /**
+     * 初始化Data
+     */
+    private void initData() {
+        opType = getIntent().getStringExtra(FuncConfigs.KEY_FUNC_OP);
     }
 
     /**
@@ -55,9 +63,9 @@ public class FunctionDetailSelectActivity extends AppCompatActivity {
         tbFunctionDetailSelect.setNavigationIcon(R.drawable.ic_arrow_back_white);
 
         fragmentList = new ArrayList<Fragment>();
-        fragmentList.add(FunctionDetailBaseFragment.newInstance("", ""));
-        fragmentList.add(FunctionDetailAppFragment.newInstance("", ""));
-        fragmentList.add(FunctionDetailShortCutFragment.newInstance("", ""));
+        fragmentList.add(FunctionDetailBaseFragment.newInstance(opType, ""));
+        fragmentList.add(FunctionDetailAppFragment.newInstance(opType, ""));
+        fragmentList.add(FunctionDetailShortCutFragment.newInstance(opType, ""));
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), fragmentList, TITLE);
         vpFunctionDetailSelect.setAdapter(adapter);

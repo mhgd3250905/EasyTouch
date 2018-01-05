@@ -6,8 +6,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.skkk.easytouch.R;
+import com.skkk.easytouch.Utils.SpUtils;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,11 +23,27 @@ import com.skkk.easytouch.R;
 public class FunctionDetailBaseFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_OP_TYPE = "arg_op_type";
     private static final String ARG_PARAM2 = "param2";
+    @Bind(R.id.tv_item_back)
+    TextView tvItemBack;
+    @Bind(R.id.tv_item_home)
+    TextView tvItemHome;
+    @Bind(R.id.tv_item_recent)
+    TextView tvItemRecent;
+    @Bind(R.id.tv_item_notification)
+    TextView tvItemNotification;
+    @Bind(R.id.tv_item_location)
+    TextView tvItemLocation;
+    @Bind(R.id.tv_item_voice)
+    TextView tvItemVoice;
+    @Bind(R.id.tv_item_pay)
+    TextView tvItemPay;
+    @Bind(R.id.tv_item_app)
+    TextView tvItemApp;
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private String opType;
     private String mParam2;
 
 
@@ -33,15 +55,15 @@ public class FunctionDetailBaseFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
+     * @param opType Parameter 1.
      * @param param2 Parameter 2.
      * @return A new instance of fragment FunctionDetailBaseFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FunctionDetailBaseFragment newInstance(String param1, String param2) {
+    public static FunctionDetailBaseFragment newInstance(String opType, String param2) {
         FunctionDetailBaseFragment fragment = new FunctionDetailBaseFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_OP_TYPE, opType);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -51,7 +73,7 @@ public class FunctionDetailBaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            opType = getArguments().getString(ARG_OP_TYPE);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -60,7 +82,47 @@ public class FunctionDetailBaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_function_detail_base, container, false);
+        View view = inflater.inflate(R.layout.fragment_function_detail_base, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+    @OnClick({R.id.tv_item_back, R.id.tv_item_home, R.id.tv_item_recent, R.id.tv_item_notification, R.id.tv_item_location, R.id.tv_item_voice, R.id.tv_item_pay, R.id.tv_item_app})
+    public void onViewClicked(View view) {
+        int funcType=0;
+        switch (view.getId()) {
+            case R.id.tv_item_back:
+                funcType= FuncConfigs.Func.BACK.getValue();
+                break;
+            case R.id.tv_item_home:
+                funcType= FuncConfigs.Func.HOME.getValue();
+                break;
+            case R.id.tv_item_recent:
+                funcType= FuncConfigs.Func.RECENT.getValue();
+                break;
+            case R.id.tv_item_notification:
+                funcType= FuncConfigs.Func.NOTIFICATION.getValue();
+                break;
+            case R.id.tv_item_location:
+                funcType= FuncConfigs.Func.TRUN_POS.getValue();
+                break;
+            case R.id.tv_item_voice:
+                funcType= FuncConfigs.Func.VOICE_MENU.getValue();
+                break;
+            case R.id.tv_item_pay:
+                funcType= FuncConfigs.Func.PAY_MENU.getValue();
+                break;
+            case R.id.tv_item_app:
+                funcType= FuncConfigs.Func.APP_MENU.getValue();
+                break;
+        }
+        SpUtils.saveInt(getContext().getApplicationContext(),opType,funcType);
+        getActivity().finish();
+    }
 }

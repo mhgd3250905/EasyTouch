@@ -47,6 +47,7 @@ import com.skkk.easytouch.Utils.IntentUtils;
 import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.AppSelect.AppSelectActivity;
+import com.skkk.easytouch.View.FunctionSelect.FuncConfigs;
 
 import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_WIDTH;
 import static com.skkk.easytouch.Configs.DEFAULT_VIBRATE_LEVEL;
@@ -413,7 +414,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         ivTouchBall.setAlpha(touchAlpha / 255f);
 
         if (drawableName.equals(Configs.KEY_PHOTO_CUSTOM_DRAWABLE)) {
-            ivTouchBall.setImageURI(Uri.parse(SpUtils.getString(getApplicationContext(),Configs.KEY_TOUCH_UI_BACKGROUND_BALL_CUSTOM,"ball_0")));
+            ivTouchBall.setImageURI(Uri.parse(SpUtils.getString(getApplicationContext(), Configs.KEY_TOUCH_UI_BACKGROUND_BALL_CUSTOM, "ball_0")));
         } else {
             ivTouchBall.setImageResource(PackageUtils.getResource(getApplicationContext(), drawableName));
         }
@@ -761,7 +762,6 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                         showMenuContainer();
                     }
                 }
-
                 return false;
             }
         });
@@ -776,7 +776,6 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 //记录move down坐标
                 showTouchBall();
                 setMoveDownXY(e);
-
                 return false;
             }
 
@@ -791,7 +790,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 //震动30毫秒
                 if (!isMenuShow) {
                     showTouchBall();
-                    enterBack();//返回
+                    goOpEvent(FuncConfigs.VALUE_FUNC_OP_CLICK);
                 }
                 showTouchBallClickAnim();
                 return false;
@@ -824,6 +823,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 if (e2.getX() - e1.getX() > 10 && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 2)) {
                     if (!canMove) {//右划
                         if (direction == Configs.Position.LEFT.getValue()) {
+                            goOpEvent(FuncConfigs.VALUE_FUNC_OP_FLING_RIGHT);
                             enterRecents();//任务列表
                         } else if (direction == Configs.Position.RIGHT.getValue()) {
                             jump2LastApp();//进入上一个应用
@@ -842,14 +842,14 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 } else if (e1.getY() - e2.getY() > 10 && Math.abs(e1.getY() - e2.getY()) > (Math.abs(e1.getX() - e2.getX()) * 2)) {
                     //上滑
                     if (!canMove) {
-                        enterHome();//home键
+                        goOpEvent(FuncConfigs.VALUE_FUNC_OP_FLING_UP);
                     }
                     showTouchBallFlingAnim(Configs.TouchDirection.UP);
 
                 } else if (e2.getY() - e1.getY() > 10 && Math.abs(e1.getY() - e2.getY()) > (Math.abs(e1.getX() - e2.getX()) * 2)) {
                     //下滑
                     if (!canMove) {
-                        enterNotification();//下滑通知栏
+                        goOpEvent(FuncConfigs.VALUE_FUNC_OP_FLING_BOTTOM);
                     }
                     showTouchBallFlingAnim(Configs.TouchDirection.DOWN);
 
@@ -1003,7 +1003,6 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                     }
                 });
                 initMenuDetailVoiceEvent();
-
             }
         });
 
@@ -1659,6 +1658,31 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             }
             //更新布局
             windowManager.updateViewLayout(touchView, mParams);
+        }
+    }
+
+    /**
+     * 根据行为作出保存的对应的举动
+     * @param opType
+     */
+    private void goOpEvent(String opType) {
+        int funcType = SpUtils.getInt(getApplicationContext(), opType, FuncConfigs.Func.BACK.getValue());
+        if (funcType == FuncConfigs.Func.BACK.getValue()) {//返回键
+            enterBack();//返回
+        } else if (funcType == FuncConfigs.Func.HOME.getValue()) {//Home键
+            enterHome();
+        } else if (funcType == FuncConfigs.Func.RECENT.getValue()) {//任务键
+            enterRecents();
+        } else if (funcType == FuncConfigs.Func.NOTIFICATION.getValue()) {//通知栏
+            enterNotification();
+        } else if (funcType == FuncConfigs.Func.TRUN_POS.getValue()) {//切换位置
+            switchTouchPos();
+        } else if (funcType == FuncConfigs.Func.VOICE_MENU.getValue()) {//声音菜单
+            showMenuDetailVoice();
+        } else if (funcType == FuncConfigs.Func.PAY_MENU.getValue()) {//支付菜单
+            showMenuDetailPay();
+        } else if (funcType == FuncConfigs.Func.APP_MENU.getValue()) {//app菜单
+            showMenuDetailApp();
         }
     }
 }
