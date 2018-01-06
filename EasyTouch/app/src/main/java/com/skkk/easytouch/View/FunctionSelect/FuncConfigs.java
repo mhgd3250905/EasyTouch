@@ -32,7 +32,9 @@ public class FuncConfigs {
         VOICE_MENU,
         PAY_MENU,
         APP_MENU,
-        APPS;
+        APPS,
+        MENU,
+        PREVIOUS_APP;
         public int getValue() {
             return this.ordinal();
         }

@@ -824,18 +824,24 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                     if (!canMove) {//右划
                         if (direction == Configs.Position.LEFT.getValue()) {
                             goOpEvent(FuncConfigs.VALUE_FUNC_OP_FLING_RIGHT);
-                            enterRecents();//任务列表
+//                            enterRecents();//任务列表
                         } else if (direction == Configs.Position.RIGHT.getValue()) {
-                            jump2LastApp();//进入上一个应用
+//                            jump2LastApp();//进入上一个应用
+                            goOpEvent(FuncConfigs.VALUE_FUNC_OP_FLING_LEFT);
+
                         }
                     }
                     showTouchBallFlingAnim(Configs.TouchDirection.RIGHT);
                 } else if (e1.getX() - e2.getX() > 10 && Math.abs(e1.getY() - e2.getY()) < (Math.abs(e1.getX() - e2.getX()) / 2)) {
                     if (!canMove) {//左滑
                         if (direction == Configs.Position.LEFT.getValue()) {
-                            jump2LastApp();//进入上一个应用
+//                            jump2LastApp();//进入上一个应用
+                            goOpEvent(FuncConfigs.VALUE_FUNC_OP_FLING_LEFT);
+
                         } else if (direction == Configs.Position.RIGHT.getValue()) {
-                            enterRecents();//任务列表
+//                            enterRecents();//任务列表
+                            goOpEvent(FuncConfigs.VALUE_FUNC_OP_FLING_RIGHT);
+
                         }
                     }
                     showTouchBallFlingAnim(Configs.TouchDirection.LEFT);
@@ -1683,6 +1689,10 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             showMenuDetailPay();
         } else if (funcType == FuncConfigs.Func.APP_MENU.getValue()) {//app菜单
             showMenuDetailApp();
+        } else if (funcType == FuncConfigs.Func.MENU.getValue()) {//app菜单
+            showMenuContainer();
+        }else if (funcType == FuncConfigs.Func.PREVIOUS_APP.getValue()) {//app菜单
+            jump2LastApp();
         }
     }
 }

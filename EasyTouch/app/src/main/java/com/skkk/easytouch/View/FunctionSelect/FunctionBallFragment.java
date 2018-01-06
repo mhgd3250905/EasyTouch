@@ -117,6 +117,10 @@ public class FunctionBallFragment extends Fragment {
             funcDesc = "支付菜单";
         } else if (funcType == FuncConfigs.Func.APP_MENU.getValue()) {//app菜单
             funcDesc = "快捷App菜单";
+        } else if (funcType == FuncConfigs.Func.MENU.getValue()) {//app菜单
+            funcDesc = "二级菜单";
+        } else if (funcType == FuncConfigs.Func.PREVIOUS_APP.getValue()) {//app菜单
+            funcDesc = "上一个应用";
         }
         item.setValue(funcDesc);
     }

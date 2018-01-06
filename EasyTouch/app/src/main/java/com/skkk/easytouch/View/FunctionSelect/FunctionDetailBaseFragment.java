@@ -41,6 +41,10 @@ public class FunctionDetailBaseFragment extends Fragment {
     TextView tvItemPay;
     @Bind(R.id.tv_item_app)
     TextView tvItemApp;
+    @Bind(R.id.tv_item_menu)
+    TextView tvItemMenu;
+    @Bind(R.id.tv_item_previous_app)
+    TextView tvItemPreviousApp;
 
     // TODO: Rename and change types of parameters
     private String opType;
@@ -93,36 +97,48 @@ public class FunctionDetailBaseFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
-    @OnClick({R.id.tv_item_back, R.id.tv_item_home, R.id.tv_item_recent, R.id.tv_item_notification, R.id.tv_item_location, R.id.tv_item_voice, R.id.tv_item_pay, R.id.tv_item_app})
+    @OnClick({R.id.tv_item_back, R.id.tv_item_home, R.id.tv_item_recent, R.id.tv_item_notification,
+            R.id.tv_item_location, R.id.tv_item_voice, R.id.tv_item_pay, R.id.tv_item_app,
+            R.id.tv_item_menu,R.id.tv_item_previous_app})
     public void onViewClicked(View view) {
-        int funcType=0;
+        int funcType = 0;
         switch (view.getId()) {
             case R.id.tv_item_back:
-                funcType= FuncConfigs.Func.BACK.getValue();
+                funcType = FuncConfigs.Func.BACK.getValue();
                 break;
             case R.id.tv_item_home:
-                funcType= FuncConfigs.Func.HOME.getValue();
+                funcType = FuncConfigs.Func.HOME.getValue();
                 break;
             case R.id.tv_item_recent:
-                funcType= FuncConfigs.Func.RECENT.getValue();
+                funcType = FuncConfigs.Func.RECENT.getValue();
                 break;
             case R.id.tv_item_notification:
-                funcType= FuncConfigs.Func.NOTIFICATION.getValue();
+                funcType = FuncConfigs.Func.NOTIFICATION.getValue();
                 break;
             case R.id.tv_item_location:
-                funcType= FuncConfigs.Func.TRUN_POS.getValue();
+                funcType = FuncConfigs.Func.TRUN_POS.getValue();
                 break;
             case R.id.tv_item_voice:
-                funcType= FuncConfigs.Func.VOICE_MENU.getValue();
+                funcType = FuncConfigs.Func.VOICE_MENU.getValue();
                 break;
             case R.id.tv_item_pay:
-                funcType= FuncConfigs.Func.PAY_MENU.getValue();
+                funcType = FuncConfigs.Func.PAY_MENU.getValue();
                 break;
             case R.id.tv_item_app:
-                funcType= FuncConfigs.Func.APP_MENU.getValue();
+                funcType = FuncConfigs.Func.APP_MENU.getValue();
+                break;
+            case R.id.tv_item_menu:
+                funcType = FuncConfigs.Func.MENU.getValue();
+                break;
+            case R.id.tv_item_previous_app:
+                funcType = FuncConfigs.Func.PREVIOUS_APP.getValue();
                 break;
         }
-        SpUtils.saveInt(getContext().getApplicationContext(),opType,funcType);
+        SpUtils.saveInt(getContext().getApplicationContext(), opType, funcType);
         getActivity().finish();
+    }
+
+    @OnClick(R.id.tv_item_menu)
+    public void onViewClicked() {
     }
 }

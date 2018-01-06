@@ -25,7 +25,7 @@
         android:layout_height="50dp" />
     <TextView
         android:paddingStart="10dp"
-        android:drawableLeft="@drawable/vector_drawable_menu"
+        android:drawableLeft="@drawable/vector_drawable_recent"
         android:id="@id/tv_item_recent"
         android:textSize="20sp"
         android:gravity="center"
@@ -81,6 +81,26 @@
         android:textSize="20sp"
         android:gravity="center"
         android:text="快捷App菜单"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+    <TextView
+        android:paddingStart="10dp"
+        android:drawableLeft="@drawable/vector_drawable_menu"
+        android:id="@id/tv_item_menu"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:text="二级菜单"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+    <TextView
+        android:paddingStart="10dp"
+        android:drawableLeft="@drawable/vector_drawable_previous"
+        android:id="@id/tv_item_previous_app"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:text="上一个应用"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
 
