@@ -54,17 +54,18 @@ public class ScaleScrollView extends NestedScrollView {
                         ViewCompat.setScaleY(this,mScale);
                         isScale=true;
                     }
-                }else {
-                    int count=getChildCount();
-                    if (getScrollY() + getHeight() - getPaddingTop()-getPaddingBottom() == getChildAt(0).getHeight()){
-                        float distance=y-lastY;
-                        mScale=1-mScaleRatio*distance/getHeight();
-                        setPivotX(getWidth()/2);
-                        setPivotY(getHeight());
-                        ViewCompat.setScaleY(this,mScale);
-                        isScale=true;
-                    }
                 }
+//                else {
+//                    int count=getChildCount();
+//                    if (getScrollY() + getHeight() - getPaddingTop()-getPaddingBottom() == getChildAt(0).getHeight()){
+//                        float distance=y-lastY;
+//                        mScale=1-mScaleRatio*distance/getHeight();
+//                        setPivotX(getWidth()/2);
+//                        setPivotY(getHeight());
+//                        ViewCompat.setScaleY(this,mScale);
+//                        isScale=true;
+//                    }
+//                }
                 break;
             case MotionEvent.ACTION_UP:
                 if (isScale){

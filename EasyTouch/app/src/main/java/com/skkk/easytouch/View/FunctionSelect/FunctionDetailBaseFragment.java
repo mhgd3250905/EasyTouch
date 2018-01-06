@@ -2,6 +2,7 @@ package com.skkk.easytouch.View.FunctionSelect;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,6 +93,22 @@ public class FunctionDetailBaseFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initUI();
+    }
+
+    /**
+     * 初始化UI
+     */
+    private void initUI() {
+        //如果是自定义菜单中元素的功能，那么就没必要显示菜单
+        if (opType.startsWith(FuncConfigs.VALUE_FUNC_OP_MENU_BALL)){
+            tvItemMenu.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
@@ -99,7 +116,7 @@ public class FunctionDetailBaseFragment extends Fragment {
 
     @OnClick({R.id.tv_item_back, R.id.tv_item_home, R.id.tv_item_recent, R.id.tv_item_notification,
             R.id.tv_item_location, R.id.tv_item_voice, R.id.tv_item_pay, R.id.tv_item_app,
-            R.id.tv_item_menu,R.id.tv_item_previous_app})
+            R.id.tv_item_menu,R.id.tv_item_previous_app,R.id.tv_item_lock_screen})
     public void onViewClicked(View view) {
         int funcType = 0;
         switch (view.getId()) {
@@ -132,6 +149,9 @@ public class FunctionDetailBaseFragment extends Fragment {
                 break;
             case R.id.tv_item_previous_app:
                 funcType = FuncConfigs.Func.PREVIOUS_APP.getValue();
+                break;
+            case R.id.tv_item_lock_screen:
+                funcType = FuncConfigs.Func.LOCK_SCREEN.getValue();
                 break;
         }
         SpUtils.saveInt(getContext().getApplicationContext(), opType, funcType);

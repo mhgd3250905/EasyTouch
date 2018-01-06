@@ -21,6 +21,8 @@ public class FuncConfigs {
     public static final String VALUE_FUNC_OP_FLING_BOTTOM="value_func_op_fling_bottom";
     public static final String VALUE_FUNC_OP_FLING_RIGHT="value_func_op_fling_right";
 
+    public static final String VALUE_FUNC_OP_MENU_BALL="value_func_op_menu_ball_";
+
     public static final int REQUEST_SELECT_FUNC_DETAIL = 101;
 
     public enum Func {
@@ -34,7 +36,8 @@ public class FuncConfigs {
         APP_MENU,
         APPS,
         MENU,
-        PREVIOUS_APP;
+        PREVIOUS_APP,
+        LOCK_SCREEN;
         public int getValue() {
             return this.ordinal();
         }

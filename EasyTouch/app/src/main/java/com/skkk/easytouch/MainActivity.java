@@ -14,14 +14,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
@@ -64,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.btn_touch_ball)
     TextView btnTouchBall;
     @Bind(R.id.content_main)
-    NestedScrollView contentMain;
+    RelativeLayout contentMain;
 
 
     private ArrayList<String> needRequestPermissions = new ArrayList<>();
@@ -228,27 +226,6 @@ public class MainActivity extends AppCompatActivity {
         initUI();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
 
     /**

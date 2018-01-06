@@ -47,6 +47,7 @@ import com.skkk.easytouch.Utils.IntentUtils;
 import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.AppSelect.AppSelectActivity;
+import com.skkk.easytouch.View.CircleImageView;
 import com.skkk.easytouch.View.FunctionSelect.FuncConfigs;
 
 import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_WIDTH;
@@ -93,7 +94,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private View menuView;
     private View menuDetailView;
     private RelativeLayout menuContainer;
-    private ImageView ivMenuBall0, ivMenuBall1, ivMenuBall2, ivMenuBall3, ivMenuBall4;
+//    private ImageView ivMenuBall0, ivMenuBall1, ivMenuBall2, ivMenuBall3, ivMenuBall4;
     private ObjectAnimator transXAnimShow;
     private ObjectAnimator transXAnimHide;
     private ObjectAnimator transYAnimShow;
@@ -260,11 +261,11 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
         menuView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball_menu, null);
         menuContainer = (RelativeLayout) menuView.findViewById(R.id.container_menu_ball);
-        ivMenuBall0 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_0);
-        ivMenuBall1 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_1);
-        ivMenuBall2 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_2);
-        ivMenuBall3 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_3);
-        ivMenuBall4 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_4);
+//        ivMenuBall0 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_0);
+//        ivMenuBall1 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_1);
+//        ivMenuBall2 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_2);
+//        ivMenuBall3 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_3);
+//        ivMenuBall4 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_4);
 
 
         menuDetailView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball_menu_detail, null);
@@ -419,7 +420,8 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             ivTouchBall.setImageResource(PackageUtils.getResource(getApplicationContext(), drawableName));
         }
 
-
+        //添加菜单元素
+        initMenuBalls();
         //设置是件监听
         initEvent();
 
@@ -431,6 +433,70 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         } else {//如果没有菜单打开
             windowManager.updateViewLayout(touchView, mParams);
         }
+    }
+
+    /**
+     * 添加菜单元素
+     */
+    private void initMenuBalls() {
+        //先清除已经存在的Ball
+        if (menuContainer.getChildCount() > 1) {
+            for (int i = menuContainer.getChildCount(); i > 0; i--) {
+                menuContainer.removeView(menuContainer.getChildAt(i));
+            }
+        }
+        //根据设置添加Ball
+        int menuBallCount=SpUtils.getInt(getApplicationContext(),SpUtils.KEY_MENU_BALL_COUNT,0);
+        if (menuBallCount>0){
+            for (int i = 0; i < menuBallCount; i++) {
+                CircleImageView ivBall=new CircleImageView(this);
+                RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(dp2px(40),dp2px(40));
+                lp.addRule(RelativeLayout.CENTER_VERTICAL);
+                ivBall.setLayoutParams(lp);
+                initMenuBallDrawable(ivBall,SpUtils.getInt(getApplicationContext(),FuncConfigs.VALUE_FUNC_OP_MENU_BALL+i, FuncConfigs.Func.VOICE_MENU.getValue()));
+                final int finalI = i;
+                ivBall.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        goOpEvent(FuncConfigs.VALUE_FUNC_OP_MENU_BALL+ finalI);
+                    }
+                });
+                menuContainer.addView(ivBall);
+            }
+        }
+    }
+
+    /**
+     * 设置菜单元素的图标的图形
+     * @param ivBall
+     * @param funcType
+     */
+    private void initMenuBallDrawable(ImageView ivBall, int funcType) {
+        int drawableId=R.drawable.vector_ball_menu_voice;
+        if (funcType== FuncConfigs.Func.BACK.getValue()){
+            drawableId=R.drawable.vector_drawable_back;
+        }else if (funcType== FuncConfigs.Func.HOME.getValue()){
+            drawableId=R.drawable.vector_drawable_home;
+        }else if (funcType== FuncConfigs.Func.RECENT.getValue()){
+            drawableId=R.drawable.vector_drawable_recent;
+        }else if (funcType== FuncConfigs.Func.NOTIFICATION.getValue()){
+            drawableId=R.drawable.vector_drawable_notification;
+        }else if (funcType== FuncConfigs.Func.PREVIOUS_APP.getValue()){
+            drawableId=R.drawable.vector_drawable_previous;
+        }else if (funcType== FuncConfigs.Func.TRUN_POS.getValue()){
+            drawableId=R.drawable.vector_drawable_trun_pos;
+        }else if (funcType== FuncConfigs.Func.LOCK_SCREEN.getValue()){
+            drawableId=R.drawable.vector_drawable_screen_lock;
+        }else if (funcType== FuncConfigs.Func.VOICE_MENU.getValue()){
+            drawableId=R.drawable.vector_ball_menu_voice;
+        }else if (funcType== FuncConfigs.Func.PAY_MENU.getValue()){
+            drawableId=R.drawable.vector_drawable_pay_menu;
+        }else if (funcType== FuncConfigs.Func.APP_MENU.getValue()){
+            drawableId=R.drawable.vector_ball_menu_apps;
+        }else if (funcType== FuncConfigs.Func.APPS.getValue()){
+            drawableId=R.drawable.vector_ball_menu_apps;
+        }
+        ivBall.setImageResource(drawableId);
     }
 
 
@@ -978,80 +1044,80 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             }
         });
 
-        /*
-        * 点击切换左右位置
-        * */
-        ivMenuBall0.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //隐藏菜单按钮动画
-                hideMenuContainer(-1, new Configs.OnAnimEndListener() {
-                    @Override
-                    public void onAnimEnd() {
-                        //切换左右位置
-                        switchTouchPos();
-                    }
-                });
-
-            }
-        });
-
-
-        ivMenuBall1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //隐藏菜单按钮动画
-                hideMenuContainer(1, new Configs.OnAnimEndListener() {
-                    @Override
-                    public void onAnimEnd() {
-                        //显示声音二级菜单
-                        showVoiceAdjustView();
-                    }
-                });
-                initMenuDetailVoiceEvent();
-            }
-        });
-
-        ivMenuBall2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideMenuContainer(2, new Configs.OnAnimEndListener() {
-                    @Override
-                    public void onAnimEnd() {
-                        //显示快捷App选择界面
-                        showAppsSelectView();
-                    }
-                });
-                initMenuDetailAppEvent();
-            }
-        });
-
-        ivMenuBall3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideMenuContainer(3, new Configs.OnAnimEndListener() {
-                    @Override
-                    public void onAnimEnd() {
-                        //选择快捷支付界面
-                        showPaySelectView();
-                    }
-                });
-                initMneuDetailPayEvent();
-            }
-        });
-
-        ivMenuBall4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideMenuContainer(-1, new Configs.OnAnimEndListener() {
-                    @Override
-                    public void onAnimEnd() {
-                        //显示锁屏界面
-                        showLockScreenView();
-                    }
-                });
-            }
-        });
+//        /*
+//        * 点击切换左右位置
+//        * */
+//        ivMenuBall0.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //隐藏菜单按钮动画
+//                hideMenuContainer(-1, new Configs.OnAnimEndListener() {
+//                    @Override
+//                    public void onAnimEnd() {
+//                        //切换左右位置
+//                        switchTouchPos();
+//                    }
+//                });
+//
+//            }
+//        });
+//
+//
+//        ivMenuBall1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //隐藏菜单按钮动画
+//                hideMenuContainer(1, new Configs.OnAnimEndListener() {
+//                    @Override
+//                    public void onAnimEnd() {
+//                        //显示声音二级菜单
+//                        showVoiceAdjustView();
+//                    }
+//                });
+//                initMenuDetailVoiceEvent();
+//            }
+//        });
+//
+//        ivMenuBall2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                hideMenuContainer(2, new Configs.OnAnimEndListener() {
+//                    @Override
+//                    public void onAnimEnd() {
+//                        //显示快捷App选择界面
+//                        showAppsSelectView();
+//                    }
+//                });
+//                initMenuDetailAppEvent();
+//            }
+//        });
+//
+//        ivMenuBall3.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                hideMenuContainer(3, new Configs.OnAnimEndListener() {
+//                    @Override
+//                    public void onAnimEnd() {
+//                        //选择快捷支付界面
+//                        showPaySelectView();
+//                    }
+//                });
+//                initMneuDetailPayEvent();
+//            }
+//        });
+//
+//        ivMenuBall4.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                hideMenuContainer(-1, new Configs.OnAnimEndListener() {
+//                    @Override
+//                    public void onAnimEnd() {
+//                        //显示锁屏界面
+//                        showLockScreenView();
+//                    }
+//                });
+//            }
+//        });
     }
 
 
@@ -1239,11 +1305,11 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         menuView.post(new Runnable() {
             @Override
             public void run() {
-                showMenuBallAnim(ivMenuBall0, 0);
-                showMenuBallAnim(ivMenuBall1, 1);
-                showMenuBallAnim(ivMenuBall2, 2);
-                showMenuBallAnim(ivMenuBall3, 3);
-                showMenuBallAnim(ivMenuBall4, 4);
+                showMenuBallAnim(menuContainer.getChildAt(0), 0);
+                showMenuBallAnim(menuContainer.getChildAt(1), 1);
+                showMenuBallAnim(menuContainer.getChildAt(2), 2);
+                showMenuBallAnim(menuContainer.getChildAt(3), 3);
+                showMenuBallAnim(menuContainer.getChildAt(4), 4);
             }
         });
     }
@@ -1296,11 +1362,11 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 if (index != -1) {
                     hideMenuBallAnim(ivTouchBall, -1, false, null);
                 }
-                hideMenuBallAnim(ivMenuBall0, 0, index == 0, null);
-                hideMenuBallAnim(ivMenuBall1, 1, index == 1, null);
-                hideMenuBallAnim(ivMenuBall2, 2, index == 2, null);
-                hideMenuBallAnim(ivMenuBall3, 3, index == 3, null);
-                hideMenuBallAnim(ivMenuBall4, 4, index == 4, onAnimEndListener);
+                hideMenuBallAnim(menuContainer.getChildAt(0), 0, index == 0, null);
+                hideMenuBallAnim(menuContainer.getChildAt(1), 1, index == 1, null);
+                hideMenuBallAnim(menuContainer.getChildAt(2), 2, index == 2, null);
+                hideMenuBallAnim(menuContainer.getChildAt(3), 3, index == 3, null);
+                hideMenuBallAnim(menuContainer.getChildAt(4), 4, index == 4, onAnimEndListener);
             }
         });
 
@@ -1650,17 +1716,17 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
             //切换菜单按钮位置布局
             if (direction == Configs.Position.LEFT.getValue()) {
-                setMenuBallLeftLayoutParams(ivMenuBall0);
-                setMenuBallLeftLayoutParams(ivMenuBall1);
-                setMenuBallLeftLayoutParams(ivMenuBall2);
-                setMenuBallLeftLayoutParams(ivMenuBall3);
-                setMenuBallLeftLayoutParams(ivMenuBall4);
+                setMenuBallLeftLayoutParams(menuContainer.getChildAt(0));
+                setMenuBallLeftLayoutParams(menuContainer.getChildAt(1));
+                setMenuBallLeftLayoutParams(menuContainer.getChildAt(2));
+                setMenuBallLeftLayoutParams(menuContainer.getChildAt(3));
+                setMenuBallLeftLayoutParams(menuContainer.getChildAt(4));
             } else if (direction == Configs.Position.RIGHT.getValue()) {
-                setMenuBallRightLayoutParams(ivMenuBall0);
-                setMenuBallRightLayoutParams(ivMenuBall1);
-                setMenuBallRightLayoutParams(ivMenuBall2);
-                setMenuBallRightLayoutParams(ivMenuBall3);
-                setMenuBallRightLayoutParams(ivMenuBall4);
+                setMenuBallRightLayoutParams(menuContainer.getChildAt(0));
+                setMenuBallRightLayoutParams(menuContainer.getChildAt(1));
+                setMenuBallRightLayoutParams(menuContainer.getChildAt(2));
+                setMenuBallRightLayoutParams(menuContainer.getChildAt(3));
+                setMenuBallRightLayoutParams(menuContainer.getChildAt(4));
             }
             //更新布局
             windowManager.updateViewLayout(touchView, mParams);
@@ -1693,6 +1759,8 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             showMenuContainer();
         }else if (funcType == FuncConfigs.Func.PREVIOUS_APP.getValue()) {//app菜单
             jump2LastApp();
+        }else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {//app菜单
+            lockScreen();
         }
     }
 }

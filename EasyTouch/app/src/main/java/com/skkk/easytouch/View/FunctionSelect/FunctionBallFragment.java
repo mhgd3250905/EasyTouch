@@ -103,17 +103,11 @@ public class FunctionBallFragment extends Fragment {
         setItemDesc(FuncConfigs.VALUE_FUNC_OP_FLING_LEFT, sivFunctionTouchLeft);
         setItemDesc(FuncConfigs.VALUE_FUNC_OP_FLING_BOTTOM, sivFunctionTouchDown);
         setItemDesc(FuncConfigs.VALUE_FUNC_OP_FLING_RIGHT, sivFunctionTouchRight);
-
-        /*<com.skkk.easytouch.View.SettingItemView
-                android:id="@id/siv_function_menu_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                app:title="菜单数量"
-                app:value="1" />*/
         initMenuCountView();
+
+        for (int i = 0; i < menuBallCount; i++) {
+            setItemDesc(FuncConfigs.VALUE_FUNC_OP_MENU_BALL + i, (SettingItemView) containerFunctionMenuNumber.getChildAt(i + 1));
+        }
     }
 
     /**
@@ -128,7 +122,8 @@ public class FunctionBallFragment extends Fragment {
         menuBallCount = SpUtils.getInt(getContext().getApplicationContext(), SpUtils.KEY_MENU_BALL_COUNT, 0);
         sivFunctionMenuNumber.setValue(String.format(getString(R.string.function_menu_number_value), menuBallCount));
         if (menuBallCount > 0) {
-            for (int i = 0; i < menuBallCount; i++) {
+            for (int i = 0; i < menuBallCount; i++) {//遍历添加每一个菜单元素
+                //添加菜单元素
                 SettingItemView sivMenuBall = new SettingItemView(getContext());
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 if (i == menuBallCount - 1) {
@@ -139,6 +134,19 @@ public class FunctionBallFragment extends Fragment {
                 sivMenuBall.setLayoutParams(layoutParams);
                 sivMenuBall.setTitle(String.format(getString(R.string.function_menu_ball_title), i + 1));
                 sivMenuBall.setValue(getString(R.string.function_item_message));
+
+                //设置点击事件
+                final int finalI = i;
+                sivMenuBall.setSettingItemClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //保存菜单元素的Key为String+index的方式
+                        Intent intent = new Intent();
+                        intent.putExtra(FuncConfigs.KEY_FUNC_OP, FuncConfigs.VALUE_FUNC_OP_MENU_BALL + finalI);
+                        intent.setClass(getActivity(), FunctionDetailSelectActivity.class);
+                        getActivity().startActivityForResult(intent, FuncConfigs.REQUEST_SELECT_FUNC_DETAIL);
+                    }
+                });
                 containerFunctionMenuNumber.addView(sivMenuBall);
             }
         }
@@ -211,6 +219,8 @@ public class FunctionBallFragment extends Fragment {
             funcDesc = "二级菜单";
         } else if (funcType == FuncConfigs.Func.PREVIOUS_APP.getValue()) {//app菜单
             funcDesc = "上一个应用";
+        } else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {//app菜单
+            funcDesc = "锁屏";
         }
         item.setValue(funcDesc);
     }

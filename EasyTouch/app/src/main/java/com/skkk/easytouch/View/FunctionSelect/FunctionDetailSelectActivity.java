@@ -29,7 +29,7 @@ public class FunctionDetailSelectActivity extends AppCompatActivity {
     ViewPager vpFunctionDetailSelect;
 
     private ArrayList<Fragment> fragmentList;
-    private String[] TITLE = new String[]{"基础操作", "应用","快捷方式"};
+    private String[] TITLE = new String[]{"基础操作"};
     private ViewPagerAdapter adapter;
     private String opType;
 
@@ -64,8 +64,8 @@ public class FunctionDetailSelectActivity extends AppCompatActivity {
 
         fragmentList = new ArrayList<Fragment>();
         fragmentList.add(FunctionDetailBaseFragment.newInstance(opType, ""));
-        fragmentList.add(FunctionDetailAppFragment.newInstance(opType, ""));
-        fragmentList.add(FunctionDetailShortCutFragment.newInstance(opType, ""));
+//        fragmentList.add(FunctionDetailAppFragment.newInstance(opType, ""));
+//        fragmentList.add(FunctionDetailShortCutFragment.newInstance(opType, ""));
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), fragmentList, TITLE);
         vpFunctionDetailSelect.setAdapter(adapter);

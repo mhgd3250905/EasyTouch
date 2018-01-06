@@ -50,6 +50,26 @@
             android:textSize="20sp" />
 
         <TextView
+            android:id="@id/tv_item_menu"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/vector_drawable_menu"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:text="菜单"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@id/tv_item_lock_screen"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/vector_drawable_lock"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:text="锁屏"
+            android:textSize="20sp" />
+
+        <TextView
             android:id="@id/tv_item_location"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -90,15 +110,7 @@
             android:text="快捷App菜单"
             android:textSize="20sp" />
 
-        <TextView
-            android:id="@id/tv_item_menu"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:drawableLeft="@drawable/vector_drawable_menu"
-            android:gravity="center"
-            android:paddingStart="10dp"
-            android:text="二级菜单"
-            android:textSize="20sp" />
+
 
         <TextView
             android:id="@id/tv_item_previous_app"
