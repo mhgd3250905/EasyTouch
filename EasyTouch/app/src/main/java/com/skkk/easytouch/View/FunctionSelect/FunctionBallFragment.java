@@ -1,20 +1,27 @@
 package com.skkk.easytouch.View.FunctionSelect;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 
 import com.skkk.easytouch.R;
+import com.skkk.easytouch.Utils.DpUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.SettingItemView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.skkk.easytouch.Utils.SpUtils.KEY_MENU_BALL_COUNT;
 
 
 public class FunctionBallFragment extends Fragment {
@@ -36,10 +43,15 @@ public class FunctionBallFragment extends Fragment {
     SettingItemView sivFunctionTouchDown;
     @Bind(R.id.siv_function_menu_number)
     SettingItemView sivFunctionMenuNumber;
+    @Bind(R.id.container_function_menu_number)
+    LinearLayout containerFunctionMenuNumber;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private int menuBallCount;
+
+    private AlertDialog alertDialog;
 
 
     public FunctionBallFragment() {
@@ -78,6 +90,7 @@ public class FunctionBallFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initUI();
+        initEvent();
     }
 
     /**
@@ -90,6 +103,83 @@ public class FunctionBallFragment extends Fragment {
         setItemDesc(FuncConfigs.VALUE_FUNC_OP_FLING_LEFT, sivFunctionTouchLeft);
         setItemDesc(FuncConfigs.VALUE_FUNC_OP_FLING_BOTTOM, sivFunctionTouchDown);
         setItemDesc(FuncConfigs.VALUE_FUNC_OP_FLING_RIGHT, sivFunctionTouchRight);
+
+        /*<com.skkk.easytouch.View.SettingItemView
+                android:id="@id/siv_function_menu_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                app:title="菜单数量"
+                app:value="1" />*/
+        initMenuCountView();
+    }
+
+    /**
+     * 设置菜单元素
+     */
+    private void initMenuCountView() {
+        if (containerFunctionMenuNumber.getChildCount() > 1) {
+            for (int i = containerFunctionMenuNumber.getChildCount(); i > 0; i--) {
+                containerFunctionMenuNumber.removeView(containerFunctionMenuNumber.getChildAt(i));
+            }
+        }
+        menuBallCount = SpUtils.getInt(getContext().getApplicationContext(), SpUtils.KEY_MENU_BALL_COUNT, 0);
+        sivFunctionMenuNumber.setValue(String.format(getString(R.string.function_menu_number_value), menuBallCount));
+        if (menuBallCount > 0) {
+            for (int i = 0; i < menuBallCount; i++) {
+                SettingItemView sivMenuBall = new SettingItemView(getContext());
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                if (i == menuBallCount - 1) {
+                    layoutParams.setMargins(DpUtils.dp2px(getContext(), 10), DpUtils.dp2px(getContext(), 10), DpUtils.dp2px(getContext(), 10), DpUtils.dp2px(getContext(), 10));
+                } else {
+                    layoutParams.setMargins(DpUtils.dp2px(getContext(), 10), DpUtils.dp2px(getContext(), 10), DpUtils.dp2px(getContext(), 10), 0);
+                }
+                sivMenuBall.setLayoutParams(layoutParams);
+                sivMenuBall.setTitle(String.format(getString(R.string.function_menu_ball_title), i + 1));
+                sivMenuBall.setValue(getString(R.string.function_item_message));
+                containerFunctionMenuNumber.addView(sivMenuBall);
+            }
+        }
+    }
+
+
+    /**
+     * 初始化事件
+     */
+    private void initEvent() {
+        //设置二级菜单数量的事件
+        sivFunctionMenuNumber.setSettingItemClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final NumberPicker numberPicker = new NumberPicker(getContext());
+                numberPicker.setFormatter(new NumberPicker.Formatter() {
+                    @Override
+                    public String format(int value) {
+                        return String.valueOf(value);
+                    }
+                });
+                numberPicker.setMaxValue(5);
+                numberPicker.setMinValue(0);
+                numberPicker.setValue(menuBallCount);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setIcon(R.drawable.ic_warning);
+                builder.setView(numberPicker);
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SpUtils.saveInt(getContext().getApplicationContext(), KEY_MENU_BALL_COUNT, numberPicker.getValue());
+                        menuBallCount = numberPicker.getValue();
+                        initMenuCountView();
+                        alertDialog.dismiss();
+                    }
+                });
+                alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
     }
 
     /**

@@ -5,10 +5,10 @@
     android:orientation="vertical"
     tools:context="com.skkk.easytouch.View.FunctionSelect.FunctionDetailSelectActivity">
 
-    <android.support.v7.widget.RecyclerView
+    <com.skkk.easytouch.View.ScaleRecyclerView
         android:id="@id/rv_apps"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
+    </com.skkk.easytouch.View.ScaleRecyclerView>
 </LinearLayout>

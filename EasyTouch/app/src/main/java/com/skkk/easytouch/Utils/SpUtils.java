@@ -16,6 +16,7 @@ import static android.content.Context.MODE_PRIVATE;
 * 时    间：2017/10/14$ 18:00$.
 */
 public class SpUtils {
+    public static final String KEY_MENU_BALL_COUNT="key_menu_ball_count";//二级菜单的球有几个
 
     /**
      * 保存String

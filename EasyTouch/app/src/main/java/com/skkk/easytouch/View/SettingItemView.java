@@ -27,6 +27,7 @@ public class SettingItemView extends LinearLayout {
 
     public SettingItemView(Context context) {
         super(context);
+        initUI(null);
     }
 
     public SettingItemView(Context context, AttributeSet attrs) {
@@ -48,13 +49,15 @@ public class SettingItemView extends LinearLayout {
         tvTitle= (TextView) findViewById(R.id.tv_settings_title);
         tvValue= (TextView) findViewById(R.id.tv_settings_value);
 
-        TypedArray ta=getContext().obtainStyledAttributes(attrs,R.styleable.SettingItemView);
-        String title = ta.getString(R.styleable.SettingItemView_title);
-        String value= ta.getString(R.styleable.SettingItemView_value);
-        ta.recycle();
+        if (attrs!=null) {
+            TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.SettingItemView);
+            String title = ta.getString(R.styleable.SettingItemView_title);
+            String value = ta.getString(R.styleable.SettingItemView_value);
+            ta.recycle();
 
-        tvTitle.setText(title);
-        tvValue.setText(value);
+            tvTitle.setText(title);
+            tvValue.setText(value);
+        }
     }
 
     /**

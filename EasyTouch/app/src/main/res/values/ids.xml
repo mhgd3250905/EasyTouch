@@ -119,4 +119,5 @@
     <item name="tv_item_recent" type="id">tv_item_recent</item>
     <item name="tv_item_menu" type="id">tv_item_menu</item>
     <item name="tv_item_previous_app" type="id">tv_item_previous_app</item>
+    <item name="container_function_menu_number" type="id">container_function_menu_number</item>
 </resources>

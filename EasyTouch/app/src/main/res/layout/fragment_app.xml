@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     tools:context="com.skkk.easytouch.View.AppSelect.AppFragment">
 
-    <android.support.v7.widget.RecyclerView
+    <com.skkk.easytouch.View.ScaleRecyclerView
         android:id="@id/rv_apps"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
+    </Sca>
 
 </FrameLayout>

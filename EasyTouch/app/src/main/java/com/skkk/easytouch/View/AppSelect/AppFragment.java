@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import com.skkk.easytouch.Services.EasyTouchLinearService;
 import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.BaseAdapter;
+import com.skkk.easytouch.View.ScaleRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class AppFragment extends Fragment {
     private static final String APP_TYPE = "app_type";
     private static final String TOUCH_TYPE = "touch_type";
     @Bind(R.id.rv_apps)
-    RecyclerView rvApps;
+    ScaleRecyclerView rvApps;
 
     private AppAdapter adapter;
     private LinearLayoutManager layoutManager;

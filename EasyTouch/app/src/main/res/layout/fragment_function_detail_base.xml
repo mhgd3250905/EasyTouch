@@ -1,107 +1,114 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.skkk.easytouch.View.ScaleScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.skkk.easytouch.View.FunctionSelect.FunctionDetailBaseFragment">
 
-    <TextView
-        android:paddingStart="10dp"
-        android:drawableLeft="@drawable/vector_drawable_back"
-        android:id="@id/tv_item_back"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="返回"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
-    <TextView
-        android:paddingStart="10dp"
-        android:drawableLeft="@drawable/vector_drawable_home"
-        android:id="@id/tv_item_home"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="桌面"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
-    <TextView
-        android:paddingStart="10dp"
-        android:drawableLeft="@drawable/vector_drawable_recent"
-        android:id="@id/tv_item_recent"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="任务"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:paddingStart="10dp"
-        android:drawableLeft="@drawable/vector_drawable_notification"
-        android:id="@id/tv_item_notification"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="通知"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        <TextView
+            android:id="@id/tv_item_back"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/vector_drawable_back"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:text="返回"
+            android:textSize="20sp" />
 
-    <TextView
-        android:paddingStart="10dp"
-        android:drawableLeft="@drawable/vector_drawable_function_turn_pos"
-        android:id="@id/tv_item_location"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="切换位置"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        <TextView
+            android:id="@id/tv_item_home"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/vector_drawable_home"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:text="桌面"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@id/tv_item_recent"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/vector_drawable_recent"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:text="任务"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@id/tv_item_notification"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/vector_drawable_notification"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:text="通知"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@id/tv_item_location"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/vector_drawable_function_turn_pos"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:text="切换位置"
+            android:textSize="20sp" />
 
 
-    <TextView
-        android:paddingStart="10dp"
-        android:drawableLeft="@drawable/vector_drawable_voice_menu"
-        android:id="@id/tv_item_voice"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="音量菜单"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        <TextView
+            android:id="@id/tv_item_voice"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/vector_drawable_voice_menu"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:text="音量菜单"
+            android:textSize="20sp" />
 
-    <TextView
-        android:paddingStart="10dp"
-        android:drawableLeft="@drawable/vector_drawable_pay_menu"
-        android:id="@id/tv_item_pay"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="支付菜单"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        <TextView
+            android:id="@id/tv_item_pay"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/vector_drawable_pay_menu"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:text="支付菜单"
+            android:textSize="20sp" />
 
-    <TextView
-        android:paddingStart="10dp"
-        android:drawableLeft="@drawable/vector_drawable_app_menu"
-        android:id="@id/tv_item_app"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="快捷App菜单"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        <TextView
+            android:id="@id/tv_item_app"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/vector_drawable_app_menu"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:text="快捷App菜单"
+            android:textSize="20sp" />
 
-    <TextView
-        android:paddingStart="10dp"
-        android:drawableLeft="@drawable/vector_drawable_menu"
-        android:id="@id/tv_item_menu"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="二级菜单"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        <TextView
+            android:id="@id/tv_item_menu"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/vector_drawable_menu"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:text="二级菜单"
+            android:textSize="20sp" />
 
-    <TextView
-        android:paddingStart="10dp"
-        android:drawableLeft="@drawable/vector_drawable_previous"
-        android:id="@id/tv_item_previous_app"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:text="上一个应用"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        <TextView
+            android:id="@id/tv_item_previous_app"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/vector_drawable_previous"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:text="上一个应用"
+            android:textSize="20sp" />
+    </LinearLayout>
 
-</LinearLayout>
+</com.skkk.easytouch.View.ScaleScrollView>
