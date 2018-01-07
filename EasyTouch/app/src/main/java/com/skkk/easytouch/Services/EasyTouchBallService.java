@@ -94,7 +94,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private View menuView;
     private View menuDetailView;
     private RelativeLayout menuContainer;
-//    private ImageView ivMenuBall0, ivMenuBall1, ivMenuBall2, ivMenuBall3, ivMenuBall4;
+    //    private ImageView ivMenuBall0, ivMenuBall1, ivMenuBall2, ivMenuBall3, ivMenuBall4;
     private ObjectAnimator transXAnimShow;
     private ObjectAnimator transXAnimHide;
     private ObjectAnimator transYAnimShow;
@@ -446,19 +446,19 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             }
         }
         //根据设置添加Ball
-        int menuBallCount=SpUtils.getInt(getApplicationContext(),SpUtils.KEY_MENU_BALL_COUNT,0);
-        if (menuBallCount>0){
+        int menuBallCount = SpUtils.getInt(getApplicationContext(), SpUtils.KEY_MENU_BALL_COUNT, 0);
+        if (menuBallCount > 0) {
             for (int i = 0; i < menuBallCount; i++) {
-                CircleImageView ivBall=new CircleImageView(this);
-                RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(dp2px(40),dp2px(40));
+                CircleImageView ivBall = new CircleImageView(this);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(dp2px(40), dp2px(40));
                 lp.addRule(RelativeLayout.CENTER_VERTICAL);
                 ivBall.setLayoutParams(lp);
-                initMenuBallDrawable(ivBall,SpUtils.getInt(getApplicationContext(),FuncConfigs.VALUE_FUNC_OP_MENU_BALL+i, FuncConfigs.Func.VOICE_MENU.getValue()));
+                initMenuBallDrawable(ivBall, SpUtils.getInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_MENU_BALL + i, FuncConfigs.Func.VOICE_MENU.getValue()));
                 final int finalI = i;
                 ivBall.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        goOpEvent(FuncConfigs.VALUE_FUNC_OP_MENU_BALL+ finalI);
+                        goMenuBallEvent(FuncConfigs.VALUE_FUNC_OP_MENU_BALL + finalI, finalI);
                     }
                 });
                 menuContainer.addView(ivBall);
@@ -468,33 +468,34 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
     /**
      * 设置菜单元素的图标的图形
+     *
      * @param ivBall
      * @param funcType
      */
     private void initMenuBallDrawable(ImageView ivBall, int funcType) {
-        int drawableId=R.drawable.vector_ball_menu_voice;
-        if (funcType== FuncConfigs.Func.BACK.getValue()){
-            drawableId=R.drawable.vector_drawable_back;
-        }else if (funcType== FuncConfigs.Func.HOME.getValue()){
-            drawableId=R.drawable.vector_drawable_home;
-        }else if (funcType== FuncConfigs.Func.RECENT.getValue()){
-            drawableId=R.drawable.vector_drawable_recent;
-        }else if (funcType== FuncConfigs.Func.NOTIFICATION.getValue()){
-            drawableId=R.drawable.vector_drawable_notification;
-        }else if (funcType== FuncConfigs.Func.PREVIOUS_APP.getValue()){
-            drawableId=R.drawable.vector_drawable_previous;
-        }else if (funcType== FuncConfigs.Func.TRUN_POS.getValue()){
-            drawableId=R.drawable.vector_drawable_trun_pos;
-        }else if (funcType== FuncConfigs.Func.LOCK_SCREEN.getValue()){
-            drawableId=R.drawable.vector_drawable_screen_lock;
-        }else if (funcType== FuncConfigs.Func.VOICE_MENU.getValue()){
-            drawableId=R.drawable.vector_ball_menu_voice;
-        }else if (funcType== FuncConfigs.Func.PAY_MENU.getValue()){
-            drawableId=R.drawable.vector_drawable_pay_menu;
-        }else if (funcType== FuncConfigs.Func.APP_MENU.getValue()){
-            drawableId=R.drawable.vector_ball_menu_apps;
-        }else if (funcType== FuncConfigs.Func.APPS.getValue()){
-            drawableId=R.drawable.vector_ball_menu_apps;
+        int drawableId = R.drawable.vector_ball_menu_voice;
+        if (funcType == FuncConfigs.Func.BACK.getValue()) {
+            drawableId = R.drawable.vector_drawable_back;
+        } else if (funcType == FuncConfigs.Func.HOME.getValue()) {
+            drawableId = R.drawable.vector_drawable_home;
+        } else if (funcType == FuncConfigs.Func.RECENT.getValue()) {
+            drawableId = R.drawable.vector_drawable_recent;
+        } else if (funcType == FuncConfigs.Func.NOTIFICATION.getValue()) {
+            drawableId = R.drawable.vector_drawable_notification;
+        } else if (funcType == FuncConfigs.Func.PREVIOUS_APP.getValue()) {
+            drawableId = R.drawable.vector_drawable_previous;
+        } else if (funcType == FuncConfigs.Func.TRUN_POS.getValue()) {
+            drawableId = R.drawable.vector_drawable_trun_pos;
+        } else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {
+            drawableId = R.drawable.vector_drawable_screen_lock;
+        } else if (funcType == FuncConfigs.Func.VOICE_MENU.getValue()) {
+            drawableId = R.drawable.vector_ball_menu_voice;
+        } else if (funcType == FuncConfigs.Func.PAY_MENU.getValue()) {
+            drawableId = R.drawable.vector_drawable_pay_menu;
+        } else if (funcType == FuncConfigs.Func.APP_MENU.getValue()) {
+            drawableId = R.drawable.vector_ball_menu_apps;
+        } else if (funcType == FuncConfigs.Func.APPS.getValue()) {
+            drawableId = R.drawable.vector_ball_menu_apps;
         }
         ivBall.setImageResource(drawableId);
     }
@@ -1735,6 +1736,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
     /**
      * 根据行为作出保存的对应的举动
+     *
      * @param opType
      */
     private void goOpEvent(String opType) {
@@ -1757,10 +1759,57 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             showMenuDetailApp();
         } else if (funcType == FuncConfigs.Func.MENU.getValue()) {//app菜单
             showMenuContainer();
-        }else if (funcType == FuncConfigs.Func.PREVIOUS_APP.getValue()) {//app菜单
+        } else if (funcType == FuncConfigs.Func.PREVIOUS_APP.getValue()) {//app菜单
             jump2LastApp();
-        }else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {//app菜单
+        } else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {//app菜单
             lockScreen();
         }
+    }
+
+    /**
+     * 根据行为作出保存的对应的举动
+     *
+     * @param opType
+     */
+    private void goMenuBallEvent(String opType, int index) {
+        final int funcType = SpUtils.getInt(getApplicationContext(), opType, FuncConfigs.Func.BACK.getValue());
+        int touchIndex = 0;
+        if (funcType == FuncConfigs.Func.VOICE_MENU.getValue() || funcType == FuncConfigs.Func.PAY_MENU.getValue()
+                || funcType == FuncConfigs.Func.APP_MENU.getValue()) {
+            touchIndex = index;
+        } else {
+            touchIndex = -1;
+        }
+        //隐藏菜单按钮动画
+        hideMenuContainer(touchIndex, new Configs.OnAnimEndListener() {
+            @Override
+            public void onAnimEnd() {
+                if (funcType == FuncConfigs.Func.BACK.getValue()) {//返回键
+                    enterBack();//返回
+                } else if (funcType == FuncConfigs.Func.HOME.getValue()) {//Home键
+                    enterHome();
+                } else if (funcType == FuncConfigs.Func.RECENT.getValue()) {//任务键
+                    enterRecents();
+                } else if (funcType == FuncConfigs.Func.NOTIFICATION.getValue()) {//通知栏
+                    enterNotification();
+                } else if (funcType == FuncConfigs.Func.TRUN_POS.getValue()) {//切换位置
+                    switchTouchPos();
+                } else if (funcType == FuncConfigs.Func.VOICE_MENU.getValue()) {//声音菜单
+                    showMenuDetailVoice();
+                } else if (funcType == FuncConfigs.Func.PAY_MENU.getValue()) {//支付菜单
+                    showMenuDetailPay();
+                } else if (funcType == FuncConfigs.Func.APP_MENU.getValue()) {//app菜单
+                    showMenuDetailApp();
+                } else if (funcType == FuncConfigs.Func.MENU.getValue()) {//app菜单
+                    showMenuContainer();
+                } else if (funcType == FuncConfigs.Func.PREVIOUS_APP.getValue()) {//app菜单
+                    jump2LastApp();
+                } else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {//app菜单
+                    lockScreen();
+                }
+            }
+        });
+        initMenuDetailVoiceEvent();
+
     }
 }

@@ -121,4 +121,5 @@
     <item name="tv_item_previous_app" type="id">tv_item_previous_app</item>
     <item name="container_function_menu_number" type="id">container_function_menu_number</item>
     <item name="tv_item_lock_screen" type="id">tv_item_lock_screen</item>
+    <item name="fl_function_detail_base" type="id">fl_function_detail_base</item>
 </resources>
