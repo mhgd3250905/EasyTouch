@@ -28,6 +28,8 @@ import com.skkk.easytouch.Services.EasyTouchLinearService;
 import com.skkk.easytouch.Services.FloatService;
 import com.skkk.easytouch.Utils.DialogUtils;
 import com.skkk.easytouch.Utils.ServiceUtils;
+import com.skkk.easytouch.Utils.SpUtils;
+import com.skkk.easytouch.View.FunctionSelect.FuncConfigs;
 import com.skkk.easytouch.View.FunctionSelect.FunctionSelectActivity;
 import com.skkk.easytouch.View.SettingItemView;
 import com.skkk.easytouch.View.ShapeSetting.ShapeSettingActivity;
@@ -82,14 +84,40 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
+        initFirstRunData();
+
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-                && !notificationManager.isNotificationPolicyAccessGranted()) {
-            Intent intent = new Intent(
-                    Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-            startActivity(intent);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+//                && !notificationManager.isNotificationPolicyAccessGranted()) {
+//            Intent intent = new Intent(
+//                    Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+//            startActivity(intent);
+//        }
+    }
+
+    /**
+     * 判断是否为第一次运行
+     */
+    private void initFirstRunData() {
+        boolean isFirstRun = SpUtils.getBoolean(getApplicationContext(), SpUtils.KEY_APP_IS_FIRST_RYN, true);
+        if (isFirstRun) {
+
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_CLICK, FuncConfigs.Func.BACK.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_LONG_CLICK, FuncConfigs.Func.MENU.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_FLING_UP, FuncConfigs.Func.HOME.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_FLING_LEFT, FuncConfigs.Func.PREVIOUS_APP.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_FLING_BOTTOM, FuncConfigs.Func.NOTIFICATION.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_FLING_RIGHT, FuncConfigs.Func.RECENT.getValue());
+
+            SpUtils.saveInt(getApplicationContext(), SpUtils.KEY_MENU_BALL_COUNT, 4);
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_MENU_BALL + 0, FuncConfigs.Func.TRUN_POS.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_MENU_BALL + 1, FuncConfigs.Func.VOICE_MENU.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_MENU_BALL + 2, FuncConfigs.Func.APP_MENU.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_MENU_BALL + 3, FuncConfigs.Func.LOCK_SCREEN.getValue());
+
+            SpUtils.saveBoolean(getApplicationContext(), SpUtils.KEY_APP_IS_FIRST_RYN, false);
         }
     }
 
@@ -143,6 +171,9 @@ public class MainActivity extends AppCompatActivity {
             settingsItemAssist.setSettingItemClickListener(null);
         }
 
+        /**
+         * 判断是否有悬浮窗权限
+         */
         if (Build.VERSION.SDK_INT >= M) {
             if (!Settings.canDrawOverlays(this)) {
                 settingsItemFloat.setValue("未开启");
@@ -162,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         * 判断是否有锁屏权限
+         */
         //如果设备管理器尚未激活，这里会启动一个激活设备管理器的Intent,具体的表现就是第一次打开程序时，手机会弹出激活设备管理器的提示，激活即可。
         mAdminName = new ComponentName(this, AdminManageReceiver.class);
         mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -225,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         initUI();
     }
-
 
 
     /**

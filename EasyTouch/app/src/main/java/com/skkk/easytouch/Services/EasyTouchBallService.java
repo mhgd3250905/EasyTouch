@@ -79,7 +79,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private int rightBorder;
     private int direction;
     private int directionX;
-    private ImageView ivTouchBall;
+    private CircleImageView ivTouchBall;
     private boolean canMove = false;
     private AnimatorSet set;
     private ObjectAnimator scaleXAnim;
@@ -257,7 +257,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
         touchView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball, null);
         llTouchContainer = (RelativeLayout) touchView.findViewById(R.id.ll_touch_container);
-        ivTouchBall = (ImageView) touchView.findViewById(R.id.ivTouchBall);
+        ivTouchBall = (CircleImageView) touchView.findViewById(R.id.ivTouchBall);
 
         menuView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball_menu, null);
         menuContainer = (RelativeLayout) menuView.findViewById(R.id.container_menu_ball);
@@ -1299,20 +1299,24 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      * 显示隐藏菜单
      */
     private void showMenuContainer() {
-        mMenuParams.x = mParams.x;
-        mMenuParams.y = mParams.y - menuWidth / 2 + dp2px(touchWidth);
-        windowManager.addView(menuView, mMenuParams);
-        isMenuShow = true;
-        menuView.post(new Runnable() {
-            @Override
-            public void run() {
-                showMenuBallAnim(menuContainer.getChildAt(0), 0);
-                showMenuBallAnim(menuContainer.getChildAt(1), 1);
-                showMenuBallAnim(menuContainer.getChildAt(2), 2);
-                showMenuBallAnim(menuContainer.getChildAt(3), 3);
-                showMenuBallAnim(menuContainer.getChildAt(4), 4);
-            }
-        });
+        int menuBallCount = SpUtils.getInt(getApplicationContext(), SpUtils.KEY_MENU_BALL_COUNT, 0);
+
+        if (menuBallCount>0) {
+            mMenuParams.x = mParams.x;
+            mMenuParams.y = mParams.y - menuWidth / 2 + dp2px(touchWidth);
+            windowManager.addView(menuView, mMenuParams);
+            isMenuShow = true;
+            menuView.post(new Runnable() {
+                @Override
+                public void run() {
+                    showMenuBallAnim(menuContainer.getChildAt(0), 0);
+                    showMenuBallAnim(menuContainer.getChildAt(1), 1);
+                    showMenuBallAnim(menuContainer.getChildAt(2), 2);
+                    showMenuBallAnim(menuContainer.getChildAt(3), 3);
+                    showMenuBallAnim(menuContainer.getChildAt(4), 4);
+                }
+            });
+        }
     }
 
     /**
@@ -1660,6 +1664,8 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         super.onDestroy();
         try {
             windowManager.removeView(touchView);
+            windowManager.removeView(menuContainer);
+            windowManager.removeView(menuDetailView);
         } catch (Exception e) {
             e.printStackTrace();
         }

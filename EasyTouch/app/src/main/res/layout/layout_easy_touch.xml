@@ -16,7 +16,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:alpha="50"
-            android:src="@drawable/shape_react_corners_top" />
+            android:src="@drawable/shape_react_top" />
 
         <ImageView
             android:id="@id/iv_touch_mid"
@@ -24,7 +24,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:alpha="50"
-            android:src="@drawable/shape_react_corners_mid" />
+            android:src="@drawable/shape_react_mid" />
 
         <ImageView
             android:id="@id/iv_touch_bottom"
@@ -32,7 +32,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:alpha="50"
-            android:src="@drawable/shape_react_corners_bottom" />
+            android:src="@drawable/shape_react_bottom" />
     </LinearLayout>
 
 </LinearLayout>

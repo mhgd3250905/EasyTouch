@@ -34,6 +34,7 @@ import butterknife.ButterKnife;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Context.VIBRATOR_SERVICE;
+import static com.skkk.easytouch.Configs.KEY_TOUCH_UI_BOTTOM_COLOR;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -262,7 +263,7 @@ public class TouchLinearShapeFragment extends Fragment {
             }
         });
 
-        topColor = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_COLOR, Color.BLACK);
+        topColor = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_COLOR, Color.RED);
         ivTouchTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -281,11 +282,11 @@ public class TouchLinearShapeFragment extends Fragment {
             }
         });
 
-        midColor = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_MID_COLOR, Color.BLACK);
+        midColor = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_MID_COLOR, Color.GREEN);
         ivTouchMid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ColorPickerDialog colorPickerDialog = new ColorPickerDialog(getContext(), midColor,
+                ColorPickerDialog colorPickerDialog = new ColorPickerDialog(getContext(),
                         "请选择填充颜色", new ColorPickerDialog.OnColorChangedListener() {
                     @Override
                     public void colorChanged(int color) {
@@ -300,7 +301,8 @@ public class TouchLinearShapeFragment extends Fragment {
             }
         });
 
-        bottomColor = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_COLOR, Color.BLACK);
+
+        bottomColor = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_COLOR, Color.BLUE);
         ivTouchBottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -312,7 +314,7 @@ public class TouchLinearShapeFragment extends Fragment {
                         drawable.setColor(color);
                         ivTouchBottom.setImageDrawable(drawable);
                         bottomColor = color;
-                        SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_COLOR, color);
+                        SpUtils.saveInt(getContext().getApplicationContext(), KEY_TOUCH_UI_BOTTOM_COLOR, color);
                     }
                 });
                 colorPickerDialog.show();
@@ -363,15 +365,11 @@ public class TouchLinearShapeFragment extends Fragment {
             }
             llTouchContainer.setLayoutParams(layoutParams);
 
-            if (theme == Configs.TOUCH_UI_THEME_0) {
-                topDrawable = R.drawable.shape_react_corners_top;
-                midDrawable = R.drawable.shape_react_corners_mid;
-                bottomDrawable = R.drawable.shape_react_corners_bottom;
-            } else if (theme == Configs.TOUCH_UI_THEME_1) {
-                topDrawable = R.drawable.shape_react_top;
-                midDrawable = R.drawable.shape_react_mid;
-                bottomDrawable = R.drawable.shape_react_bottom;
-            }
+
+            topDrawable = R.drawable.shape_react_top;
+            midDrawable = R.drawable.shape_react_mid;
+            bottomDrawable = R.drawable.shape_react_bottom;
+
 
             setImageViewDrawableColor(ivTouchTop, topDrawable, topColor, alpha);
             setImageViewDrawableColor(ivTouchMid, midDrawable, midColor, alpha);

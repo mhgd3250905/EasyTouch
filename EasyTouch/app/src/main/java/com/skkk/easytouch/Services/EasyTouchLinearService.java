@@ -1597,6 +1597,8 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         super.onDestroy();
         try {
             windowManager.removeView(touchView);
+            windowManager.removeView(menuContainer);
+            windowManager.removeView(menuDetailView);
         } catch (Exception e) {
             e.printStackTrace();
         }
