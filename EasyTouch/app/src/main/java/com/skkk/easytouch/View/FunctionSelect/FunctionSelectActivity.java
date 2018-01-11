@@ -64,7 +64,7 @@ public class FunctionSelectActivity extends AppCompatActivity {
         tbFunctionSelect.setNavigationIcon(R.drawable.ic_arrow_back_white);
 
         fragmentList = new ArrayList<Fragment>();
-        linearfragment = FunctionBallFragment.newInstance("","");
+        linearfragment = FunctionLinearFragment.newInstance("","");
         ballfragment = FunctionBallFragment.newInstance("","");
         fragmentList.add(linearfragment);
         fragmentList.add(ballfragment);

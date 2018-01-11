@@ -1,0 +1,234 @@
+<com.skkk.easytouch.View.ScaleScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.skkk.easytouch.View.FunctionSelect.FunctionBallFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/colorPrimary"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="1.5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    android:text="上方按键"
+                    android:textColor="@color/colorBlackBody"
+                    android:textSize="30sp"
+                    />
+
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/siv_function_top_click"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="单击"
+                    app:value="任务" />
+
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/siv_function_top_fling_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="上划"
+                    app:value="无" />
+
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/siv_function_top_fling_down"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="下划"
+                    app:value="通知" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/colorPrimary"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="1.5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    android:text="中部按键"
+                    android:textColor="@color/colorBlackBody"
+                    android:textSize="30sp"
+                    />
+
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/siv_function_mid_click"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="单击"
+                    app:value="主页" />
+
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/siv_function_mid_fling_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="上划"
+                    app:value="位置上移" />
+
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/siv_function_mid_fling_down"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="下划"
+                    app:value="位置下移" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/colorPrimary"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="1.5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    android:text="下方按键"
+                    android:textColor="@color/colorBlackBody"
+                    android:textSize="30sp"
+                    />
+
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/siv_function_bottom_click"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="单击"
+                    app:value="返回" />
+
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/siv_function_bottom_fling_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="上划"
+                    app:value="菜单" />
+
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/siv_function_bottom_fling_down"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="下划"
+                    app:value="无" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorPrimary"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="1.5dp">
+
+            <LinearLayout
+                android:id="@id/container_function_menu_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    android:text="菜单"
+                    android:textColor="@color/colorBlackBody"
+                    android:textSize="30sp"
+                    />
+
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/siv_function_menu_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    app:title="菜单数量"
+                    app:value="当前菜单元素：1" />
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+    </LinearLayout>
+</com.skkk.easytouch.View.ScaleScrollView>

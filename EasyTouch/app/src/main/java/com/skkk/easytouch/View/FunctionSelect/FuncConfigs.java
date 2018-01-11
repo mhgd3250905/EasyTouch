@@ -21,6 +21,14 @@ public class FuncConfigs {
     public static final String VALUE_FUNC_OP_FLING_BOTTOM="value_func_op_fling_bottom";
     public static final String VALUE_FUNC_OP_FLING_RIGHT="value_func_op_fling_right";
 
+    public static final String VALUE_FUNC_OP_TOP_CLICK="value_func_op_top_click";
+    public static final String VALUE_FUNC_OP_TOP_FLING_UP="value_func_op_top_fling_up";
+    public static final String VALUE_FUNC_OP_TOP_FLING_BOTTOM="value_func_op_top_fling_bottom";
+    public static final String VALUE_FUNC_OP_MID_CLICK="value_func_op_mid_click";
+    public static final String VALUE_FUNC_OP_BOTTOM_CLICK="value_func_op_bottom_click";
+    public static final String VALUE_FUNC_OP_BOTTOM_FLING_UP="value_func_op_bottom_fling_up";
+    public static final String VALUE_FUNC_OP_BOTTOM_FLING_BOTTOM="value_func_op_bottom_fling_bottom";
+
     public static final String VALUE_FUNC_OP_MENU_BALL="value_func_op_menu_ball_";
 
     public static final int REQUEST_SELECT_FUNC_DETAIL = 101;
@@ -37,7 +45,7 @@ public class FuncConfigs {
         APPS,
         MENU,
         PREVIOUS_APP,
-        LOCK_SCREEN;
+        LOCK_SCREEN,;
         public int getValue() {
             return this.ordinal();
         }

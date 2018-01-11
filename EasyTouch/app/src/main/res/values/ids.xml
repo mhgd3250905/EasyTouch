@@ -122,4 +122,13 @@
     <item name="container_function_menu_number" type="id">container_function_menu_number</item>
     <item name="tv_item_lock_screen" type="id">tv_item_lock_screen</item>
     <item name="fl_function_detail_base" type="id">fl_function_detail_base</item>
+    <item name="siv_function_top_click" type="id">siv_function_top_click</item>
+    <item name="siv_function_top_fling_up" type="id">siv_function_top_fling_up</item>
+    <item name="siv_function_top_fling_down" type="id">siv_function_top_fling_down</item>
+    <item name="siv_function_mid_click" type="id">siv_function_mid_click</item>
+    <item name="siv_function_mid_fling_up" type="id">siv_function_mid_fling_up</item>
+    <item name="siv_function_mid_fling_down" type="id">siv_function_mid_fling_down</item>
+    <item name="siv_function_bottom_click" type="id">siv_function_bottom_click</item>
+    <item name="siv_function_bottom_fling_up" type="id">siv_function_bottom_fling_up</item>
+    <item name="siv_function_bottom_fling_down" type="id">siv_function_bottom_fling_down</item>
 </resources>

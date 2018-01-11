@@ -29,7 +29,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -53,6 +53,7 @@ import com.skkk.easytouch.View.FunctionSelect.FuncConfigs;
 import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_WIDTH;
 import static com.skkk.easytouch.Configs.DEFAULT_VIBRATE_LEVEL;
 import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_LEFT;
+import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_RIGHT;
 
 public class EasyTouchBallService extends EasyTouchBaseService implements View.OnTouchListener {
     private static final String TAG = "EasyTouchBallService";
@@ -142,6 +143,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private float touchAlpha;
     private String drawableName;
     private boolean isScaleAnim = false;
+    private boolean hasTrunPos = false;
 
 
     @Override
@@ -312,6 +314,9 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      * @param v
      */
     private void setMenuBallLeftLayoutParams(View v) {
+        if (v == null) {
+            return;
+        }
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) v.getLayoutParams();
         lp.addRule(RelativeLayout.CENTER_VERTICAL | RelativeLayout.ALIGN_PARENT_LEFT);
         v.setLayoutParams(lp);
@@ -323,6 +328,9 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      * @param v
      */
     private void setMenuBallRightLayoutParams(View v) {
+        if (v == null) {
+            return;
+        }
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) v.getLayoutParams();
         lp.addRule(RelativeLayout.CENTER_VERTICAL | RelativeLayout.ALIGN_PARENT_RIGHT);
 
@@ -803,6 +811,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         intent.setClass(getApplicationContext(), AppSelectActivity.class);
         intent.putExtra(Configs.KEY_APP_TYPE, value);
         intent.putExtra(Configs.KEY_BALL_MENU_SELECT_APP_INDEX, finalIndex);
+        intent.putExtra(Configs.KEY_TOUCH_TYPE, Configs.TouchType.BALL.getValue());
         startActivity(intent);
     }
 
@@ -1301,7 +1310,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private void showMenuContainer() {
         int menuBallCount = SpUtils.getInt(getApplicationContext(), SpUtils.KEY_MENU_BALL_COUNT, 0);
 
-        if (menuBallCount>0) {
+        if (menuBallCount > 0) {
             mMenuParams.x = mParams.x;
             mMenuParams.y = mParams.y - menuWidth / 2 + dp2px(touchWidth);
             windowManager.addView(menuView, mMenuParams);
@@ -1507,10 +1516,14 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      */
     private void refreshMovePlace(MotionEvent e2) {
         dy = e2.getRawY() - lastY;
+        dx = e2.getRawX() - lastX;
         mParams.y += dy;
+        mParams.x += dx;
         mMenuParams.y += dy;
+        mMenuParams.x += dx;
         windowManager.updateViewLayout(touchView, mParams);
         lastY = e2.getRawY();
+        lastX = e2.getRawX();
     }
 
     private void setMoveDownXY(MotionEvent e) {
@@ -1584,29 +1597,43 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         float startF = 0f;
         float endF = 0f;
         boolean isLeft = false;
-        if (mParams.x <= (rightBorder + leftBorder) / 2) {
+        if (mParams.x <= (rightBorder - dp2px(touchWidth) + leftBorder) / 2) {
             startF = mParams.x;
             endF = 0;
             isLeft = true;
-        } else if (mParams.x > (rightBorder + leftBorder) / 2) {
-            startF = rightBorder - mParams.x;
-            endF = 0;
+        } else if (mParams.x > (rightBorder - dp2px(touchWidth) + leftBorder) / 2) {
+            startF = mParams.x;
+            endF = rightBorder - dp2px(touchWidth);
             isLeft = false;
         }
 
         final boolean isFinalLeft = isLeft;
+        if (direction == TOUCH_UI_DIRECTION_LEFT) {
+            if (isFinalLeft) {
+                hasTrunPos = false;
+            } else {
+                hasTrunPos = true;
+            }
+        } else if (direction == TOUCH_UI_DIRECTION_RIGHT) {
+            if (isFinalLeft) {
+                hasTrunPos = true;
+            } else {
+                hasTrunPos = false;
+            }
+        }
         ValueAnimator valueAnim = ValueAnimator.ofFloat(startF, endF);
         valueAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float animX = (float) animation.getAnimatedValue();
+                mParams.x = (int) animX;
+                windowManager.updateViewLayout(touchView, mParams);
                 if (isFinalLeft) {
-                    mParams.x = (int) animX;
-                    windowManager.updateViewLayout(touchView, mParams);
-                } else {
-                    mParams.x = rightBorder - (int) animX;
-                    windowManager.updateViewLayout(touchView, mParams);
+                    Log.i(TAG, "mParams.x: " + mParams.x);
+                }else {
+                    Log.i(TAG, "mParams.x: " +  (rightBorder - dp2px(touchWidth)-mParams.x));
                 }
+
             }
         });
         valueAnim.addListener(new AnimatorListenerAdapter() {
@@ -1614,10 +1641,14 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 canMove = false;
+                if (hasTrunPos) {
+                    switchTouchPos();
+                    hasTrunPos = false;
+                }
             }
         });
-        valueAnim.setInterpolator(new BounceInterpolator());
-        valueAnim.setDuration(500);
+        valueAnim.setInterpolator(new DecelerateInterpolator());
+        valueAnim.setDuration(300);
         valueAnim.start();
     }
 
@@ -1816,6 +1847,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             }
         });
         initMenuDetailVoiceEvent();
-
+        initMenuDetailAppEvent();
+        initMneuDetailPayEvent();
     }
 }

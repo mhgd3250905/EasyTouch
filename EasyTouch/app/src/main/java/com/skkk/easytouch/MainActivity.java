@@ -103,13 +103,21 @@ public class MainActivity extends AppCompatActivity {
     private void initFirstRunData() {
         boolean isFirstRun = SpUtils.getBoolean(getApplicationContext(), SpUtils.KEY_APP_IS_FIRST_RYN, true);
         if (isFirstRun) {
-
+            //设置第一次进入时候的悬浮球、悬浮条、二级菜单功能
             SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_CLICK, FuncConfigs.Func.BACK.getValue());
             SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_LONG_CLICK, FuncConfigs.Func.MENU.getValue());
             SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_FLING_UP, FuncConfigs.Func.HOME.getValue());
             SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_FLING_LEFT, FuncConfigs.Func.PREVIOUS_APP.getValue());
             SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_FLING_BOTTOM, FuncConfigs.Func.NOTIFICATION.getValue());
             SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_FLING_RIGHT, FuncConfigs.Func.RECENT.getValue());
+
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_TOP_CLICK, FuncConfigs.Func.RECENT.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_TOP_FLING_UP, FuncConfigs.Func.PREVIOUS_APP.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_TOP_FLING_BOTTOM, FuncConfigs.Func.NOTIFICATION.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_MID_CLICK, FuncConfigs.Func.HOME.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_BOTTOM_CLICK, FuncConfigs.Func.BACK.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_BOTTOM_FLING_UP, FuncConfigs.Func.MENU.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_BOTTOM_FLING_BOTTOM, FuncConfigs.Func.LOCK_SCREEN.getValue());
 
             SpUtils.saveInt(getApplicationContext(), SpUtils.KEY_MENU_BALL_COUNT, 4);
             SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_MENU_BALL + 0, FuncConfigs.Func.TRUN_POS.getValue());
@@ -186,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-
             } else {
                 settingsItemFloat.setValue("已开启");
                 settingsItemFloat.setSettingItemClickListener(null);
@@ -231,6 +238,15 @@ public class MainActivity extends AppCompatActivity {
         btnTouchLine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= M) {
+                    if (!Settings.canDrawOverlays(MainActivity.this)) {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                        intent.setData(Uri.parse("package:" + getPackageName()));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivityForResult(intent, Configs.RESULT_PERMISS_REQUEST_FLOAT_LINEAR);
+                        return;
+                    }
+                }
                 if (ServiceUtils.isServiceRun(getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchBallService")) {
                     stopService(new Intent(MainActivity.this, EasyTouchBallService.class));
                 }
@@ -242,6 +258,15 @@ public class MainActivity extends AppCompatActivity {
         btnTouchBall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= M) {
+                    if (!Settings.canDrawOverlays(MainActivity.this)) {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                        intent.setData(Uri.parse("package:" + getPackageName()));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivityForResult(intent, Configs.RESULT_PERMISS_REQUEST_FLOAT_BALL);
+                        return;
+                    }
+                }
                 if (ServiceUtils.isServiceRun(getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchLinearService")) {
                     stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
                 }
@@ -253,6 +278,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Configs.RESULT_PERMISS_REQUEST_FLOAT_LINEAR) {
+            if (ServiceUtils.isServiceRun(getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchBallService")) {
+                stopService(new Intent(MainActivity.this, EasyTouchBallService.class));
+            }
+            startService(new Intent(MainActivity.this, EasyTouchLinearService.class));
+            startService(new Intent(MainActivity.this, FloatService.class));
+        } else if (requestCode == Configs.RESULT_PERMISS_REQUEST_FLOAT_BALL) {
+            if (ServiceUtils.isServiceRun(getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchLinearService")) {
+                stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
+            }
+            startService(new Intent(MainActivity.this, EasyTouchBallService.class));
+            startService(new Intent(MainActivity.this, FloatService.class));
+        }
+    }
 
     @Override
     protected void onStart() {
@@ -302,4 +344,5 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "activity device");
         startActivityForResult(intent, 1);
     }
+
 }
