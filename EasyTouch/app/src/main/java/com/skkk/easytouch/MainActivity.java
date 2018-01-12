@@ -1,6 +1,5 @@
 package com.skkk.easytouch;
 
-import android.Manifest;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
@@ -68,10 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private ArrayList<String> needRequestPermissions = new ArrayList<>();
-    // 所需的全部权限
-    private static final String[] PERMISSIONS = new String[]{
-            Manifest.permission.SYSTEM_ALERT_WINDOW
-    };
+
     private static final String PACKAGE_URL_SCHEME = "package:"; // 方案
     private ComponentName mAdminName;
     private DevicePolicyManager mDPM;
@@ -99,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 判断是否为第一次运行
+     * 如果是第一次运行那么就需要设置初始化的功能以及菜单选项
      */
     private void initFirstRunData() {
         boolean isFirstRun = SpUtils.getBoolean(getApplicationContext(), SpUtils.KEY_APP_IS_FIRST_RYN, true);
@@ -134,7 +131,37 @@ public class MainActivity extends AppCompatActivity {
      * 设置UI
      */
     private void initUI() {
-        initEvent();
+        /**
+         * 判断是否有无障碍权限
+         */
+        if (!isAccessibilityServiceRunning("FloatService")) {
+            settingsItemAssist.setWarning("未开启，无法显示悬浮内容");
+        } else {
+            settingsItemAssist.setValue("已开启");
+        }
+
+        /**
+         * 判断是否有悬浮窗权限
+         */
+        if (Build.VERSION.SDK_INT >= M) {
+            if (!Settings.canDrawOverlays(this)) {
+                settingsItemFloat.setWarning("未开启，操作功能无法使用");
+            } else {
+                settingsItemFloat.setValue("已开启");
+            }
+        }
+
+        /**
+         * 判断是否有锁屏权限
+         */
+        //如果设备管理器尚未激活，这里会启动一个激活设备管理器的Intent,具体的表现就是第一次打开程序时，手机会弹出激活设备管理器的提示，激活即可。
+        mAdminName = new ComponentName(this, AdminManageReceiver.class);
+        mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        if (!mDPM.isAdminActive(mAdminName)) {
+            settingsItemLock.setWarning("未开启，锁屏功能无法使用");
+        } else {
+            settingsItemLock.setValue("已开启");
+        }
     }
 
     /**
@@ -152,72 +179,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initEvent() {
-        /**
-         * 判断是否有无障碍权限
-         */
-        if (!isAccessibilityServiceRunning("FloatService")) {
-            settingsItemAssist.setValue("未开启");
-            settingsItemAssist.setSettingItemClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DialogUtils.showDialog(MainActivity.this, R.drawable.ic_warning, "提醒", "为了保证EasyTouch的正常使用，您需要开启无障碍权限！",
-                            "前往设置", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    startActivity(new Intent("android.settings.ACCESSIBILITY_SETTINGS"));
-                                }
-                            }, "退出应用", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    finish();
-                                }
-                            }).show();
-                }
-            });
-        } else {
-            settingsItemAssist.setValue("已开启");
-            settingsItemAssist.setSettingItemClickListener(null);
-        }
 
-        /**
-         * 判断是否有悬浮窗权限
-         */
-        if (Build.VERSION.SDK_INT >= M) {
-            if (!Settings.canDrawOverlays(this)) {
-                settingsItemFloat.setValue("未开启");
-                settingsItemFloat.setSettingItemClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-                        intent.setData(Uri.parse("package:" + getPackageName()));
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    }
-                });
-            } else {
-                settingsItemFloat.setValue("已开启");
-                settingsItemFloat.setSettingItemClickListener(null);
+        settingsItemAssist.setSettingItemClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogUtils.showDialog(MainActivity.this, R.drawable.ic_warning, "提醒", "为了保证EasyTouch的正常使用，您需要开启无障碍权限！",
+                        "前往设置", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                startActivity(new Intent("android.settings.ACCESSIBILITY_SETTINGS"));
+                            }
+                        }, "退出应用", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).show();
             }
-        }
+        });
 
-        /**
-         * 判断是否有锁屏权限
-         */
-        //如果设备管理器尚未激活，这里会启动一个激活设备管理器的Intent,具体的表现就是第一次打开程序时，手机会弹出激活设备管理器的提示，激活即可。
-        mAdminName = new ComponentName(this, AdminManageReceiver.class);
-        mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-        if (!mDPM.isAdminActive(mAdminName)) {
-            settingsItemLock.setValue("未开启");
-            settingsItemLock.setSettingItemClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showAdminManagement(mAdminName);
-                }
-            });
-        } else {
-            settingsItemLock.setValue("已开启");
-            settingsItemLock.setSettingItemClickListener(null);
-        }
+
+        settingsItemFloat.setSettingItemClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+
+
+        settingsItemLock.setSettingItemClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAdminManagement(mAdminName);
+            }
+        });
+
 
         //设置形状
         settingsItemShape.setOnClickListener(new View.OnClickListener() {
@@ -300,6 +299,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         initUI();
+        initEvent();
+
     }
 
 

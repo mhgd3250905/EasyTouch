@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.skkk.easytouch.MyApplication;
 import com.skkk.easytouch.R;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class ShapeSettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shape_setting);
         ButterKnife.bind(this);
-
+        MyApplication.setIsSettingShape(true);//外观设置打开
         initUI();
     }
 
@@ -114,4 +115,9 @@ public class ShapeSettingActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        MyApplication.setIsSettingShape(false);
+        super.onDestroy();
+    }
 }

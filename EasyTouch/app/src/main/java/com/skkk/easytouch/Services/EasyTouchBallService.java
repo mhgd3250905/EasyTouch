@@ -1842,7 +1842,14 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 } else if (funcType == FuncConfigs.Func.PREVIOUS_APP.getValue()) {//app菜单
                     jump2LastApp();
                 } else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {//app菜单
-                    lockScreen();
+                    if (mDPM.isAdminActive(mAdminName)) {
+                        lockScreen();
+                    }else{
+                        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminName);
+                        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "activity device");
+                        startActivity(intent);
+                    }
                 }
             }
         });

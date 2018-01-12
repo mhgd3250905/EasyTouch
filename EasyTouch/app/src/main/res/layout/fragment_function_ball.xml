@@ -24,6 +24,17 @@
                 android:layout_gravity="center"
                 android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    android:text="悬浮球"
+                    android:textColor="@color/colorBlackBody"
+                    android:textSize="30sp"
+                    />
+
                 <com.skkk.easytouch.View.SettingItemView
                     android:id="@id/siv_function_click"
                     android:layout_width="match_parent"
@@ -106,6 +117,17 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    android:text="菜单"
+                    android:textColor="@color/colorBlackBody"
+                    android:textSize="30sp"
+                    />
 
                 <com.skkk.easytouch.View.SettingItemView
                     android:id="@id/siv_function_menu_number"

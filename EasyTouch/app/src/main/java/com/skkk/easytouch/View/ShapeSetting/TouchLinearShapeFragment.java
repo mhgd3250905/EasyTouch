@@ -1,9 +1,11 @@
 package com.skkk.easytouch.View.ShapeSetting;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -90,6 +92,7 @@ public class TouchLinearShapeFragment extends Fragment {
     private int midDrawable;
     private int bottomDrawable;
 
+    private BroadcastReceiver receiver;
 
     public TouchLinearShapeFragment() {
         // Required empty public constructor
@@ -116,6 +119,7 @@ public class TouchLinearShapeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initColorSettingBoardcast();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -267,18 +271,7 @@ public class TouchLinearShapeFragment extends Fragment {
         ivTouchTop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ColorPickerDialog colorPickerDialog = new ColorPickerDialog(getContext(),
-                        "请选择填充颜色", new ColorPickerDialog.OnColorChangedListener() {
-                    @Override
-                    public void colorChanged(int color) {
-                        GradientDrawable drawable = (GradientDrawable) ivTouchTop.getDrawable();
-                        drawable.setColor(color);
-                        topColor = color;
-                        ivTouchTop.setImageDrawable(drawable);
-                        SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_COLOR, color);
-                    }
-                });
-                colorPickerDialog.show();
+                showColorDialog(Configs.LinearPos.TOP.getValue());
             }
         });
 
@@ -286,18 +279,8 @@ public class TouchLinearShapeFragment extends Fragment {
         ivTouchMid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ColorPickerDialog colorPickerDialog = new ColorPickerDialog(getContext(),
-                        "请选择填充颜色", new ColorPickerDialog.OnColorChangedListener() {
-                    @Override
-                    public void colorChanged(int color) {
-                        GradientDrawable drawable = (GradientDrawable) ivTouchMid.getDrawable();
-                        drawable.setColor(color);
-                        midColor = color;
-                        ivTouchMid.setImageDrawable(drawable);
-                        SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_MID_COLOR, color);
-                    }
-                });
-                colorPickerDialog.show();
+                showColorDialog(Configs.LinearPos.MID.getValue());
+
             }
         });
 
@@ -306,18 +289,7 @@ public class TouchLinearShapeFragment extends Fragment {
         ivTouchBottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ColorPickerDialog colorPickerDialog = new ColorPickerDialog(getContext(), bottomColor,
-                        "请选择填充颜色", new ColorPickerDialog.OnColorChangedListener() {
-                    @Override
-                    public void colorChanged(int color) {
-                        GradientDrawable drawable = (GradientDrawable) ivTouchBottom.getDrawable();
-                        drawable.setColor(color);
-                        ivTouchBottom.setImageDrawable(drawable);
-                        bottomColor = color;
-                        SpUtils.saveInt(getContext().getApplicationContext(), KEY_TOUCH_UI_BOTTOM_COLOR, color);
-                    }
-                });
-                colorPickerDialog.show();
+                showColorDialog(Configs.LinearPos.BOTTOM.getValue());
             }
         });
 
@@ -403,7 +375,76 @@ public class TouchLinearShapeFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         ButterKnife.unbind(this);
+        getActivity().unregisterReceiver(receiver);
+        super.onDestroyView();
     }
+
+    public void initColorSettingBoardcast() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Configs.BROADCAST_SHAPE_COLOR_SHETTING);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int pos = intent.getIntExtra(Configs.KEY_SHAPE_COLOR_SETTING, Configs.KEY_SHAPE_COLOR_SETTING_TOP);
+                showColorDialog(pos);
+            }
+        };
+        getActivity().registerReceiver(receiver, intentFilter);
+    }
+
+    /**
+     * 显示颜色选择弹窗
+     *
+     * @param pos
+     */
+    public void showColorDialog(int pos) {
+        ColorPickerDialog colorPickerDialog = null;
+        if (pos == Configs.LinearPos.TOP.getValue()) {
+            colorPickerDialog = new ColorPickerDialog(getContext(),
+                    "请选择填充颜色", new ColorPickerDialog.OnColorChangedListener() {
+                @Override
+                public void colorChanged(int color) {
+                    GradientDrawable drawable = (GradientDrawable) ivTouchTop.getDrawable();
+                    drawable.setColor(color);
+                    topColor = color;
+                    ivTouchTop.setImageDrawable(drawable);
+                    SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_COLOR, color);
+                    upDateTouchViewShape(0,0);
+
+                }
+            });
+        } else if (pos == Configs.LinearPos.MID.getValue()) {
+            colorPickerDialog = new ColorPickerDialog(getContext(),
+                    "请选择填充颜色", new ColorPickerDialog.OnColorChangedListener() {
+                @Override
+                public void colorChanged(int color) {
+                    GradientDrawable drawable = (GradientDrawable) ivTouchMid.getDrawable();
+                    drawable.setColor(color);
+                    midColor = color;
+                    ivTouchMid.setImageDrawable(drawable);
+                    SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_MID_COLOR, color);
+                    upDateTouchViewShape(0,0);
+
+                }
+            });
+        } else if (pos == Configs.LinearPos.BOTTOM.getValue()) {
+            colorPickerDialog = new ColorPickerDialog(getContext(), bottomColor,
+                    "请选择填充颜色", new ColorPickerDialog.OnColorChangedListener() {
+                @Override
+                public void colorChanged(int color) {
+                    GradientDrawable drawable = (GradientDrawable) ivTouchBottom.getDrawable();
+                    drawable.setColor(color);
+                    ivTouchBottom.setImageDrawable(drawable);
+                    bottomColor = color;
+                    SpUtils.saveInt(getContext().getApplicationContext(), KEY_TOUCH_UI_BOTTOM_COLOR, color);
+                    upDateTouchViewShape(0,0);
+
+                }
+            });
+        }
+        colorPickerDialog.show();
+    }
+
+
 }

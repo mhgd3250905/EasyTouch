@@ -106,7 +106,7 @@ public class FunctionBallFragment extends Fragment {
         initMenuCountView();
 
         for (int i = 0; i < menuBallCount; i++) {
-            setItemDesc(FuncConfigs.VALUE_FUNC_OP_MENU_BALL + i, (SettingItemView) containerFunctionMenuNumber.getChildAt(i + 1));
+            setItemDesc(FuncConfigs.VALUE_FUNC_OP_MENU_BALL + i, (SettingItemView) containerFunctionMenuNumber.getChildAt(i + 2));
         }
     }
 
@@ -115,7 +115,7 @@ public class FunctionBallFragment extends Fragment {
      */
     private void initMenuCountView() {
         if (containerFunctionMenuNumber.getChildCount() > 1) {
-            for (int i = containerFunctionMenuNumber.getChildCount(); i > 0; i--) {
+            for (int i = containerFunctionMenuNumber.getChildCount(); i > 1; i--) {
                 containerFunctionMenuNumber.removeView(containerFunctionMenuNumber.getChildAt(i));
             }
         }

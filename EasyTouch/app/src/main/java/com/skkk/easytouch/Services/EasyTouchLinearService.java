@@ -21,6 +21,7 @@ import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -40,6 +41,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.skkk.easytouch.Configs;
+import com.skkk.easytouch.MyApplication;
 import com.skkk.easytouch.R;
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
 import com.skkk.easytouch.Utils.IntentUtils;
@@ -148,6 +150,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     private ObjectAnimator transYAnimShow;
     private int lastAnimX;
     private int lastAnimY;
+    private LocalBroadcastManager localBroadcastManager;
 
 
     @Override
@@ -317,9 +320,9 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         midDrawable = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_MID_DRAWABLE, R.drawable.shape_react_mid);
         bottomDrawable = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_DRAWABLE, R.drawable.shape_react_bottom);
 
-        topColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_COLOR, R.color.colorRecent);
-        midColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_MID_COLOR, R.color.colorHome);
-        bottomColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_COLOR, R.color.colorBack);
+        topColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_COLOR, Color.RED);
+        midColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_MID_COLOR, Color.GREEN);
+        bottomColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_COLOR, Color.BLUE);
 
         colorAlpha = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA, DEFAULT_ALPHA);
 
@@ -641,19 +644,22 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                 Log.d(TAG, "onSingleTapUp() called with: e = [" + e + "]");
                 //震动30毫秒
                 vibrator.vibrate(vibrateLevel);
-                if (isMenuDetailShow) {
-                    hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
-                        @Override
-                        public void onAnimEnd() {
-                            hideMenuDetailContainer();
-                        }
-                    }, true);
-                } else if (isMenuShow) {
-                    isMenuShow = false;
-                    hideMenuContainer(-1, null);
+                if (MyApplication.isSettingShape()) {
+                    sendShapeColorSettingBoardcast(Configs.LinearPos.TOP);
                 } else {
-                    goOpEvent(FuncConfigs.VALUE_FUNC_OP_TOP_CLICK);
-//                    enterRecents();
+                    if (isMenuDetailShow) {
+                        hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                            @Override
+                            public void onAnimEnd() {
+                                hideMenuDetailContainer();
+                            }
+                        }, true);
+                    } else if (isMenuShow) {
+                        isMenuShow = false;
+                        hideMenuContainer(-1, null);
+                    } else {
+                        goOpEvent(FuncConfigs.VALUE_FUNC_OP_TOP_CLICK);
+                    }
                 }
                 return false;
             }
@@ -700,10 +706,6 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                         hideMenuContainer(-1, null);
                     } else {
                         goOpEvent(FuncConfigs.VALUE_FUNC_OP_TOP_FLING_UP);
-//                        jump2LastApp();
-//                        Instrumentation instrumentation=new Instrumentation();
-//                        UiAutomation uiAutomation = instrumentation.getUiAutomation();
-//                        uiAutomation.takeScreenshot();
                     }
                 }
                 return false;
@@ -739,19 +741,22 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             public boolean onSingleTapUp(MotionEvent e) {
                 //震动30毫秒
                 vibrator.vibrate(vibrateLevel);
-                if (isMenuDetailShow) {
-                    hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
-                        @Override
-                        public void onAnimEnd() {
-                            hideMenuDetailContainer();
-                        }
-                    }, true);
-                } else if (isMenuShow) {
-                    isMenuShow = false;
-                    hideMenuContainer(-1, null);
+                if (MyApplication.isSettingShape()) {
+                    sendShapeColorSettingBoardcast(Configs.LinearPos.MID);
                 } else {
-                    goOpEvent(FuncConfigs.VALUE_FUNC_OP_MID_CLICK);
-//                    recentApps(FloatService.getService(), AccessibilityService.GLOBAL_ACTION_HOME);
+                    if (isMenuDetailShow) {
+                        hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                            @Override
+                            public void onAnimEnd() {
+                                hideMenuDetailContainer();
+                            }
+                        }, true);
+                    } else if (isMenuShow) {
+                        isMenuShow = false;
+                        hideMenuContainer(-1, null);
+                    } else {
+                        goOpEvent(FuncConfigs.VALUE_FUNC_OP_MID_CLICK);
+                    }
                 }
                 return false;
             }
@@ -787,20 +792,26 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
-                if (isMenuDetailShow) {
-                    hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
-                        @Override
-                        public void onAnimEnd() {
-                            hideMenuDetailContainer();
-                        }
-                    }, true);
-                } else if (isMenuShow) {
-                    isMenuShow = false;
-                    hideMenuContainer(-1, null);
-                } else {
-                    goOpEvent(FuncConfigs.VALUE_FUNC_OP_BOTTOM_CLICK);
+                //震动30毫秒
+                vibrator.vibrate(vibrateLevel);
+                if (MyApplication.isSettingShape()){
+                    sendShapeColorSettingBoardcast(Configs.LinearPos.BOTTOM);
+                }else {
+                    if (isMenuDetailShow) {
+                        hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
+                            @Override
+                            public void onAnimEnd() {
+                                hideMenuDetailContainer();
+                            }
+                        }, true);
+                    } else if (isMenuShow) {
+                        isMenuShow = false;
+                        hideMenuContainer(-1, null);
+                    } else {
+                        goOpEvent(FuncConfigs.VALUE_FUNC_OP_BOTTOM_CLICK);
 
 //                    enterBack();
+                    }
                 }
                 return false;
             }
@@ -834,7 +845,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                         goOpEvent(FuncConfigs.VALUE_FUNC_OP_BOTTOM_FLING_UP);
 //                        showMenuContainer();
                     }
-                }else if (e2.getY() - e1.getY() > minTouchSlop && Math.abs(e2.getY() - e1.getY()) / 3 > Math.abs(e2.getX() - e1.getX())) {
+                } else if (e2.getY() - e1.getY() > minTouchSlop && Math.abs(e2.getY() - e1.getY()) / 3 > Math.abs(e2.getX() - e1.getX())) {
                     //下划
                     //？？
                     if (isMenuDetailShow) {
@@ -1639,7 +1650,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      * @param v
      */
     private void setMenuBallLeftLayoutParams(View v) {
-        if (v==null){
+        if (v == null) {
             return;
         }
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) v.getLayoutParams();
@@ -1655,7 +1666,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      * @param v
      */
     private void setMenuBallRightLayoutParams(View v) {
-        if (v==null){
+        if (v == null) {
             return;
         }
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) v.getLayoutParams();
@@ -1780,5 +1791,17 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 发送颜色设置广播
+     *
+     * @param pos
+     */
+    private void sendShapeColorSettingBoardcast(Configs.LinearPos pos) {
+        Intent intent = new Intent();
+        intent.putExtra(Configs.KEY_SHAPE_COLOR_SETTING, pos.getValue());
+        intent.setAction(Configs.BROADCAST_SHAPE_COLOR_SHETTING);
+        sendBroadcast(intent);
     }
 }

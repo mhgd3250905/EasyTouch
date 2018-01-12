@@ -19,6 +19,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center">
+
                 <include layout="@layout/layout_easy_touch_ball" />
             </LinearLayout>
 
@@ -27,176 +28,205 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="10dp">
 
-            <LinearLayout
+            <android.support.v7.widget.CardView
+                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="半径"
-                    android:textColor="@color/colorBlackBody"
-                    android:textSize="25sp" />
+                android:background="@color/colorPrimary"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="1.5dp">
 
                 <LinearLayout
+                    android:layout_margin="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentStart="true"
-                        android:gravity="center"
-                        android:text="短"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="15sp" />
-
-                    <android.support.v7.widget.AppCompatSeekBar
-                        android:id="@id/sb_radius"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentEnd="true"
-                        android:gravity="center"
-                        android:text="长"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="15sp" />
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="按键震动"
-                    android:textColor="@color/colorBlackBody"
-                    android:textSize="25sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentStart="true"
-                        android:gravity="center"
-                        android:text="弱"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="15sp" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="悬浮球"
+                        android:textColor="@color/colorBlackBody"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
 
-                    <android.support.v7.widget.AppCompatSeekBar
-                        android:id="@+id/sb_vibrate"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentEnd="true"
-                        android:gravity="center"
-                        android:text="强"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="15sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="半径"
+                            android:textColor="@color/colorBlackBody"
+                            android:textSize="20sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentStart="true"
+                                android:gravity="center"
+                                android:text="短"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="15sp" />
+
+                            <android.support.v7.widget.AppCompatSeekBar
+                                android:id="@id/sb_radius"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentEnd="true"
+                                android:gravity="center"
+                                android:text="长"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="15sp" />
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="按键震动"
+                            android:textColor="@color/colorBlackBody"
+                            android:textSize="20sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentStart="true"
+                                android:gravity="center"
+                                android:text="弱"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="15sp" />
+
+                            <android.support.v7.widget.AppCompatSeekBar
+                                android:id="@+id/sb_vibrate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentEnd="true"
+                                android:gravity="center"
+                                android:text="强"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="15sp" />
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="透明度"
+                            android:textColor="@color/colorBlackBody"
+                            android:textSize="20sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentStart="true"
+                                android:gravity="center"
+                                android:text="透"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="15sp" />
+
+                            <android.support.v7.widget.AppCompatSeekBar
+                                android:id="@+id/sb_alpha"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentEnd="true"
+                                android:gravity="center"
+                                android:text="实"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="15sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="图片"
+                            android:textColor="@color/colorBlackBody"
+                            android:textSize="20sp" />
+
+
+                        <TextView
+                            android:id="@id/tv_ball_drawable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/colorAccent"
+                            android:buttonTint="@color/colorAccent"
+                            android:text="点击选择图片"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="20sp" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
+            </android.support.v7.widget.CardView>
 
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="透明度"
-                    android:textColor="@color/colorBlackBody"
-                    android:textSize="25sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentStart="true"
-                        android:gravity="center"
-                        android:text="透"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="15sp" />
-
-                    <android.support.v7.widget.AppCompatSeekBar
-                        android:id="@+id/sb_alpha"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentEnd="true"
-                        android:gravity="center"
-                        android:text="实"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="15sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="图片"
-                    android:textColor="@color/colorBlackBody"
-                    android:textSize="25sp" />
-
-
-                    <TextView
-                        android:id="@id/tv_ball_drawable"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textSize="20sp"
-                        android:backgroundTint="@color/colorAccent"
-                        android:buttonTint="@color/colorAccent"
-                        android:text="点击选择图片"
-                        android:textColor="@color/colorAccent" />
-
-            </LinearLayout>
 
         </LinearLayout>
+
     </LinearLayout>
 
 

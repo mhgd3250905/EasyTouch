@@ -2,6 +2,7 @@ package com.skkk.easytouch.View;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,6 +95,19 @@ public class SettingItemView extends LinearLayout {
     public void setValue(String value){
         if (tvValue!=null){
             tvValue.setText(value);
+            tvValue.setTextColor(ContextCompat.getColor(getContext(),R.color.colorGray));
+
+        }
+    }
+
+    /**
+     * 设置内容
+     * @param value
+     */
+    public void setWarning(String value){
+        if (tvValue!=null){
+            tvValue.setText(value);
+            tvValue.setTextColor(ContextCompat.getColor(getContext(),R.color.colorAccent));
         }
     }
 

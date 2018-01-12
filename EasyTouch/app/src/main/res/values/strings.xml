@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EasyTouch</string>
+    <string name="app_name">白开水悬浮助手</string>
     <string name="action_settings">Settings</string>
     <string name="accessibility">打开开关，才可以使用悬浮球功能。</string>
 

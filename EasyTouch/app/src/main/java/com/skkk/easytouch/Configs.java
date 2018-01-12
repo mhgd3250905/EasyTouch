@@ -35,6 +35,17 @@ public class Configs {
         }
     }
 
+    public enum LinearPos{
+        TOP,
+        MID,
+        BOTTOM;
+
+        public int getValue() {
+            return this.ordinal();
+        }
+
+    }
+
 
     public enum AppType {
         APP,
@@ -116,5 +127,12 @@ public class Configs {
     public static final int TOUCH_UI_DIRECTION_LEFT = 0;
     public static final int TOUCH_UI_DIRECTION_RIGHT = 1;
 
+
+    public static final String BROADCAST_SHAPE_COLOR_SHETTING="broadcast_shape_color_shetting";
+
+    public static final String KEY_SHAPE_COLOR_SETTING="key_shape_color_setting";
+    public static final int KEY_SHAPE_COLOR_SETTING_TOP=1;
+    public static final int KEY_SHAPE_COLOR_SETTING_MID=2;
+    public static final int KEY_SHAPE_COLOR_SETTING_BOTTOM=3;
 
 }

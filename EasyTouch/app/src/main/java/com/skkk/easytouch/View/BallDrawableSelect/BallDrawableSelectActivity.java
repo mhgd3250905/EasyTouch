@@ -1,6 +1,7 @@
 package com.skkk.easytouch.View.BallDrawableSelect;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,9 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,7 +22,9 @@ import android.view.View;
 
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
+import com.skkk.easytouch.Utils.DialogUtils;
 import com.skkk.easytouch.Utils.IntentUtils;
+import com.skkk.easytouch.Utils.PermissionsUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.BaseAdapter;
 
@@ -43,6 +49,19 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
     private List<String> mDataList;
     private final int COLUMN_COUNT = 4;
     private Uri mPhotoUri;
+
+    private static final String PACKAGE_URL_SCHEME = "package:"; // 方案
+
+    // 所需的全部权限
+    private static final String[] PERMISSIONS = new String[]{
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+    };
+    private static final int PERMISSION_REQUEST_CODE = 0; // 系统权限管理页面的参数
+
+
+    private ArrayList<String> needRequestPermissions = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +93,7 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
         rvBallDrawableSelect.setAdapter(adapter);
     }
 
+
     /**
      * 初始化事件
      */
@@ -89,6 +109,8 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
                                 == PackageManager.PERMISSION_GRANTED) {
                             //如果已经具备了权限，那么可以操作
                             selectPhoto();
+                        }else {
+                            initPermissions();
                         }
                     } else {
                         //版本为6.0以下，直接进行操作
@@ -159,5 +181,79 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
             names.add("ball_" + i);
         }
         return names;
+    }
+
+    /**
+     * 检测权限
+     */
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void initPermissions() {
+        if (PermissionsUtils.lacksPermissions(BallDrawableSelectActivity.this, PERMISSIONS)) {
+            requestPermissions(PERMISSIONS);
+        }
+    }
+
+    // 请求权限兼容低版本
+    @TargetApi(Build.VERSION_CODES.M)
+    private void requestPermissions(String... permissions) {
+        needRequestPermissions.clear();
+        for (int i = 0; i < PERMISSIONS.length; i++) {
+            if (PermissionsUtils.lacksPermission(this, PERMISSIONS[i])) {
+                needRequestPermissions.add(PERMISSIONS[i]);
+            }
+        }
+        String[] permissionArr = new String[needRequestPermissions.size()];
+        needRequestPermissions.toArray(permissionArr);
+        requestPermissions(permissionArr, PERMISSION_REQUEST_CODE);
+    }
+
+    /**
+     * 用户权限处理,
+     * 如果全部获取, 则直接过.
+     * 如果权限缺失, 则提示Dialog.
+     *
+     * @param requestCode  请求码
+     * @param permissions  权限
+     * @param grantResults 结果
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode == PERMISSION_REQUEST_CODE && hasAllPermissionsGranted(grantResults)) {
+
+        } else {
+            DialogUtils.showDialog(BallDrawableSelectActivity.this, R.drawable.ic_warning,
+                    "提醒", "当前应用缺少必要权限，\n请点击\"设置\"-\"权限\"打开所需要的权限。",
+                    "设置", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            intent.setData(Uri.parse(PACKAGE_URL_SCHEME + getPackageName()));
+                            startActivity(intent);
+                        }
+                    }, "算了", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+
+                        }
+                    }).show();
+        }
+    }
+
+    /**
+     * 判断是否包含所有的权限
+     *
+     * @param grantResults
+     * @return
+     */
+
+    private boolean hasAllPermissionsGranted(@NonNull int[] grantResults) {
+        for (int grantResult : grantResults) {
+            if (grantResult == PackageManager.PERMISSION_DENIED) {
+                return false;
+            }
+        }
+        return true;
     }
 }
