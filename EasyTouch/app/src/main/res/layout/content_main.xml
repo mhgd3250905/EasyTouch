@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.skkk.easytouch.View.ScaleScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_main"
@@ -14,7 +14,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
 
         <android.support.v7.widget.CardView
@@ -36,11 +38,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    android:textStyle="bold"
                     android:text="功能权限"
                     android:textColor="@color/colorBlackBody"
                     android:textSize="30sp"
-                    />
+                    android:textStyle="bold"
+                    android:id="@+id/textView2" />
 
                 <com.skkk.easytouch.View.SettingItemView
                     android:id="@id/settings_item_float"
@@ -105,11 +107,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    android:textStyle="bold"
                     android:text="自定义"
                     android:textColor="@color/colorBlackBody"
                     android:textSize="30sp"
-                    />
+                    android:textStyle="bold" />
 
                 <com.skkk.easytouch.View.SettingItemView
                     android:id="@id/settings_item_shape"
@@ -135,39 +136,98 @@
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/colorPrimary"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="1.5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="其他"
+                    android:textColor="@color/colorBlackBody"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/settings_item_about"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    app:title="关于本应用"
+                    app:value="点击了解" />
+
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@id/btn_touch_line"
+            <android.support.v7.widget.CardView
+                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:foreground="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="悬浮条"
-                android:textColor="@color/colorBlackBody"
-                android:textSize="25sp" />
+                android:background="@color/colorPrimary"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="1.5dp">
 
-            <TextView
-                android:id="@id/btn_touch_ball"
+                <TextView
+                    android:textStyle="bold"
+                    android:id="@id/btn_touch_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="悬浮条"
+                    android:textColor="@color/colorBlackBody"
+                    android:textSize="25sp" />
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_margin="10dp"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:foreground="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="悬浮球"
-                android:textColor="@color/colorBlackBody"
-                android:textSize="25sp" />
+                android:background="@color/colorPrimary"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="1.5dp">
+
+                <TextView
+                    android:textStyle="bold"
+                    android:id="@id/btn_touch_ball"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="悬浮球"
+                    android:textColor="@color/colorBlackBody"
+                    android:textSize="25sp" />
+            </android.support.v7.widget.CardView>
         </LinearLayout>
 
 
     </LinearLayout>
-</RelativeLayout>
+</com.skkk.easytouch.View.ScaleScrollView>

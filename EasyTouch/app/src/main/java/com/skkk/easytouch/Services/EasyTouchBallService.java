@@ -1,5 +1,6 @@
 package com.skkk.easytouch.Services;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -27,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
@@ -50,7 +52,9 @@ import com.skkk.easytouch.View.AppSelect.AppSelectActivity;
 import com.skkk.easytouch.View.CircleImageView;
 import com.skkk.easytouch.View.FunctionSelect.FuncConfigs;
 
-import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_WIDTH;
+import java.util.List;
+
+import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_WIDTH_BALL;
 import static com.skkk.easytouch.Configs.DEFAULT_VIBRATE_LEVEL;
 import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_LEFT;
 import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_RIGHT;
@@ -70,7 +74,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private float dx;
     private float dy;
 
-    private int touchWidth = DEFAULT_TOUCH_WIDTH;//悬浮条的宽度 单位dp
+    private int touchWidth = DEFAULT_TOUCH_WIDTH_BALL;//悬浮条的宽度 单位dp
     private int touchHeight = Configs.DEFAULT_TOUCH_HEIGHT;//悬浮条的高度 单位dp
 
 
@@ -412,7 +416,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private void initTouchUI() {
         //初始化震动等级
         vibrateLevel = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL_BALL, DEFAULT_VIBRATE_LEVEL);
-        touchWidth = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS, DEFAULT_TOUCH_WIDTH);
+        touchWidth = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS, DEFAULT_TOUCH_WIDTH_BALL);
         touchAlpha = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA_BALL, Configs.DEFAULT_ALPHA) * 1f;
         drawableName = SpUtils.getString(getApplicationContext(), Configs.KEY_TOUCH_UI_BACKGROUND_BALL, "ball_0");
 
@@ -1630,8 +1634,8 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 windowManager.updateViewLayout(touchView, mParams);
                 if (isFinalLeft) {
                     Log.i(TAG, "mParams.x: " + mParams.x);
-                }else {
-                    Log.i(TAG, "mParams.x: " +  (rightBorder - dp2px(touchWidth)-mParams.x));
+                } else {
+                    Log.i(TAG, "mParams.x: " + (rightBorder - dp2px(touchWidth) - mParams.x));
                 }
 
             }
@@ -1692,14 +1696,14 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         try {
             windowManager.removeView(touchView);
-            windowManager.removeView(menuContainer);
+            windowManager.removeView(menuView);
             windowManager.removeView(menuDetailView);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        super.onDestroy();
     }
 
 
@@ -1779,11 +1783,23 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private void goOpEvent(String opType) {
         int funcType = SpUtils.getInt(getApplicationContext(), opType, FuncConfigs.Func.BACK.getValue());
         if (funcType == FuncConfigs.Func.BACK.getValue()) {//返回键
-            enterBack();//返回
+            if (!isAccessibilityServiceRunning("FloatService")) {
+                gotoAccessibilityService();
+            } else {
+                enterBack();//返回
+            }
         } else if (funcType == FuncConfigs.Func.HOME.getValue()) {//Home键
-            enterHome();
+            if (!isAccessibilityServiceRunning("FloatService")) {
+                gotoAccessibilityService();
+            } else {
+                enterHome();
+            }
         } else if (funcType == FuncConfigs.Func.RECENT.getValue()) {//任务键
-            enterRecents();
+            if (!isAccessibilityServiceRunning("FloatService")) {
+                gotoAccessibilityService();
+            } else {
+                enterRecents();
+            }
         } else if (funcType == FuncConfigs.Func.NOTIFICATION.getValue()) {//通知栏
             enterNotification();
         } else if (funcType == FuncConfigs.Func.TRUN_POS.getValue()) {//切换位置
@@ -1822,11 +1838,23 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             @Override
             public void onAnimEnd() {
                 if (funcType == FuncConfigs.Func.BACK.getValue()) {//返回键
-                    enterBack();//返回
+                    if (!isAccessibilityServiceRunning("FloatService")) {
+                        gotoAccessibilityService();
+                    } else {
+                        enterBack();//返回
+                    }
                 } else if (funcType == FuncConfigs.Func.HOME.getValue()) {//Home键
-                    enterHome();
+                    if (!isAccessibilityServiceRunning("FloatService")) {
+                        gotoAccessibilityService();
+                    } else {
+                        enterHome();
+                    }
                 } else if (funcType == FuncConfigs.Func.RECENT.getValue()) {//任务键
-                    enterRecents();
+                    if (!isAccessibilityServiceRunning("FloatService")) {
+                        gotoAccessibilityService();
+                    } else {
+                        enterRecents();
+                    }
                 } else if (funcType == FuncConfigs.Func.NOTIFICATION.getValue()) {//通知栏
                     enterNotification();
                 } else if (funcType == FuncConfigs.Func.TRUN_POS.getValue()) {//切换位置
@@ -1844,7 +1872,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 } else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {//app菜单
                     if (mDPM.isAdminActive(mAdminName)) {
                         lockScreen();
-                    }else{
+                    } else {
                         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
                         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminName);
                         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "activity device");
@@ -1856,5 +1884,28 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         initMenuDetailVoiceEvent();
         initMenuDetailAppEvent();
         initMneuDetailPayEvent();
+    }
+
+    private void gotoAccessibilityService() {
+        startActivity(new Intent("android.settings.ACCESSIBILITY_SETTINGS"));
+    }
+
+    /**
+     * 判断是否存在置顶的无障碍服务
+     *
+     * @param name
+     * @return
+     */
+    public boolean isAccessibilityServiceRunning(String name) {
+        AccessibilityManager am = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+        List<AccessibilityServiceInfo> enableServices
+                = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+        for (AccessibilityServiceInfo enableService : enableServices) {
+//            Log.i(TAG, "installService.id-->" + enableService.getId());
+            if (enableService.getId().endsWith(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

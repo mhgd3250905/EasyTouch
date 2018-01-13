@@ -20,11 +20,9 @@ import com.skkk.easytouch.View.BaseViewHolder;
 public class AppViewHolder extends BaseViewHolder {
     ImageView ivItemIcon;
     TextView tvItemAppName;
-    ImageView ivItemAppAdd;
     public AppViewHolder(View itemView) {
         super(itemView);
         ivItemIcon= (ImageView) itemView.findViewById(R.id.iv_item_icon);
         tvItemAppName= (TextView) itemView.findViewById(R.id.tv_item_app_name);
-        ivItemAppAdd= (ImageView) itemView.findViewById(R.id.iv_item_item_app_add);
     }
 }

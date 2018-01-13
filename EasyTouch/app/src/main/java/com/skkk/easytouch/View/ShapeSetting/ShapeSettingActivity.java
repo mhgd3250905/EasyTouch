@@ -37,7 +37,6 @@ public class ShapeSettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shape_setting);
         ButterKnife.bind(this);
-        MyApplication.setIsSettingShape(true);//外观设置打开
         initUI();
     }
 
@@ -116,8 +115,21 @@ public class ShapeSettingActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onStart() {
+        super.onStart();
+        MyApplication.setIsSettingShape(true);//外观设置打开
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         MyApplication.setIsSettingShape(false);
+
+    }
+
+    @Override
+    protected void onDestroy() {
         super.onDestroy();
     }
 }

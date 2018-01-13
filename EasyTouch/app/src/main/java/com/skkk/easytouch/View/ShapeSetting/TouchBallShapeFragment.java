@@ -138,7 +138,7 @@ public class TouchBallShapeFragment extends Fragment {
      * 初始化UI
      */
     private void initUI() {
-        radius = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS, dp2px(20));
+        radius = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS, Configs.DEFAULT_TOUCH_WIDTH_BALL);
         sbRadius.setProgress((radius - RADIUS_MIN) / RADIUS_STEP);
 
         vibrate = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL_BALL, Configs.DEFAULT_VIBRATE_LEVEL);

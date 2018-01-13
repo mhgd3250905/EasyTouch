@@ -114,6 +114,7 @@ public class Configs {
     public static final String KEY_TOUCH_TYPE = "key_touch_type";
 
     //自定义
+    public static final int DEFAULT_TOUCH_WIDTH_BALL = 25;
     public static final int DEFAULT_TOUCH_WIDTH = 15;
     public static final int DEFAULT_TOUCH_HEIGHT = 240;
     public static final int DEFAULT_VIBRATE_LEVEL = 30;

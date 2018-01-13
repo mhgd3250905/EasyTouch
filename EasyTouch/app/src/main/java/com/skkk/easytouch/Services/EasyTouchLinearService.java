@@ -1,6 +1,7 @@
 package com.skkk.easytouch.Services;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -30,6 +31,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -50,6 +52,8 @@ import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.AppSelect.AppSelectActivity;
 import com.skkk.easytouch.View.CircleImageView;
 import com.skkk.easytouch.View.FunctionSelect.FuncConfigs;
+
+import java.util.List;
 
 import static com.skkk.easytouch.Configs.DEFAULT_ALPHA;
 import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_HEIGHT;
@@ -379,7 +383,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     private void initMenuBalls() {
         //先清除已经存在的Ball
         if (menuContainer.getChildCount() > 1) {
-            for (int i = menuContainer.getChildCount(); i > 0; i--) {
+            for (int i = menuContainer.getChildCount()-1; i >= 0; i--) {
                 menuContainer.removeView(menuContainer.getChildAt(i));
             }
         }
@@ -1691,11 +1695,23 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     private void goOpEvent(String opType) {
         int funcType = SpUtils.getInt(getApplicationContext(), opType, FuncConfigs.Func.BACK.getValue());
         if (funcType == FuncConfigs.Func.BACK.getValue()) {//返回键
-            enterBack();//返回
+            if (!isAccessibilityServiceRunning("FloatService")) {
+                gotoAccessibilityService();
+            } else {
+                enterBack();//返回
+            }
         } else if (funcType == FuncConfigs.Func.HOME.getValue()) {//Home键
-            enterHome();
+            if (!isAccessibilityServiceRunning("FloatService")) {
+                gotoAccessibilityService();
+            } else {
+                enterHome();
+            }
         } else if (funcType == FuncConfigs.Func.RECENT.getValue()) {//任务键
-            enterRecents();
+            if (!isAccessibilityServiceRunning("FloatService")) {
+                gotoAccessibilityService();
+            } else {
+                enterRecents();
+            }
         } else if (funcType == FuncConfigs.Func.NOTIFICATION.getValue()) {//通知栏
             enterNotification();
         } else if (funcType == FuncConfigs.Func.TRUN_POS.getValue()) {//切换位置
@@ -1734,11 +1750,23 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             @Override
             public void onAnimEnd() {
                 if (funcType == FuncConfigs.Func.BACK.getValue()) {//返回键
-                    enterBack();//返回
+                    if (!isAccessibilityServiceRunning("FloatService")) {
+                        gotoAccessibilityService();
+                    } else {
+                        enterBack();//返回
+                    }
                 } else if (funcType == FuncConfigs.Func.HOME.getValue()) {//Home键
-                    enterHome();
+                    if (!isAccessibilityServiceRunning("FloatService")) {
+                        gotoAccessibilityService();
+                    } else {
+                        enterHome();
+                    }
                 } else if (funcType == FuncConfigs.Func.RECENT.getValue()) {//任务键
-                    enterRecents();
+                    if (!isAccessibilityServiceRunning("FloatService")) {
+                        gotoAccessibilityService();
+                    } else {
+                        enterRecents();
+                    }
                 } else if (funcType == FuncConfigs.Func.NOTIFICATION.getValue()) {//通知栏
                     enterNotification();
                 } else if (funcType == FuncConfigs.Func.TRUN_POS.getValue()) {//切换位置
@@ -1783,14 +1811,14 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         try {
             windowManager.removeView(touchView);
-            windowManager.removeView(menuContainer);
+            windowManager.removeView(menuView);
             windowManager.removeView(menuDetailView);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        super.onDestroy();
     }
 
     /**
@@ -1803,5 +1831,28 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         intent.putExtra(Configs.KEY_SHAPE_COLOR_SETTING, pos.getValue());
         intent.setAction(Configs.BROADCAST_SHAPE_COLOR_SHETTING);
         sendBroadcast(intent);
+    }
+
+    private void gotoAccessibilityService() {
+        startActivity(new Intent("android.settings.ACCESSIBILITY_SETTINGS"));
+    }
+
+    /**
+     * 判断是否存在置顶的无障碍服务
+     *
+     * @param name
+     * @return
+     */
+    public boolean isAccessibilityServiceRunning(String name) {
+        AccessibilityManager am = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+        List<AccessibilityServiceInfo> enableServices
+                = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+        for (AccessibilityServiceInfo enableService : enableServices) {
+//            Log.i(TAG, "installService.id-->" + enableService.getId());
+            if (enableService.getId().endsWith(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

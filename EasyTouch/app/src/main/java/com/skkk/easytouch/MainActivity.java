@@ -15,10 +15,8 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
@@ -28,8 +26,10 @@ import com.skkk.easytouch.Services.FloatService;
 import com.skkk.easytouch.Utils.DialogUtils;
 import com.skkk.easytouch.Utils.ServiceUtils;
 import com.skkk.easytouch.Utils.SpUtils;
+import com.skkk.easytouch.View.AboutActivity;
 import com.skkk.easytouch.View.FunctionSelect.FuncConfigs;
 import com.skkk.easytouch.View.FunctionSelect.FunctionSelectActivity;
+import com.skkk.easytouch.View.ScaleScrollView;
 import com.skkk.easytouch.View.SettingItemView;
 import com.skkk.easytouch.View.ShapeSetting.ShapeSettingActivity;
 
@@ -40,6 +40,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 import static android.os.Build.VERSION_CODES.M;
+import static com.skkk.easytouch.R.id.settings_item_about;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,7 +64,9 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.btn_touch_ball)
     TextView btnTouchBall;
     @Bind(R.id.content_main)
-    RelativeLayout contentMain;
+    ScaleScrollView contentMain;
+    @Bind(settings_item_about)
+    SettingItemView settingsItemAbout;
 
 
     private ArrayList<String> needRequestPermissions = new ArrayList<>();
@@ -135,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
          * 判断是否有无障碍权限
          */
         if (!isAccessibilityServiceRunning("FloatService")) {
-            settingsItemAssist.setWarning("未开启，无法显示悬浮内容");
+            settingsItemAssist.setWarning("未开启，操作功能无法使用");
         } else {
             settingsItemAssist.setValue("已开启");
         }
@@ -145,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
          */
         if (Build.VERSION.SDK_INT >= M) {
             if (!Settings.canDrawOverlays(this)) {
-                settingsItemFloat.setWarning("未开启，操作功能无法使用");
+                settingsItemFloat.setWarning("未开启，无法显示悬浮内容");
             } else {
                 settingsItemFloat.setValue("已开启");
             }
@@ -274,6 +277,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        settingsItemAbout.setSettingItemClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AboutActivity.class));
+            }
+        });
 
     }
 
@@ -330,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
         List<AccessibilityServiceInfo> enableServices
                 = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
         for (AccessibilityServiceInfo enableService : enableServices) {
-            Log.i(TAG, "installService.id-->" + enableService.getId());
+//            Log.i(TAG, "installService.id-->" + enableService.getId());
             if (enableService.getId().endsWith(name)) {
                 return true;
             }

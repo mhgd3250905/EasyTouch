@@ -131,4 +131,11 @@
     <item name="siv_function_bottom_click" type="id">siv_function_bottom_click</item>
     <item name="siv_function_bottom_fling_up" type="id">siv_function_bottom_fling_up</item>
     <item name="siv_function_bottom_fling_down" type="id">siv_function_bottom_fling_down</item>
+    <item name="tb_app_select" type="id">tb_app_select</item>
+    <item name="settings_item_about" type="id">settings_item_about</item>
+    <item name="tb_about" type="id">tb_about</item>
+    <item name="settings_item_version" type="id">settings_item_version</item>
+    <item name="settings_item_email" type="id">settings_item_email</item>
+    <item name="settings_item_qq" type="id">settings_item_qq</item>
+    <item name="settings_item_github" type="id">settings_item_github</item>
 </resources>

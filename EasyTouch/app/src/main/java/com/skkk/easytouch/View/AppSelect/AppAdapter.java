@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.skkk.easytouch.R;
@@ -50,11 +49,6 @@ public class AppAdapter extends BaseAdapter<ResolveInfo,AppViewHolder> {
         //// 拿到应用名
         //        String appName=info.loadLabel(packageManager).toString();
         holder.tvItemAppName.setText(bean.loadLabel(packageManager).toString());
-        holder.ivItemAppAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
     }
 }

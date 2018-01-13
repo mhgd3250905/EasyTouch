@@ -19,6 +19,13 @@
             android:text="返回"
             android:textSize="20sp" />
 
+        <View
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/colorGray"/>
+
         <TextView
             android:id="@id/tv_item_home"
             android:layout_width="match_parent"
@@ -26,8 +33,15 @@
             android:drawableLeft="@drawable/vector_drawable_home"
             android:gravity="center"
             android:paddingStart="10dp"
-            android:text="桌面"
+            android:text="主页"
             android:textSize="20sp" />
+
+        <View
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/colorGray"/>
 
         <TextView
             android:id="@id/tv_item_recent"
@@ -39,6 +53,13 @@
             android:text="任务"
             android:textSize="20sp" />
 
+        <View
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/colorGray"/>
+
         <TextView
             android:id="@id/tv_item_notification"
             android:layout_width="match_parent"
@@ -48,6 +69,13 @@
             android:paddingStart="10dp"
             android:text="通知"
             android:textSize="20sp" />
+
+        <View
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/colorGray"/>
 
         <TextView
             android:id="@id/tv_item_menu"
@@ -59,6 +87,13 @@
             android:text="菜单"
             android:textSize="20sp" />
 
+        <View
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/colorGray"/>
+
         <TextView
             android:id="@id/tv_item_lock_screen"
             android:layout_width="match_parent"
@@ -69,6 +104,13 @@
             android:text="锁屏"
             android:textSize="20sp" />
 
+        <View
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/colorGray"/>
+
         <TextView
             android:id="@id/tv_item_location"
             android:layout_width="match_parent"
@@ -78,6 +120,13 @@
             android:paddingStart="10dp"
             android:text="切换位置"
             android:textSize="20sp" />
+
+        <View
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/colorGray"/>
 
 
         <TextView
@@ -90,6 +139,13 @@
             android:text="音量菜单"
             android:textSize="20sp" />
 
+        <View
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/colorGray"/>
+
         <TextView
             android:id="@id/tv_item_pay"
             android:layout_width="match_parent"
@@ -100,6 +156,13 @@
             android:text="支付菜单"
             android:textSize="20sp" />
 
+        <View
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/colorGray"/>
+
         <TextView
             android:id="@id/tv_item_app"
             android:layout_width="match_parent"
@@ -109,6 +172,13 @@
             android:paddingStart="10dp"
             android:text="快捷App菜单"
             android:textSize="20sp" />
+
+        <View
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/colorGray"/>
 
 
 
@@ -121,6 +191,13 @@
             android:paddingStart="10dp"
             android:text="上一个应用"
             android:textSize="20sp" />
+
+        <View
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/colorGray"/>
     </LinearLayout>
 
 </com.skkk.easytouch.View.ScaleScrollView>
