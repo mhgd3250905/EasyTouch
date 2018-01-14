@@ -143,11 +143,13 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private final int HIDE_MENU_DETAIL_SLOW = 200;
     private ObjectAnimator touchBallScaleXAnim;
     private ObjectAnimator touchBallScaleYAnim;
-    private int menuWidth;
+    private float menuWidth;
     private float touchAlpha;
     private String drawableName;
     private boolean isScaleAnim = false;
     private boolean hasTrunPos = false;
+
+    private float menuDetailWidth=300f;
 
 
     @Override
@@ -203,7 +205,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         leftBorder = 0;
         rightBorder = screenWidth;
 
-        menuWidth = dp2px(200f);
+        menuWidth = 200f;
 
         //设置悬浮窗的LP
         mParams = new WindowManager.LayoutParams();
@@ -244,22 +246,22 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         direction = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
         if (direction == TOUCH_UI_DIRECTION_LEFT) {
             directionX = leftBorder;
+            rightBorder=Math.min(screenWidth,screenHeight);
         } else {
             directionX = rightBorder;
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                rightBorder = Math.min(screenWidth, screenHeight);
+            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                rightBorder = Math.max(screenWidth, screenHeight);
+            }
         }
 
         mParams.x = directionX;
-        mParams.y = screenHeight - menuWidth;
+        mParams.y = screenHeight - dp2px(menuWidth);
 
-        direction = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
-        if (direction == Configs.Position.LEFT.getValue()) {
-            directionX = leftBorder;
-        } else if (direction == Configs.Position.RIGHT.getValue()) {
-            directionX = rightBorder;
-        }
 
         mMenuParams.x = directionX;
-        mMenuParams.y = screenHeight - menuWidth;
+        mMenuParams.y = screenHeight - dp2px(menuWidth);
 
         touchView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball, null);
         llTouchContainer = (RelativeLayout) touchView.findViewById(R.id.ll_touch_container);
@@ -375,31 +377,40 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         super.onConfigurationChanged(newConfig);
         try {
             if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
                 //横屏
                 // 1.获取当前的位置
+                mParams.y = mParams.y * Math.min(screenWidth,screenHeight) / Math.max(screenWidth,screenHeight);
+                if (direction == TOUCH_UI_DIRECTION_RIGHT){
+                    mParams.x=Math.max(screenWidth,screenHeight);
+                }
                 if (isMenuDetailShow) {
-                    mMenuDetailParams.y = mMenuDetailParams.y * screenWidth / screenHeight;
-                    windowManager.updateViewLayout(menuDetailView, mMenuDetailParams);
+                    windowManager.removeView(menuDetailView);
+                    windowManager.addView(touchView,mParams);
+                    isMenuDetailShow=false;
                 } else if (isMenuShow) {
-                    mMenuParams.y = mMenuParams.y * screenWidth / screenHeight;
-                    windowManager.updateViewLayout(menuView, mMenuParams);
+                    windowManager.removeView(menuView);
+                    windowManager.updateViewLayout(touchView, mParams);
+                    isMenuShow=false;
                 } else {
-
-
-                    mParams.y = mParams.y * screenWidth / screenHeight;
                     windowManager.updateViewLayout(touchView, mParams);
                 }
 
             } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 //竖屏
+                mParams.y = mParams.y * Math.max(screenWidth,screenHeight) / Math.min(screenWidth,screenHeight);
+                if (direction == TOUCH_UI_DIRECTION_RIGHT){
+                    mParams.x=Math.min(screenWidth,screenHeight);
+                }
                 if (isMenuDetailShow) {
-                    mMenuDetailParams.y = mMenuDetailParams.y * screenHeight / screenWidth;
-                    windowManager.updateViewLayout(menuDetailView, mMenuDetailParams);
+                    windowManager.removeView(menuDetailView);
+                    windowManager.addView(touchView,mParams);
+                    isMenuDetailShow=false;
                 } else if (isMenuShow) {
-                    mMenuParams.y = mMenuParams.y * screenHeight / screenWidth;
-                    windowManager.updateViewLayout(menuView, mMenuParams);
+                    windowManager.removeView(menuView);
+                    windowManager.updateViewLayout(touchView, mParams);
+                    isMenuShow=false;
                 } else {
-                    mParams.y = mParams.y * screenHeight / screenWidth;
                     windowManager.updateViewLayout(touchView, mParams);
                 }
 
@@ -414,6 +425,16 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      * 设置触摸块UI
      */
     private void initTouchUI() {
+        direction = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
+        if (direction == TOUCH_UI_DIRECTION_LEFT) {
+            directionX = leftBorder;
+            rightBorder=Math.min(screenWidth,screenHeight);
+        } else {
+            directionX = rightBorder;
+            rightBorder=Math.max(screenWidth,screenHeight);
+        }
+
+
         //初始化震动等级
         vibrateLevel = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL_BALL, DEFAULT_VIBRATE_LEVEL);
         touchWidth = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_RADIUS, DEFAULT_TOUCH_WIDTH_BALL);
@@ -1180,9 +1201,9 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private void enterMenuDetailAnim(View containerMenuDetail, AnimatorListenerAdapter animatorListenerAdapter) {
         ObjectAnimator enterMenuDetailAnim = null;
         if (direction == Configs.Position.LEFT.getValue()) {
-            enterMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(-300f), 0);
+            enterMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(-menuDetailWidth), 0);
         } else if (direction == Configs.Position.RIGHT.getValue()) {
-            enterMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(300f), 0);
+            enterMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(menuDetailWidth), 0);
         }
         if (enterMenuDetailAnim != null) {
             enterMenuDetailAnim.addListener(animatorListenerAdapter);
@@ -1313,10 +1334,9 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      */
     private void showMenuContainer() {
         int menuBallCount = SpUtils.getInt(getApplicationContext(), SpUtils.KEY_MENU_BALL_COUNT, 0);
-
         if (menuBallCount > 0) {
             mMenuParams.x = mParams.x;
-            mMenuParams.y = mParams.y - menuWidth / 2 + dp2px(touchWidth);
+            mMenuParams.y = mParams.y - dp2px(menuWidth) / 2 + dp2px(touchWidth);
             windowManager.addView(menuView, mMenuParams);
             isMenuShow = true;
             menuView.post(new Runnable() {
@@ -1354,7 +1374,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             transXTo = transXFrom + dp2px((float) (80 * Math.cos(radius)));
             transYTo = transYFrom + dp2px((float) (80 * Math.sin(radius)));
         } else if (direction == Configs.Position.RIGHT.getValue()) {
-            transXFrom = menuWidth;
+            transXFrom = dp2px(menuWidth);
             transYFrom = 0;
             double radius = -(Math.PI / 2) + index * Math.PI / (count - 1);
             transXTo = transXFrom - dp2px(40) - dp2px((float) (80 * Math.cos(radius)));
@@ -1443,9 +1463,9 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             transYTo = 0;
         } else if (direction == Configs.Position.RIGHT.getValue()) {
             double radius = -(Math.PI / 2) + index * Math.PI / (count - 1);
-            transXFrom = menuWidth - dp2px(40) - dp2px((float) (80 * Math.cos(radius)));
-            transYFrom = menuWidth + dp2px((float) (80 * Math.sin(radius)));
-            transXTo = menuWidth;
+            transXFrom = dp2px(menuWidth) - dp2px(40) - dp2px((float) (80 * Math.cos(radius)));
+            transYFrom = dp2px(menuWidth) + dp2px((float) (80 * Math.sin(radius)));
+            transXTo = dp2px(menuWidth);
             transYTo = 0;
         }
 
@@ -1607,7 +1627,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             isLeft = true;
         } else if (mParams.x > (rightBorder - dp2px(touchWidth) + leftBorder) / 2) {
             startF = mParams.x;
-            endF = rightBorder - dp2px(touchWidth);
+            endF = rightBorder;
             isLeft = false;
         }
 
@@ -1748,12 +1768,14 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 mParams.x = screenWidth;
                 mMenuParams.x = screenWidth;
                 mMenuDetailParams.x = screenWidth;
+                rightBorder=screenWidth;
             } else if (direction == Configs.Position.RIGHT.getValue()) {
                 direction = Configs.Position.LEFT.getValue();
                 SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, direction);
                 mParams.x = 0;
                 mMenuParams.x = 0;
                 mMenuDetailParams.x = 0;
+                rightBorder=screenWidth ;
             }
 
             //切换菜单按钮位置布局

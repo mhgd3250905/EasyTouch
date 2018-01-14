@@ -60,6 +60,7 @@ import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_HEIGHT;
 import static com.skkk.easytouch.Configs.DEFAULT_TOUCH_WIDTH;
 import static com.skkk.easytouch.Configs.DEFAULT_VIBRATE_LEVEL;
 import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_LEFT;
+import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_RIGHT;
 
 public class EasyTouchLinearService extends EasyTouchBaseService implements View.OnTouchListener {
     private static final String TAG = "EasyTouchLinearService";
@@ -183,6 +184,11 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         windowManager.getDefaultDisplay().getSize(size);
         screenWidth = size.x;
         screenHeight = size.y;
+        if (screenHeight > screenWidth) {
+            screenHeight += 100;
+        } else {
+            screenWidth += 100;
+        }
 
         //设置左右边界
         leftBorder = 0;
@@ -233,8 +239,14 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         direction = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
         if (direction == TOUCH_UI_DIRECTION_LEFT) {
             directionX = leftBorder;
+            rightBorder = Math.min(screenWidth, screenHeight);
         } else {
             directionX = rightBorder;
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                rightBorder = Math.min(screenWidth, screenHeight);
+            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                rightBorder = Math.max(screenWidth, screenHeight);
+            }
         }
 
         //设置悬浮窗的位置
@@ -383,7 +395,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     private void initMenuBalls() {
         //先清除已经存在的Ball
         if (menuContainer.getChildCount() > 1) {
-            for (int i = menuContainer.getChildCount()-1; i >= 0; i--) {
+            for (int i = menuContainer.getChildCount() - 1; i >= 0; i--) {
                 menuContainer.removeView(menuContainer.getChildAt(i));
             }
         }
@@ -484,35 +496,46 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 //横屏
                 // 1.获取当前的位置
+                rightBorder = Math.max(screenWidth, screenHeight);
+
+                mParams.y = mParams.y * Math.min(screenWidth, screenHeight) / Math.max(screenWidth, screenHeight);
+                if (direction == TOUCH_UI_DIRECTION_RIGHT) {
+                    mParams.x = Math.max(screenWidth, screenHeight);
+                }
                 if (isMenuDetailShow) {
-                    mMenuDetailParams.y = mMenuDetailParams.y * screenWidth / screenHeight;
-                    windowManager.updateViewLayout(menuDetailView, mMenuDetailParams);
+                    windowManager.removeView(menuDetailView);
+                    windowManager.addView(touchView, mParams);
+                    isMenuDetailShow = false;
                 } else if (isMenuShow) {
-                    mMenuParams.y = mMenuParams.y * screenWidth / screenHeight;
-                    windowManager.updateViewLayout(menuView, mMenuParams);
+                    windowManager.removeView(menuView);
+                    windowManager.updateViewLayout(touchView, mParams);
+                    isMenuShow = false;
                 } else {
-
-
-                    mParams.y = mParams.y * screenWidth / screenHeight;
                     windowManager.updateViewLayout(touchView, mParams);
                 }
-
             } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 //竖屏
+                rightBorder = Math.min(screenWidth, screenHeight);
+
+                mParams.y = mParams.y * Math.max(screenWidth, screenHeight) / Math.min(screenWidth, screenHeight);
+                if (direction == TOUCH_UI_DIRECTION_RIGHT) {
+                    mParams.x = Math.min(screenWidth, screenHeight);
+                }
                 if (isMenuDetailShow) {
-                    mMenuDetailParams.y = mMenuDetailParams.y * screenHeight / screenWidth;
-                    windowManager.updateViewLayout(menuDetailView, mMenuDetailParams);
+                    windowManager.removeView(menuDetailView);
+                    windowManager.addView(touchView, mParams);
+                    isMenuDetailShow = false;
                 } else if (isMenuShow) {
-                    mMenuParams.y = mMenuParams.y * screenHeight / screenWidth;
-                    windowManager.updateViewLayout(menuView, mMenuParams);
+                    windowManager.removeView(menuView);
+                    windowManager.updateViewLayout(touchView, mParams);
+                    isMenuShow = false;
                 } else {
-                    mParams.y = mParams.y * screenHeight / screenWidth;
                     windowManager.updateViewLayout(touchView, mParams);
                 }
 
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+
         }
 
     }
@@ -798,9 +821,9 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             public boolean onSingleTapUp(MotionEvent e) {
                 //震动30毫秒
                 vibrator.vibrate(vibrateLevel);
-                if (MyApplication.isSettingShape()){
+                if (MyApplication.isSettingShape()) {
                     sendShapeColorSettingBoardcast(Configs.LinearPos.BOTTOM);
-                }else {
+                } else {
                     if (isMenuDetailShow) {
                         hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_SLOW, new Configs.OnAnimEndListener() {
                             @Override
@@ -1196,7 +1219,11 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         if (direction == Configs.Position.LEFT.getValue()) {
             mMenuParams.x = mParams.x + dp2px(touchWidth + 5);
         } else if (direction == Configs.Position.RIGHT.getValue()) {
-            mMenuParams.x = screenWidth - dp2px(menuWidth) - dp2px(touchWidth + 5);
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                mMenuParams.x = rightBorder - dp2px(menuWidth) - dp2px(touchWidth + 5);
+            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                mMenuParams.x = rightBorder+20 - dp2px(menuWidth) - dp2px(touchWidth + 5);
+            }
         }
         mMenuParams.y = mParams.y;
         windowManager.addView(menuView, mMenuParams);
@@ -1620,12 +1647,15 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                 mParams.x = screenWidth;
                 mMenuParams.x = screenWidth;
                 mMenuDetailParams.x = screenWidth;
+                rightBorder = screenWidth;
             } else if (direction == Configs.Position.RIGHT.getValue()) {
                 direction = Configs.Position.LEFT.getValue();
                 SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, direction);
                 mParams.x = 0;
                 mMenuParams.x = 0;
                 mMenuDetailParams.x = 0;
+                rightBorder = screenWidth;
+
             }
 
             //切换菜单按钮位置布局
