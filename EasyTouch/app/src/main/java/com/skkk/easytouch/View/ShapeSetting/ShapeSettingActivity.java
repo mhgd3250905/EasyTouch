@@ -82,6 +82,27 @@ public class ShapeSettingActivity extends AppCompatActivity {
             }
         });
 
+        vpSettingShape.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position==0){
+                    MyApplication.setIsSettingShape(true);
+                }else {
+                    MyApplication.setIsSettingShape(false);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
     }
 
 
@@ -117,13 +138,16 @@ public class ShapeSettingActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        MyApplication.setIsSettingShape(true);//外观设置打开
-
+        //当且仅当当前页面是Linear的时候就设置悬浮条点击事件是设置颜色
+        if (vpSettingShape.getCurrentItem()==0){
+            MyApplication.setIsSettingShape(true);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        //当俩开Linear界面的时候还原悬浮条点击事件
         MyApplication.setIsSettingShape(false);
 
     }

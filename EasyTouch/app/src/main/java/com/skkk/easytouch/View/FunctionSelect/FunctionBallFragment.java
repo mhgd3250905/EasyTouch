@@ -89,6 +89,11 @@ public class FunctionBallFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         initUI();
         initEvent();
     }
@@ -96,7 +101,7 @@ public class FunctionBallFragment extends Fragment {
     /**
      * 初始化UI
      */
-    private void initUI() {
+    public void initUI() {
         setItemDesc(FuncConfigs.VALUE_FUNC_OP_CLICK, sivFunctionClick);
         setItemDesc(FuncConfigs.VALUE_FUNC_OP_LONG_CLICK, sivFunctionLongClick);
         setItemDesc(FuncConfigs.VALUE_FUNC_OP_FLING_UP, sivFunctionTouchUp);
@@ -181,6 +186,7 @@ public class FunctionBallFragment extends Fragment {
                         SpUtils.saveInt(getContext().getApplicationContext(), KEY_MENU_BALL_COUNT, numberPicker.getValue());
                         menuBallCount = numberPicker.getValue();
                         initMenuCountView();
+                        initUI();
                         alertDialog.dismiss();
                     }
                 });

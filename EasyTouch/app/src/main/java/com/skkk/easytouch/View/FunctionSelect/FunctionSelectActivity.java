@@ -64,8 +64,8 @@ public class FunctionSelectActivity extends AppCompatActivity {
         tbFunctionSelect.setNavigationIcon(R.drawable.ic_arrow_back_white);
 
         fragmentList = new ArrayList<Fragment>();
-        linearfragment = FunctionLinearFragment.newInstance("","");
-        ballfragment = FunctionBallFragment.newInstance("","");
+        linearfragment = FunctionLinearFragment.newInstance("", "");
+        ballfragment = FunctionBallFragment.newInstance("", "");
         fragmentList.add(linearfragment);
         fragmentList.add(ballfragment);
 
@@ -94,13 +94,41 @@ public class FunctionSelectActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * 设置ViewPager页面切换监听，切换page的是时候更新对应的UI
+         */
+        vpFunctionSelect.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    if (linearfragment instanceof FunctionLinearFragment) {
+                        ((FunctionLinearFragment) linearfragment).initUI();
+                    }
+                } else if (position == 1) {
+                    if (ballfragment instanceof FunctionBallFragment) {
+                        ((FunctionBallFragment) ballfragment).initUI();
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        linearfragment.onActivityResult(requestCode,resultCode,data);
-        ballfragment.onActivityResult(requestCode,resultCode,data);
+        linearfragment.onActivityResult(requestCode, resultCode, data);
+        ballfragment.onActivityResult(requestCode, resultCode, data);
     }
 
     public class ViewPagerAdapter extends FragmentStatePagerAdapter {

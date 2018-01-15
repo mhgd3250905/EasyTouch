@@ -239,14 +239,13 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         direction = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
         if (direction == TOUCH_UI_DIRECTION_LEFT) {
             directionX = leftBorder;
-            rightBorder = Math.min(screenWidth, screenHeight);
         } else {
             directionX = rightBorder;
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                rightBorder = Math.min(screenWidth, screenHeight);
-            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                rightBorder = Math.max(screenWidth, screenHeight);
-            }
+        }
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            rightBorder = Math.min(screenWidth, screenHeight);
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            rightBorder = Math.max(screenWidth, screenHeight);
         }
 
         //设置悬浮窗的位置
@@ -1222,7 +1221,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 mMenuParams.x = rightBorder - dp2px(menuWidth) - dp2px(touchWidth + 5);
             } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                mMenuParams.x = rightBorder+20 - dp2px(menuWidth) - dp2px(touchWidth + 5);
+                mMenuParams.x = rightBorder-dp2px(30)  - dp2px(menuWidth) - dp2px(touchWidth + 5);
             }
         }
         mMenuParams.y = mParams.y;
@@ -1644,17 +1643,15 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             if (direction == Configs.Position.LEFT.getValue()) {
                 direction = Configs.Position.RIGHT.getValue();
                 SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, direction);
-                mParams.x = screenWidth;
-                mMenuParams.x = screenWidth;
-                mMenuDetailParams.x = screenWidth;
-                rightBorder = screenWidth;
+                mParams.x = rightBorder;
+                mMenuParams.x = rightBorder;
+                mMenuDetailParams.x = rightBorder;
             } else if (direction == Configs.Position.RIGHT.getValue()) {
                 direction = Configs.Position.LEFT.getValue();
                 SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, direction);
                 mParams.x = 0;
                 mMenuParams.x = 0;
                 mMenuDetailParams.x = 0;
-                rightBorder = screenWidth;
 
             }
 
@@ -1864,7 +1861,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     }
 
     private void gotoAccessibilityService() {
-        startActivity(new Intent("android.settings.ACCESSIBILITY_SETTINGS"));
+        Toast.makeText(this, "请确认辅助功能是否开启！", Toast.LENGTH_SHORT).show();
     }
 
     /**

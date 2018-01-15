@@ -40,6 +40,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.skkk.easytouch.Configs;
@@ -246,14 +247,13 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         direction = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
         if (direction == TOUCH_UI_DIRECTION_LEFT) {
             directionX = leftBorder;
-            rightBorder=Math.min(screenWidth,screenHeight);
         } else {
             directionX = rightBorder;
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                rightBorder = Math.min(screenWidth, screenHeight);
-            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                rightBorder = Math.max(screenWidth, screenHeight);
-            }
+        }
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            rightBorder = Math.min(screenWidth, screenHeight);
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            rightBorder = Math.max(screenWidth, screenHeight);
         }
 
         mParams.x = directionX;
@@ -380,6 +380,8 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
                 //横屏
                 // 1.获取当前的位置
+                rightBorder = Math.max(screenWidth, screenHeight);
+
                 mParams.y = mParams.y * Math.min(screenWidth,screenHeight) / Math.max(screenWidth,screenHeight);
                 if (direction == TOUCH_UI_DIRECTION_RIGHT){
                     mParams.x=Math.max(screenWidth,screenHeight);
@@ -398,6 +400,9 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
             } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 //竖屏
+
+                rightBorder = Math.min(screenWidth, screenHeight);
+
                 mParams.y = mParams.y * Math.max(screenWidth,screenHeight) / Math.min(screenWidth,screenHeight);
                 if (direction == TOUCH_UI_DIRECTION_RIGHT){
                     mParams.x=Math.min(screenWidth,screenHeight);
@@ -426,13 +431,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      */
     private void initTouchUI() {
         direction = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, TOUCH_UI_DIRECTION_LEFT);
-        if (direction == TOUCH_UI_DIRECTION_LEFT) {
-            directionX = leftBorder;
-            rightBorder=Math.min(screenWidth,screenHeight);
-        } else {
-            directionX = rightBorder;
-            rightBorder=Math.max(screenWidth,screenHeight);
-        }
+
 
 
         //初始化震动等级
@@ -1765,17 +1764,15 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             if (direction == Configs.Position.LEFT.getValue()) {
                 direction = Configs.Position.RIGHT.getValue();
                 SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, direction);
-                mParams.x = screenWidth;
-                mMenuParams.x = screenWidth;
-                mMenuDetailParams.x = screenWidth;
-                rightBorder=screenWidth;
+                mParams.x = rightBorder;
+                mMenuParams.x = rightBorder;
+                mMenuDetailParams.x = rightBorder;
             } else if (direction == Configs.Position.RIGHT.getValue()) {
                 direction = Configs.Position.LEFT.getValue();
                 SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, direction);
                 mParams.x = 0;
                 mMenuParams.x = 0;
                 mMenuDetailParams.x = 0;
-                rightBorder=screenWidth ;
             }
 
             //切换菜单按钮位置布局
@@ -1909,7 +1906,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     }
 
     private void gotoAccessibilityService() {
-        startActivity(new Intent("android.settings.ACCESSIBILITY_SETTINGS"));
+        Toast.makeText(this, "请确认辅助功能是否开启！", Toast.LENGTH_SHORT).show();
     }
 
     /**

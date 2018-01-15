@@ -105,6 +105,11 @@ public class FunctionLinearFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         initUI();
         initEvent();
     }
@@ -112,7 +117,7 @@ public class FunctionLinearFragment extends Fragment {
     /**
      * 初始化UI
      */
-    private void initUI() {
+    public void initUI() {
         setItemDesc(FuncConfigs.VALUE_FUNC_OP_TOP_CLICK, sivFunctionTopClick);
         setItemDesc(FuncConfigs.VALUE_FUNC_OP_TOP_FLING_UP, sivFunctionTopFlingUp);
         setItemDesc(FuncConfigs.VALUE_FUNC_OP_TOP_FLING_BOTTOM, sivFunctionTopFlingDown);
@@ -199,6 +204,7 @@ public class FunctionLinearFragment extends Fragment {
                         SpUtils.saveInt(getContext().getApplicationContext(), KEY_MENU_BALL_COUNT, numberPicker.getValue());
                         menuBallCount = numberPicker.getValue();
                         initMenuCountView();
+                        initUI();
                         alertDialog.dismiss();
                     }
                 });

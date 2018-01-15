@@ -152,6 +152,11 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
      * 选择照片
      */
     public void selectPhoto() {
+        //判断是否存在目录
+        File fileDir=new File(Configs.SAVED_IMAGE_DIR_PATH);
+        if (!fileDir.exists()){
+            fileDir.mkdirs();
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setItems(new String[]{"拍照", "相册"}, new DialogInterface.OnClickListener() {
             @Override
@@ -186,7 +191,7 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
     /**
      * 检测权限
      */
-    @RequiresApi(api = Build.VERSION_CODES.M)
+    @RequiresApi(api = M)
     private void initPermissions() {
         if (PermissionsUtils.lacksPermissions(BallDrawableSelectActivity.this, PERMISSIONS)) {
             requestPermissions(PERMISSIONS);
@@ -194,7 +199,7 @@ public class BallDrawableSelectActivity extends AppCompatActivity {
     }
 
     // 请求权限兼容低版本
-    @TargetApi(Build.VERSION_CODES.M)
+    @TargetApi(M)
     private void requestPermissions(String... permissions) {
         needRequestPermissions.clear();
         for (int i = 0; i < PERMISSIONS.length; i++) {

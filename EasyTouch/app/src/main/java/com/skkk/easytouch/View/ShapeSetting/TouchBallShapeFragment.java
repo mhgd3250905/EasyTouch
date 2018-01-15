@@ -2,6 +2,7 @@ package com.skkk.easytouch.View.ShapeSetting;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
@@ -252,8 +253,13 @@ public class TouchBallShapeFragment extends Fragment {
                 layoutParams.height = 2 * dp2px(radius);
             }
             llTouchContainer.setLayoutParams(layoutParams);
-            ivTouchBall.setImageResource(PackageUtils.getResource(getContext(), drawableName));
+            if (drawableName.equals(Configs.KEY_PHOTO_CUSTOM_DRAWABLE)) {
+                ivTouchBall.setImageURI(Uri.parse(SpUtils.getString(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_BACKGROUND_BALL_CUSTOM, "ball_0")));
+            } else {
+                ivTouchBall.setImageResource(PackageUtils.getResource(getContext().getApplicationContext(), drawableName));
+            }
             ivTouchBall.setAlpha((float) alpha / 255);
+            ivTouchBall.setVisibility(View.VISIBLE);
         }
     }
 

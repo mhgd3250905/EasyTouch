@@ -3,9 +3,12 @@ package com.skkk.easytouch.View;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,9 +47,10 @@ public class AboutActivity extends AppCompatActivity {
             }
         });
         tbAbout.setNavigationIcon(R.drawable.ic_arrow_back_white);
+        settingsItemVersion.setValue(getAppVersionName(this));
     }
 
-    @OnClick({R.id.settings_item_version, R.id.settings_item_email, R.id.settings_item_qq, R.id.settings_item_github})
+    @OnClick({R.id.settings_item_email, R.id.settings_item_qq, R.id.settings_item_github})
     public void onViewClicked(View view) {
         ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         // 将文本内容放到系统剪贴板里。
@@ -69,5 +73,25 @@ public class AboutActivity extends AppCompatActivity {
         cm.setPrimaryClip(mClipData);
         Toast.makeText(this, "成功复制"+type, Toast.LENGTH_LONG).show();
 
+    }
+
+    /**
+     * 返回当前程序版本名
+     */
+    public static String getAppVersionName(Context context) {
+        String versionName = "";
+        try {
+            // ---get the package info---
+            PackageManager pm = context.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+            versionName = pi.versionName;
+//            versioncode = pi.versionCode;
+            if (versionName == null || versionName.length() <= 0) {
+                return "";
+            }
+        } catch (Exception e) {
+            Log.e("VersionInfo", "Exception", e);
+        }
+        return versionName;
     }
 }

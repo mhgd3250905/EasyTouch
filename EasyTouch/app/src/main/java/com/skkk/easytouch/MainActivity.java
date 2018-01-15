@@ -192,12 +192,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 startActivity(new Intent("android.settings.ACCESSIBILITY_SETTINGS"));
                             }
-                        }, "退出应用", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        }).show();
+                        }, "算了", null).show();
             }
         });
 
@@ -240,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
         btnTouchLine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (Build.VERSION.SDK_INT >= M) {
                     if (!Settings.canDrawOverlays(MainActivity.this)) {
                         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
@@ -247,13 +243,23 @@ public class MainActivity extends AppCompatActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivityForResult(intent, Configs.RESULT_PERMISS_REQUEST_FLOAT_LINEAR);
                         return;
+                    } else {
+                        if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_BALL)) {
+                            stopService(new Intent(MainActivity.this, EasyTouchBallService.class));
+                        }
+                        startService(new Intent(MainActivity.this, EasyTouchLinearService.class));
+                        startService(new Intent(MainActivity.this, FloatService.class));
                     }
+                } else {
+                    if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_BALL)) {
+                        stopService(new Intent(MainActivity.this, EasyTouchBallService.class));
+                    }
+                    startService(new Intent(MainActivity.this, EasyTouchLinearService.class));
+                    startService(new Intent(MainActivity.this, FloatService.class));
+
                 }
-                if (ServiceUtils.isServiceRun(getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchBallService")) {
-                    stopService(new Intent(MainActivity.this, EasyTouchBallService.class));
-                }
-                startService(new Intent(MainActivity.this, EasyTouchLinearService.class));
-                startService(new Intent(MainActivity.this, FloatService.class));
+
+
             }
         });
 
@@ -267,13 +273,21 @@ public class MainActivity extends AppCompatActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivityForResult(intent, Configs.RESULT_PERMISS_REQUEST_FLOAT_BALL);
                         return;
+                    } else {
+                        if (ServiceUtils.isServiceRun(getApplicationContext(),Configs.NAME_SERVICE_TOUCH_LINEAR)) {
+                            stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
+                        }
+                        startService(new Intent(MainActivity.this, EasyTouchBallService.class));
+                        startService(new Intent(MainActivity.this, FloatService.class));
                     }
+                } else {
+                    if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_LINEAR)) {
+                        stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
+                    }
+                    startService(new Intent(MainActivity.this, EasyTouchBallService.class));
+                    startService(new Intent(MainActivity.this, FloatService.class));
                 }
-                if (ServiceUtils.isServiceRun(getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchLinearService")) {
-                    stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
-                }
-                startService(new Intent(MainActivity.this, EasyTouchBallService.class));
-                startService(new Intent(MainActivity.this, FloatService.class));
+
             }
         });
 
@@ -290,17 +304,35 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Configs.RESULT_PERMISS_REQUEST_FLOAT_LINEAR) {
-            if (ServiceUtils.isServiceRun(getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchBallService")) {
-                stopService(new Intent(MainActivity.this, EasyTouchBallService.class));
+            if (Build.VERSION.SDK_INT >= M) {
+                if (!Settings.canDrawOverlays(MainActivity.this)) {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                    intent.setData(Uri.parse("package:" + getPackageName()));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivityForResult(intent, Configs.RESULT_PERMISS_REQUEST_FLOAT_LINEAR);
+                } else {
+                    if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_BALL)) {
+                        stopService(new Intent(MainActivity.this, EasyTouchBallService.class));
+                    }
+                    startService(new Intent(MainActivity.this, EasyTouchLinearService.class));
+                    startService(new Intent(MainActivity.this, FloatService.class));
+                }
             }
-            startService(new Intent(MainActivity.this, EasyTouchLinearService.class));
-            startService(new Intent(MainActivity.this, FloatService.class));
         } else if (requestCode == Configs.RESULT_PERMISS_REQUEST_FLOAT_BALL) {
-            if (ServiceUtils.isServiceRun(getApplicationContext(), "com.skkk.easytouch.Services.EasyTouchLinearService")) {
-                stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
+            if (Build.VERSION.SDK_INT >= M) {
+                if (!Settings.canDrawOverlays(MainActivity.this)) {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                    intent.setData(Uri.parse("package:" + getPackageName()));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivityForResult(intent, Configs.RESULT_PERMISS_REQUEST_FLOAT_BALL);
+                } else {
+                    if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_LINEAR)) {
+                        stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
+                    }
+                    startService(new Intent(MainActivity.this, EasyTouchBallService.class));
+                    startService(new Intent(MainActivity.this, FloatService.class));
+                }
             }
-            startService(new Intent(MainActivity.this, EasyTouchBallService.class));
-            startService(new Intent(MainActivity.this, FloatService.class));
         }
     }
 
