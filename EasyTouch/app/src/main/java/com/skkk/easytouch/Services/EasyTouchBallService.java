@@ -837,6 +837,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         intent.putExtra(Configs.KEY_BALL_MENU_SELECT_APP_INDEX, finalIndex);
         intent.putExtra(Configs.KEY_TOUCH_TYPE, Configs.TouchType.BALL.getValue());
         startActivity(intent);
+        stopSelf();
     }
 
 
@@ -1717,7 +1718,15 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     public void onDestroy() {
         try {
             windowManager.removeView(touchView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             windowManager.removeView(menuView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             windowManager.removeView(menuDetailView);
         } catch (Exception e) {
             e.printStackTrace();

@@ -7,9 +7,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
 import com.skkk.easytouch.Configs;
@@ -34,11 +37,13 @@ public class AppFragment extends Fragment {
     private static final String TOUCH_TYPE = "touch_type";
     @Bind(R.id.rv_apps)
     ScaleRecyclerView rvApps;
+    @Bind(R.id.container_ball_menu_detail_app_top)
+    LinearLayout containerBallMenuDetailAppTop;
 
     private AppAdapter adapter;
     private LinearLayoutManager layoutManager;
 
-    private int appIndex;
+    private int appIndex = -1;
     private int appType;
     private int touchType;
     private List<ResolveInfo> allApps;
@@ -49,7 +54,7 @@ public class AppFragment extends Fragment {
     }
 
 
-    public static AppFragment newInstance(int appIndex, int appType,int touchType) {
+    public static AppFragment newInstance(int appIndex, int appType, int touchType) {
         AppFragment fragment = new AppFragment();
         Bundle args = new Bundle();
         args.putInt(APP_INDEX, appIndex);
@@ -91,7 +96,46 @@ public class AppFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getContext());
         rvApps.setAdapter(adapter);
         rvApps.setLayoutManager(layoutManager);
+
+        initAppsMenu();
         initEvent();
+    }
+
+    /**
+     * 初始化快捷选择的APP们
+     */
+    private void initAppsMenu() {
+        for (int i = 0; i <= 4; i++) {
+            ImageView ivApp = (ImageView) containerBallMenuDetailAppTop.getChildAt(i);
+            String shortCutStr = "";
+            if (appType == Configs.AppType.APP.getValue()) {
+                if (touchType == Configs.TouchType.LINEAR.getValue()) {
+                    shortCutStr = SpUtils.getString(getContext().getApplicationContext(), Configs.KEY_LINEAR_MENU_TOP_APPS_ + i, "");
+                } else if (touchType == Configs.TouchType.BALL.getValue()) {
+                    shortCutStr = SpUtils.getString(getContext().getApplicationContext(), Configs.KEY_BALL_MENU_TOP_APPS_ + i, "");
+                }
+            } else if (appType == Configs.AppType.SHORTCUT.getValue()) {
+                if (touchType == Configs.TouchType.LINEAR.getValue()) {
+                    shortCutStr = SpUtils.getString(getContext().getApplicationContext(), Configs.KEY_LINEAR_MENU_BOTTOM_APPS_ + i, "");
+                } else if (touchType == Configs.TouchType.BALL.getValue()) {
+                    shortCutStr = SpUtils.getString(getContext().getApplicationContext(), Configs.KEY_BALL_MENU_BOTTOM_APPS_ + i, "");
+                }
+            }
+            final int finalIndex = i;
+            if (!TextUtils.isEmpty(shortCutStr)) {
+                final ResolveInfo appInfo = new Gson().fromJson(shortCutStr, ResolveInfo.class);
+                if (appInfo != null) {
+                    ivApp.setImageDrawable(PackageUtils.getInstance(getContext().getApplicationContext()).getShortCutIcon(appInfo));
+                }
+            }
+            ivApp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    appIndex = finalIndex;
+                }
+            });
+
+        }
     }
 
     private void initEvent() {
@@ -101,26 +145,28 @@ public class AppFragment extends Fragment {
                 ResolveInfo appInfoBean = adapter.getmDataList().get(pos);
                 String appInfoJson = new Gson().toJson(appInfoBean);
                 if (appType == Configs.AppType.APP.getValue()) {
-                    if (touchType== Configs.TouchType.LINEAR.getValue()){
+                    if (touchType == Configs.TouchType.LINEAR.getValue()) {
                         SpUtils.saveString(getContext(), Configs.KEY_LINEAR_MENU_TOP_APPS_ + appIndex, appInfoJson);
-                    }else if (touchType== Configs.TouchType.BALL.getValue()) {
+                    } else if (touchType == Configs.TouchType.BALL.getValue()) {
                         SpUtils.saveString(getContext(), Configs.KEY_BALL_MENU_TOP_APPS_ + appIndex, appInfoJson);
                     }
                 } else if (appType == Configs.AppType.SHORTCUT.getValue()) {
-                    if (touchType== Configs.TouchType.LINEAR.getValue()){
+                    if (touchType == Configs.TouchType.LINEAR.getValue()) {
                         SpUtils.saveString(getContext(), Configs.KEY_LINEAR_MENU_BOTTOM_APPS_ + appIndex, appInfoJson);
-                    }else if (touchType== Configs.TouchType.BALL.getValue()) {
+                    } else if (touchType == Configs.TouchType.BALL.getValue()) {
                         SpUtils.saveString(getContext(), Configs.KEY_BALL_MENU_BOTTOM_APPS_ + appIndex, appInfoJson);
                     }
                 }
-                if (touchType== Configs.TouchType.LINEAR.getValue()){
-                    getActivity().startService(new Intent(getActivity(), EasyTouchLinearService.class));
-
-                }else if (touchType== Configs.TouchType.BALL.getValue()) {
-                    getActivity().startService(new Intent(getActivity(), EasyTouchBallService.class));
-
-                }
-                getActivity().finish();
+                appIndex = -1;
+                initAppsMenu();
+//                if (touchType == Configs.TouchType.LINEAR.getValue()) {
+//                    getActivity().startService(new Intent(getActivity(), EasyTouchLinearService.class));
+//
+//                } else if (touchType == Configs.TouchType.BALL.getValue()) {
+//                    getActivity().startService(new Intent(getActivity(), EasyTouchBallService.class));
+//
+//                }
+//                getActivity().finish();
             }
         });
     }
@@ -137,7 +183,14 @@ public class AppFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         ButterKnife.unbind(this);
+        if (touchType == Configs.TouchType.LINEAR.getValue()) {
+            getActivity().startService(new Intent(getActivity(), EasyTouchLinearService.class));
+
+        } else if (touchType == Configs.TouchType.BALL.getValue()) {
+            getActivity().startService(new Intent(getActivity(), EasyTouchBallService.class));
+
+        }
+        super.onDestroyView();
     }
 }

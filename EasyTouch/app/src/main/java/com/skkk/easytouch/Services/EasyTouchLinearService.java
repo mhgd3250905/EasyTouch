@@ -1161,6 +1161,8 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         intent.putExtra(Configs.KEY_BALL_MENU_SELECT_APP_INDEX, finalIndex);
         intent.putExtra(Configs.KEY_TOUCH_TYPE, Configs.TouchType.LINEAR.getValue());
         startActivity(intent);
+        stopSelf();
+
     }
 
     /**
@@ -1840,7 +1842,15 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     public void onDestroy() {
         try {
             windowManager.removeView(touchView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             windowManager.removeView(menuView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
             windowManager.removeView(menuDetailView);
         } catch (Exception e) {
             e.printStackTrace();
