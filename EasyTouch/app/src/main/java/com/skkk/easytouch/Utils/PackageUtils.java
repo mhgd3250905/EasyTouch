@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
@@ -48,13 +49,28 @@ public class PackageUtils {
      *
      * @return
      */
-    public List<ResolveInfo> getAllShortCuts() {
+    public List<AppInfoBean> getAllShortCuts() {
         //获取到所有快捷方式
         Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         List<ResolveInfo> shortcuts = context.getPackageManager().queryIntentActivities(
                 shortcutsIntent, 0);
+        List<AppInfoBean> appInfoBeanList=new ArrayList<>();
+        for (int i = 0; i < shortcuts.size(); i++) {
+            PackageInfo pkg = null;
+            String appName="";
+            try {
+                pkg = context.getApplicationContext().
+                        getPackageManager().getPackageInfo(shortcuts.get(i).activityInfo.packageName, 0);
+                appName = pkg.applicationInfo.loadLabel(context.getApplicationContext().getPackageManager()).toString();
+            } catch (PackageManager.NameNotFoundException e) {
 
-        return shortcuts;
+            }
+            appInfoBeanList.add(new AppInfoBean(shortcuts.get(i).activityInfo.packageName,
+                    shortcuts.get(i).activityInfo.name,
+                    appName,
+                    shortcuts.get(i).activityInfo.flags));
+        }
+        return appInfoBeanList;
 //        List<ShortCutInfoBean> infoList=new ArrayList<>();
 //        ShortCutInfoBean infoBean;
 //        for (int i = 0; i < shortcuts.size(); i++) {
@@ -75,19 +91,18 @@ public class PackageUtils {
     /**
      * 获取指定快捷方式的图标
      *
-     * @param resolveInfo
+     * @param appInfoBean
      * @return
      */
-    public Drawable getShortCutIcon(ResolveInfo resolveInfo) {
+    public Drawable getShortCutIcon(AppInfoBean appInfoBean) {
         //获取对应icon方法如下
         //启动方式如下
         Drawable iconDrawable = null;
         PackageManager pm = context.getPackageManager();
-        ActivityInfo ai = resolveInfo.activityInfo;
 
-        String pkgName = ai.applicationInfo.packageName;
-        String activityName = ai.name;
-        int flag = ai.flags;
+        String pkgName = appInfoBean.getPkgName();
+        String activityName = appInfoBean.getActivityName();
+        int flag = appInfoBean.getFlag();
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setClassName(pkgName, activityName);
         intent.addFlags(flag);
@@ -120,27 +135,40 @@ public class PackageUtils {
     /**
      * 打开指定APP
      *
-     * @param resolveInfo
+     * @param appInfoBean
      */
-    public void startAppActivity(ResolveInfo resolveInfo) {
+    public void startAppActivity(AppInfoBean appInfoBean) {
         //该应用的包名和主Activity
-        Intent intent = context.getPackageManager().getLaunchIntentForPackage(resolveInfo.activityInfo.packageName);
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(appInfoBean.getPkgName());
         context.startActivity(intent);
     }
 
     /**
      * 获取系统中所有应用信息， 并将应用软件信息保存到list列表中。
      */
-    public List<ResolveInfo> getAllApps() {
+    public List<AppInfoBean> getAllApps() {
         PackageManager packageManager = context.getPackageManager();
-        List<AppInfoBean> list = new ArrayList<AppInfoBean>();
-        AppInfoBean myAppInfo;
 
         Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(mainIntent, 0);
+        List<AppInfoBean> appInfoBeanList=new ArrayList<>();
+        for (int i = 0; i < resolveInfos.size(); i++) {
+            PackageInfo pkg = null;
+            String appName="";
+            try {
+                pkg = context.getApplicationContext().
+                        getPackageManager().getPackageInfo(resolveInfos.get(i).activityInfo.packageName, 0);
+                appName = pkg.applicationInfo.loadLabel(context.getApplicationContext().getPackageManager()).toString();
+            } catch (PackageManager.NameNotFoundException e) {
 
-        return resolveInfos;
+            }
+            appInfoBeanList.add(new AppInfoBean(resolveInfos.get(i).activityInfo.packageName,
+                    resolveInfos.get(i).activityInfo.name,
+                    appName,
+                    resolveInfos.get(i).activityInfo.flags));
+        }
+        return appInfoBeanList;
     }
 
     private Drawable getAppIcon(ResolveInfo resolveInfo) {

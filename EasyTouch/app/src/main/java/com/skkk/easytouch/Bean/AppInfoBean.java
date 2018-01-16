@@ -12,35 +12,15 @@ package com.skkk.easytouch.Bean;
 */
 public class AppInfoBean {
     private String pkgName;
-    private String appName;
-    private String className;
     private String activityName;
+    private String name;
     private int flag;
-    private String shortCutName;
 
-
-    public String getPkgName() {
-        return pkgName;
-    }
-
-    public void setPkgName(String pkgName) {
+    public AppInfoBean( String pkgName,String activityName,String name, int flag) {
         this.pkgName = pkgName;
-    }
-
-    public String getAppName() {
-        return appName;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
+        this.activityName = activityName;
+        this.name=name;
+        this.flag = flag;
     }
 
     public String getActivityName() {
@@ -59,11 +39,19 @@ public class AppInfoBean {
         this.flag = flag;
     }
 
-    public String getShortCutName() {
-        return shortCutName;
+    public String getPkgName() {
+        return pkgName;
     }
 
-    public void setShortCutName(String shortCutName) {
-        this.shortCutName = shortCutName;
+    public void setPkgName(String pkgName) {
+        this.pkgName = pkgName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -2,7 +2,6 @@ package com.skkk.easytouch.View.AppSelect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
+import com.skkk.easytouch.Bean.AppInfoBean;
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
 import com.skkk.easytouch.Services.EasyTouchBallService;
@@ -46,7 +46,7 @@ public class AppFragment extends Fragment {
     private int appIndex = -1;
     private int appType;
     private int touchType;
-    private List<ResolveInfo> allApps;
+    private List<AppInfoBean> allApps;
 
 
     public AppFragment() {
@@ -123,7 +123,7 @@ public class AppFragment extends Fragment {
             }
             final int finalIndex = i;
             if (!TextUtils.isEmpty(shortCutStr)) {
-                final ResolveInfo appInfo = new Gson().fromJson(shortCutStr, ResolveInfo.class);
+                final AppInfoBean appInfo = new Gson().fromJson(shortCutStr, AppInfoBean.class);
                 if (appInfo != null) {
                     ivApp.setImageDrawable(PackageUtils.getInstance(getContext().getApplicationContext()).getShortCutIcon(appInfo));
                 }
@@ -142,8 +142,9 @@ public class AppFragment extends Fragment {
         adapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int pos) {
-                ResolveInfo appInfoBean = adapter.getmDataList().get(pos);
+                AppInfoBean appInfoBean = adapter.getmDataList().get(pos);
                 String appInfoJson = new Gson().toJson(appInfoBean);
+
                 if (appType == Configs.AppType.APP.getValue()) {
                     if (touchType == Configs.TouchType.LINEAR.getValue()) {
                         SpUtils.saveString(getContext(), Configs.KEY_LINEAR_MENU_TOP_APPS_ + appIndex, appInfoJson);

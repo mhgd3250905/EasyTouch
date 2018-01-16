@@ -2,7 +2,6 @@ package com.skkk.easytouch.View.FunctionSelect;
 
 
 import android.content.Context;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.skkk.easytouch.Bean.AppInfoBean;
 import com.skkk.easytouch.R;
 import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.View.AppSelect.AppAdapter;
@@ -39,7 +39,7 @@ public class FunctionDetailShortCutFragment extends Fragment {
     private AppAdapter adapter;
     private LinearLayoutManager layoutManager;
 
-    private List<ResolveInfo> allApps;
+    private List<AppInfoBean> allApps;
 
     // TODO: Rename and change types of parameters
     private String mParam1;

@@ -10,7 +10,6 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
@@ -43,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.skkk.easytouch.Bean.AppInfoBean;
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
@@ -711,7 +711,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 });
 
             } else {
-                final ResolveInfo appInfo = new Gson().fromJson(shortCutStr, ResolveInfo.class);
+                final AppInfoBean appInfo = new Gson().fromJson(shortCutStr, AppInfoBean.class);
                 if (appInfo != null) {
                     ivApp.setImageDrawable(PackageUtils.getInstance(getApplicationContext()).getShortCutIcon(appInfo));
                     ivApp.setOnClickListener(new View.OnClickListener() {
@@ -749,7 +749,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                     }
                 });
             } else {
-                final ResolveInfo appInfo = new Gson().fromJson(shortCutStr, ResolveInfo.class);
+                final AppInfoBean appInfo = new Gson().fromJson(shortCutStr, AppInfoBean.class);
                 if (appInfo != null) {
                     ivApp.setImageDrawable(PackageUtils.getInstance(getApplicationContext()).getShortCutIcon(appInfo));
                     ivApp.setOnClickListener(new View.OnClickListener() {
