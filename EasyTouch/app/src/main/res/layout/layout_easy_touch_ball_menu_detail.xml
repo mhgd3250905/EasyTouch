@@ -129,7 +129,7 @@
         android:layout_width="220dp"
         android:layout_height="200dp"
         android:background="@drawable/shape_react_corners_top_menu_bg"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@id/container_ball_menu_detail_pay_content"
@@ -251,101 +251,110 @@
 
     <RelativeLayout
         android:id="@id/container_ball_menu_detail_apps"
-        android:layout_width="320dp"
+        android:layout_width="350dp"
         android:layout_height="120dp"
         android:layout_centerVertical="true"
         android:background="@drawable/shape_react_corners_top_menu_bg"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="visible">
 
-        <LinearLayout
+        <GridLayout
             android:id="@id/container_ball_menu_detail_app_content"
-            android:layout_width="300dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_width="330dp"
+            android:layout_height="120dp"
+            android:background="@drawable/shape_react_corners_top_menu_bg"
+            android:columnCount="5"
+            android:rowCount="2"
+            android:visibility="visible">
 
-            <LinearLayout
-                android:id="@id/container_ball_menu_detail_app_top"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_add_white_48dp" />
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_add_white_48dp" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_add_white_48dp" />
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_add_white_48dp" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_add_white_48dp" />
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_add_white_48dp" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_add_white_48dp" />
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_add_white_48dp" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_add_white_48dp" />
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_add_white_48dp" />
-            </LinearLayout>
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_add_white_48dp" />
 
-            <LinearLayout
-                android:id="@id/container_ball_menu_detail_app_bottom"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center">
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_add_white_48dp" />
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_add_white_48dp" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_add_white_48dp" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_add_white_48dp" />
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_add_white_48dp" />
 
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_add_white_48dp" />
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_add_white_48dp" />
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_add_white_48dp" />
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_add_white_48dp" />
-            </LinearLayout>
-
-        </LinearLayout>
+        </GridLayout>
 
         <RelativeLayout
+            android:layout_alignParentEnd="true"
             android:id="@id/container_ball_menu_detail_app_back"
             android:layout_width="20dp"
-            android:layout_height="200dp"
+            android:layout_height="120dp"
             android:visibility="visible">
 
             <ImageView

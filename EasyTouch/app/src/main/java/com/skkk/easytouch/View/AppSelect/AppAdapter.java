@@ -22,7 +22,7 @@ import java.util.List;
 * 作    者：ksheng
 * 时    间：2017/12/3$ 23:32$.
 */
-public class AppAdapter extends BaseAdapter<AppInfoBean,AppViewHolder> {
+public class AppAdapter extends BaseAdapter<AppInfoBean, AppViewHolder> {
 
     public AppAdapter(Context context, List<AppInfoBean> mDataList) {
         super(context, mDataList);
@@ -30,12 +30,12 @@ public class AppAdapter extends BaseAdapter<AppInfoBean,AppViewHolder> {
 
     @Override
     protected AppViewHolder getCostumViewHolder(ViewGroup parent, int viewType) {
-        return new AppViewHolder(LayoutInflater.from(context).inflate(R.layout.item_app,parent,false));
+        return new AppViewHolder(LayoutInflater.from(context).inflate(R.layout.item_app, parent, false));
     }
 
     @Override
     protected void setViewHolder(AppViewHolder holder, int position) {
-        PackageManager packageManager=context.getPackageManager();
+        PackageManager packageManager = context.getPackageManager();
         AppInfoBean bean = mDataList.get(position);
         holder.ivItemIcon.setImageDrawable(PackageUtils.getInstance(context).getShortCutIcon(bean));
         //        // 拿到包名
@@ -48,9 +48,6 @@ public class AppAdapter extends BaseAdapter<AppInfoBean,AppViewHolder> {
         //        Drawable icon = getAppIcon(info);
         //// 拿到应用名
         //        String appName=info.loadLabel(packageManager).toString();
-            holder.tvItemAppName.setText(bean.getName());
-
-
-
+        holder.tvItemAppName.setText(bean.getName());
     }
 }

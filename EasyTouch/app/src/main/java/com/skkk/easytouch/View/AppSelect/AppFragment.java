@@ -10,8 +10,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.skkk.easytouch.Bean.AppInfoBean;
@@ -30,15 +31,15 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-
 public class AppFragment extends Fragment {
     private static final String APP_INDEX = "app_index";
     private static final String APP_TYPE = "app_type";
     private static final String TOUCH_TYPE = "touch_type";
     @Bind(R.id.rv_apps)
     ScaleRecyclerView rvApps;
-    @Bind(R.id.container_ball_menu_detail_app_top)
-    LinearLayout containerBallMenuDetailAppTop;
+    @Bind(R.id.container_whole_menu_apps)
+    GridLayout containerWholeMenuApps;
+
 
     private AppAdapter adapter;
     private LinearLayoutManager layoutManager;
@@ -105,8 +106,11 @@ public class AppFragment extends Fragment {
      * 初始化快捷选择的APP们
      */
     private void initAppsMenu() {
-        for (int i = 0; i <= 4; i++) {
-            ImageView ivApp = (ImageView) containerBallMenuDetailAppTop.getChildAt(i);
+        for (int i = 0; i <10; i++) {
+            final ImageView ivApp = (ImageView) containerWholeMenuApps.getChildAt(i);
+            if (i!=appIndex) {
+                ivApp.setImageResource(R.drawable.ic_add_white_48dp);
+            }
             String shortCutStr = "";
             if (appType == Configs.AppType.APP.getValue()) {
                 if (touchType == Configs.TouchType.LINEAR.getValue()) {
@@ -132,9 +136,13 @@ public class AppFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     appIndex = finalIndex;
+                    initAppsMenu();
                 }
             });
 
+            if (i==appIndex){
+                ivApp.setImageResource(R.drawable.vector_drawable_selection);
+            }
         }
     }
 
@@ -142,6 +150,11 @@ public class AppFragment extends Fragment {
         adapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int pos) {
+                if (appIndex==-1){
+                    Toast.makeText(getActivity(), "您还未选择需要切换的应用。", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 AppInfoBean appInfoBean = adapter.getmDataList().get(pos);
                 String appInfoJson = new Gson().toJson(appInfoBean);
 

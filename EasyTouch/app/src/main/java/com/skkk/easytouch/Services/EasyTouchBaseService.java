@@ -6,15 +6,20 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.skkk.easytouch.Configs;
+import com.skkk.easytouch.R;
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
 import com.skkk.easytouch.Utils.SpUtils;
 
@@ -41,6 +46,10 @@ public class EasyTouchBaseService extends Service {
     protected int vibrateLevel = Configs.DEFAULT_VIBRATE_LEVEL;//震动等级
     protected int direction=Configs.TOUCH_UI_DIRECTION_LEFT;//左右位置
 
+    protected WindowManager.LayoutParams mWholeMenuParams;
+    protected View wholeMenuView;
+    protected LinearLayout containerWholeMenu;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -48,16 +57,47 @@ public class EasyTouchBaseService extends Service {
         if (windowManager == null) {
             windowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         }
-
         //设置音量管理器
         audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-
         //设置设置管理器
         mAdminName = new ComponentName(this, AdminManageReceiver.class);
         mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-
         //设置震动管理器
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        initWholeMenu();
+    }
+
+    private void initWholeMenu() {
+        //设置二级菜单的LP
+        mWholeMenuParams = new WindowManager.LayoutParams();
+        mWholeMenuParams.packageName = getPackageName();
+        mWholeMenuParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        mWholeMenuParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+        mWholeMenuParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
+                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+        mWholeMenuParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        mWholeMenuParams.format = PixelFormat.RGBA_8888;
+        mWholeMenuParams.gravity = Gravity.LEFT | Gravity.TOP;
+
+        wholeMenuView = View.inflate(getApplicationContext(), R.layout.layout_whole_menu, null);
+        containerWholeMenu = (LinearLayout) wholeMenuView.findViewById(R.id.container_whole_menu);
+
+        initWholeMenuUI();
+        initWholeMenuEvent();
+    }
+
+    private void initWholeMenuUI() {
+
+    }
+
+    private void initWholeMenuEvent() {
+        wholeMenuView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                windowManager.removeView(wholeMenuView);
+            }
+        });
     }
 
     @Override

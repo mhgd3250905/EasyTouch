@@ -6,8 +6,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -18,7 +16,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -32,6 +29,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.CompoundButton;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -45,7 +43,6 @@ import com.skkk.easytouch.Bean.AppInfoBean;
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.MyApplication;
 import com.skkk.easytouch.R;
-import com.skkk.easytouch.Receiver.AdminManageReceiver;
 import com.skkk.easytouch.Utils.IntentUtils;
 import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.SpUtils;
@@ -132,9 +129,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     private ImageView ivMenuDetailBack;
     private RelativeLayout containerMenuDetailAppsBack;
     private ImageView ivMenuDetailAppBack;
-    private LinearLayout containerMenuDetailAppsContent;
-    private LinearLayout containerMenuDetailAppsTop;
-    private LinearLayout containerMenuDetailAppsBottom;
+    private GridLayout containerMenuDetailAppsContent;
 
     private boolean isMenuDetailShow = false;
 
@@ -161,23 +156,6 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     @Override
     public void onCreate() {
         super.onCreate();
-
-
-        //设置界面窗口管理器
-        if (windowManager == null) {
-            windowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-        }
-
-
-        //设置音量管理器
-        audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-
-        //设置设置管理器
-        mAdminName = new ComponentName(this, AdminManageReceiver.class);
-        mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-
-        //设置震动管理器
-        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
         //设置屏幕尺寸
         Point size = new Point();
@@ -313,10 +291,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 
         containerMenuDetailAppsBack = (RelativeLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_app_back);
         ivMenuDetailAppBack = (ImageView) menuDetailView.findViewById(R.id.iv_menu_detail_app_back);
-        containerMenuDetailAppsContent = (LinearLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_app_content);
-
-        containerMenuDetailAppsTop = (LinearLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_app_top);
-        containerMenuDetailAppsBottom = (LinearLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_app_bottom);
+        containerMenuDetailAppsContent = (GridLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_app_content);
 
 
         windowManager.addView(touchView, mParams);
@@ -1069,8 +1044,8 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                 });
             }
         });
-        for (int i = 0; i <= 4; i++) {
-            ImageView ivApp = (ImageView) containerMenuDetailAppsTop.getChildAt(i);
+        for (int i = 0; i < 10; i++) {
+            ImageView ivApp = (ImageView) containerMenuDetailAppsContent.getChildAt(i);
             String shortCutStr = SpUtils.getString(getApplicationContext(), Configs.KEY_LINEAR_MENU_TOP_APPS_ + i, "");
             final int finalIndex = i;
             if (TextUtils.isEmpty(shortCutStr)) {
@@ -1108,43 +1083,43 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             }
         }
 
-        for (int i = 0; i <= 4; i++) {
-            ImageView ivApp = (ImageView) containerMenuDetailAppsBottom.getChildAt(i);
-            String shortCutStr = SpUtils.getString(getApplicationContext(), Configs.KEY_LINEAR_MENU_BOTTOM_APPS_ + i, "");
-            final int finalIndex = i;
-            if (TextUtils.isEmpty(shortCutStr)) {
-                ivApp.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startSelectAppActivity(finalIndex, Configs.AppType.SHORTCUT.getValue());
-                    }
-                });
-            } else {
-                final AppInfoBean appInfo = new Gson().fromJson(shortCutStr, AppInfoBean.class);
-                if (appInfo != null) {
-                    ivApp.setImageDrawable(PackageUtils.getInstance(getApplicationContext()).getShortCutIcon(appInfo));
-                    ivApp.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_FAST, new Configs.OnAnimEndListener() {
-                                @Override
-                                public void onAnimEnd() {
-                                    hideMenuDetailContainer();
-                                }
-                            }, false);
-                            PackageUtils.getInstance(getApplicationContext()).startAppActivity(appInfo);
-                        }
-                    });
-                    ivApp.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            startSelectAppActivity(finalIndex, Configs.AppType.SHORTCUT.getValue());
-                            return true;
-                        }
-                    });
-                }
-            }
-        }
+//        for (int i = 0; i <= 4; i++) {
+//            ImageView ivApp = (ImageView) containerMenuDetailAppsBottom.getChildAt(i);
+//            String shortCutStr = SpUtils.getString(getApplicationContext(), Configs.KEY_LINEAR_MENU_BOTTOM_APPS_ + i, "");
+//            final int finalIndex = i;
+//            if (TextUtils.isEmpty(shortCutStr)) {
+//                ivApp.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        startSelectAppActivity(finalIndex, Configs.AppType.SHORTCUT.getValue());
+//                    }
+//                });
+//            } else {
+//                final AppInfoBean appInfo = new Gson().fromJson(shortCutStr, AppInfoBean.class);
+//                if (appInfo != null) {
+//                    ivApp.setImageDrawable(PackageUtils.getInstance(getApplicationContext()).getShortCutIcon(appInfo));
+//                    ivApp.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            hideMenuDetailEnterAnim(menuDetailView, HIDE_MENU_DETAIL_FAST, new Configs.OnAnimEndListener() {
+//                                @Override
+//                                public void onAnimEnd() {
+//                                    hideMenuDetailContainer();
+//                                }
+//                            }, false);
+//                            PackageUtils.getInstance(getApplicationContext()).startAppActivity(appInfo);
+//                        }
+//                    });
+//                    ivApp.setOnLongClickListener(new View.OnLongClickListener() {
+//                        @Override
+//                        public boolean onLongClick(View v) {
+//                            startSelectAppActivity(finalIndex, Configs.AppType.SHORTCUT.getValue());
+//                            return true;
+//                        }
+//                    });
+//                }
+//            }
+//        }
     }
 
     /**
@@ -1223,7 +1198,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 mMenuParams.x = rightBorder - dp2px(menuWidth) - dp2px(touchWidth + 5);
             } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                mMenuParams.x = rightBorder-dp2px(30)  - dp2px(menuWidth) - dp2px(touchWidth + 5);
+                mMenuParams.x = rightBorder - dp2px(30) - dp2px(menuWidth) - dp2px(touchWidth + 5);
             }
         }
         mMenuParams.y = mParams.y;

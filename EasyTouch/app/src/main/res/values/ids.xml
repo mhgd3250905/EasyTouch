@@ -138,4 +138,8 @@
     <item name="settings_item_email" type="id">settings_item_email</item>
     <item name="settings_item_qq" type="id">settings_item_qq</item>
     <item name="settings_item_github" type="id">settings_item_github</item>
+    <item name="container_whole_menu_detail_voice" type="id">container_whole_menu_detail_voice
+    </item>
+    <item name="container_whole_menu" type="id">container_whole_menu</item>
+    <item name="container_whole_menu_apps" type="id">container_whole_menu_apps</item>
 </resources>
