@@ -146,8 +146,6 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private boolean isScaleAnim = false;
     private boolean hasTrunPos = false;
 
-    private float menuDetailWidth = 300f;
-
 
     @Override
     public void onCreate() {
@@ -262,6 +260,11 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
 
         menuDetailView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball_menu_detail, null);
+        if (direction == Configs.Position.LEFT.getValue()) {
+            ObjectAnimator.ofFloat(menuDetailView, "translationX", 0, dp2px(-menuDetailWidth)).start();
+        } else if (direction == Configs.Position.RIGHT.getValue()) {
+            ObjectAnimator.ofFloat(menuDetailView, "translationX", 0, dp2px(menuDetailWidth)).start();
+        }
 
         containerMenuDetailVoice = (RelativeLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_voice);
         sbSystemAudio = (SeekBar) menuDetailView.findViewById(R.id.sb_system_audio);
@@ -336,6 +339,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         lp.removeRule(RelativeLayout.ALIGN_PARENT_END);
         lp.addRule(RelativeLayout.ALIGN_PARENT_START);
         v.setLayoutParams(lp);
+
     }
 
     /**
@@ -348,6 +352,22 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         lp.removeRule(RelativeLayout.ALIGN_PARENT_START);
         lp.addRule(RelativeLayout.ALIGN_PARENT_END);
         v.setLayoutParams(lp);
+
+
+    }
+
+    private void setMenuDetailContentAlignStart(View back, int contentId) {
+        RelativeLayout.LayoutParams backLp = (RelativeLayout.LayoutParams) back.getLayoutParams();
+        backLp.removeRule(RelativeLayout.LEFT_OF);
+        backLp.addRule(RelativeLayout.RIGHT_OF, contentId);
+        back.setLayoutParams(backLp);
+    }
+
+    private void setMenuDetailContentAlignEnd(View back, int contentId) {
+        RelativeLayout.LayoutParams backLp = (RelativeLayout.LayoutParams) back.getLayoutParams();
+        backLp.removeRule(RelativeLayout.RIGHT_OF);
+        backLp.addRule(RelativeLayout.LEFT_OF, contentId);
+        back.setLayoutParams(backLp);
     }
 
     /**
@@ -688,7 +708,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 ivApp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue());
+                        startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue(), Configs.TouchType.BALL);
                     }
                 });
 
@@ -711,7 +731,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                     ivApp.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue());
+                            startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue(), Configs.TouchType.BALL);
                             return true;
                         }
                     });
@@ -805,23 +825,6 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
     }
 
-    /**
-     * 打开App选择界面
-     *
-     * @param finalIndex
-     * @param value
-     */
-    private void startSelectAppActivity(int finalIndex, int value) {
-        Intent intent = new Intent();
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setClass(getApplicationContext(), AppSelectActivity.class);
-        intent.putExtra(Configs.KEY_APP_TYPE, value);
-        intent.putExtra(Configs.KEY_BALL_MENU_SELECT_APP_INDEX, finalIndex);
-        intent.putExtra(Configs.KEY_TOUCH_TYPE, Configs.TouchType.BALL.getValue());
-        startActivity(intent);
-        stopSelf();
-    }
-
 
     /**
      * 设置悬浮球事件
@@ -874,7 +877,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 if (!isMenuShow) {
                     showTouchBall();
                     goOpEvent(FuncConfigs.VALUE_FUNC_OP_CLICK);
-//                    windowManager.addView(wholeMenuView, mWholeMenuParams);
+//                    showWholeMenu();
                 }
                 showTouchBallClickAnim();
                 return false;
@@ -1155,10 +1158,12 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                     setMenuBallDetailAlignStartLayoutParams(containerMenuDetailVoiceContent);
                     setMenuBallDetailAlignEndLayoutParams(containerMenuDetailVoiceBack);
                     ivMenuDetailVoiceBack.setImageResource(R.drawable.ic_arrow_left);
+                    setMenuDetailContentAlignStart(containerMenuDetailVoiceContent, R.id.container_ball_menu_detail_voice_content);
                 } else if (direction == Configs.Position.RIGHT.getValue()) {
                     setMenuBallDetailAlignEndLayoutParams(containerMenuDetailVoiceContent);
                     setMenuBallDetailAlignStartLayoutParams(containerMenuDetailVoiceBack);
                     ivMenuDetailVoiceBack.setImageResource(R.drawable.ic_arrwo_right);
+                    setMenuDetailContentAlignEnd(containerMenuDetailVoiceContent, R.id.container_ball_menu_detail_voice_content);
 
                 }
                 enterMenuDetailAnim(menuDetailView, new AnimatorListenerAdapter() {
@@ -1249,10 +1254,12 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                     setMenuBallDetailAlignStartLayoutParams(containerMenuDetailPayContent);
                     setMenuBallDetailAlignEndLayoutParams(containerMenuDetailPayBack);
                     ivMenuDetailPayBack.setImageResource(R.drawable.ic_arrow_left);
+                    setMenuDetailContentAlignStart(containerMenuDetailPayBack, R.id.container_ball_menu_detail_pay_content);
                 } else if (direction == Configs.Position.RIGHT.getValue()) {
                     setMenuBallDetailAlignEndLayoutParams(containerMenuDetailPayContent);
                     setMenuBallDetailAlignStartLayoutParams(containerMenuDetailPayBack);
                     ivMenuDetailPayBack.setImageResource(R.drawable.ic_arrwo_right);
+                    setMenuDetailContentAlignEnd(containerMenuDetailPayBack, R.id.container_ball_menu_detail_pay_content);
 
                 }
                 enterMenuDetailAnim(menuDetailView, new AnimatorListenerAdapter() {
@@ -1286,14 +1293,17 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                 containerMenuDetailApps.setVisibility(View.VISIBLE);
                 containerMenuDetailPay.setVisibility(View.GONE);
                 if (direction == Configs.Position.LEFT.getValue()) {
-                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsContent);
-                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsBack);
+//                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsContent);
+//                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsBack);
                     ivMenuDetailAppBack.setImageResource(R.drawable.ic_arrow_left);
+//                    setMenuDetailContentAlignStart(ivMenuDetailAppBack,R.id.container_ball_menu_detail_app_content);
 
                 } else if (direction == Configs.Position.RIGHT.getValue()) {
                     setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsContent);
                     setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsBack);
                     ivMenuDetailAppBack.setImageResource(R.drawable.ic_arrwo_right);
+                    setMenuDetailContentAlignEnd(ivMenuDetailAppBack, R.id.container_ball_menu_detail_app_content);
+
 
                 }
                 enterMenuDetailAnim(menuDetailView, new AnimatorListenerAdapter() {
@@ -1920,3 +1930,4 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         return false;
     }
 }
+

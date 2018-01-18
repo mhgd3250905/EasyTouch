@@ -1,21 +1,300 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/container_whole_menu_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
+        android:padding="5dp"
         android:id="@id/container_whole_menu"
+        android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_margin="5dp"
-        android:orientation="vertical">
+        android:layout_height="460dp">
+
+        <LinearLayout
+            android:id="@id/container_whole_menu_detail_voice"
+            android:layout_width="195dp"
+            android:layout_height="190dp"
+            android:layout_above="@id/container_whole_menu_functions"
+            android:layout_alignStart="@id/container_whole_menu_functions"
+            android:background="@drawable/shape_react_corners_top_menu_bg"
+            android:orientation="vertical"
+            android:paddingStart="10dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@id/tv_audio_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignBottom="@id/switch_mode"
+                    android:layout_alignTop="@id/switch_mode"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/switch_mode"
+                    android:gravity="center_vertical"
+                    android:src="@drawable/ic_notifications"
+                    android:text="静音"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="10dp" />
+
+                <Switch
+                    android:id="@id/switch_mode"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3">
+
+                <ImageView
+                    android:id="@id/iv_audio_system"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_notifications" />
+
+                <SeekBar
+                    android:id="@id/sb_system_audio"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@id/iv_audio_system" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3">
+
+                <ImageView
+                    android:id="@id/iv_audio_media"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_media" />
+
+                <SeekBar
+                    android:id="@id/sb_media_audio"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@id/iv_audio_media" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3">
+
+                <ImageView
+                    android:id="@id/iv_audio_alarm"
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_alarm" />
+
+                <SeekBar
+                    android:id="@id/sb_alarm_audio"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@id/iv_audio_alarm" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <GridLayout
+            android:id="@id/container_whole_menu_functions"
+            android:layout_width="200dp"
+            android:layout_height="135dp"
+            android:layout_above="@id/container_whole_menu_apps"
+            android:layout_alignStart="@id/container_whole_menu_apps"
+            android:columnCount="3"
+            android:rowCount="2">
+
+            <RelativeLayout
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@drawable/shape_react_corners_top_menu_bg"
+                android:orientation="horizontal"
+                android:visibility="visible"></RelativeLayout>
+            <RelativeLayout
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@drawable/shape_react_corners_top_menu_bg"
+                android:orientation="horizontal"
+                android:visibility="visible"></RelativeLayout>
+            <RelativeLayout
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@drawable/shape_react_corners_top_menu_bg"
+                android:orientation="horizontal"
+                android:visibility="visible"></RelativeLayout>
+            <RelativeLayout
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@drawable/shape_react_corners_top_menu_bg"
+                android:orientation="horizontal"
+                android:visibility="visible"></RelativeLayout>
+            <RelativeLayout
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@drawable/shape_react_corners_top_menu_bg"
+                android:orientation="horizontal"
+                android:visibility="visible"></RelativeLayout>
+            <RelativeLayout
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:background="@drawable/shape_react_corners_top_menu_bg"
+                android:orientation="horizontal"
+                android:visibility="visible"></RelativeLayout>
+
+
+        </GridLayout>
+
+        <LinearLayout
+            android:id="@id/container_ball_menu_detail_pay_content"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_above="@id/container_whole_menu_clipboard"
+            android:layout_alignEnd="@id/container_whole_menu_clipboard"
+            android:background="@drawable/shape_react_corners_top_menu_bg"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text="支付宝扫描"
+                        android:textColor="@color/colorWhite"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@id/iv_scan_alipay"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/vector_drawable_scan_alipay" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@id/iv_pay_alipay"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/vector_drawable_pay_alipay" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text="支付宝付款"
+                        android:textColor="@color/colorWhite"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@id/iv_scan_weixin"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/vector_drawable_scan_weixin" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text="微信扫描"
+                        android:textColor="@color/colorWhite"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@id/container_whole_menu_clipboard"
+            android:layout_width="130dp"
+            android:layout_height="200dp"
+            android:layout_above="@id/container_whole_menu_apps"
+            android:layout_alignEnd="@id/container_whole_menu_apps"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/shape_react_corners_top_menu_bg"
+            android:visibility="visible">
+
+        </RelativeLayout>
 
         <GridLayout
             android:id="@id/container_whole_menu_apps"
-            android:layout_width="230dp"
-            android:layout_height="95dp"
+            android:layout_width="330dp"
+            android:layout_height="135dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
             android:layout_gravity="center"
+            android:layout_marginTop="5dp"
             android:background="@drawable/shape_react_corners_top_menu_bg"
             android:columnCount="5"
             android:orientation="horizontal"
@@ -23,75 +302,75 @@
             android:visibility="visible">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_margin="5dp"
                 android:src="@drawable/ic_add_white_48dp" />
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginTop="5dp"
                 android:src="@drawable/ic_add_white_48dp" />
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginTop="5dp"
                 android:src="@drawable/ic_add_white_48dp" />
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginTop="5dp"
                 android:src="@drawable/ic_add_white_48dp" />
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginTop="5dp"
                 android:src="@drawable/ic_add_white_48dp" />
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
                 android:src="@drawable/ic_add_white_48dp" />
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 android:src="@drawable/ic_add_white_48dp" />
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 android:src="@drawable/ic_add_white_48dp" />
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 android:src="@drawable/ic_add_white_48dp" />
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 android:src="@drawable/ic_add_white_48dp" />
@@ -99,308 +378,6 @@
 
         </GridLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="135dp"
-                android:layout_height="230dp"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@id/container_whole_menu_detail_voice"
-                    android:layout_width="135dp"
-                    android:layout_height="135dp"
-                    android:background="@drawable/shape_react_corners_top_menu_bg"
-                    android:orientation="vertical"
-                    android:paddingStart="10dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@id/tv_audio_mode"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_alignBottom="@id/switch_mode"
-                            android:layout_alignTop="@id/switch_mode"
-                            android:layout_centerVertical="true"
-                            android:layout_toLeftOf="@id/switch_mode"
-                            android:gravity="center_vertical"
-                            android:src="@drawable/ic_notifications"
-                            android:text="静音"
-                            android:textColor="@color/colorWhite" />
-
-                        <Switch
-                            android:id="@id/switch_mode"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:paddingEnd="5dp" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="2">
-
-                        <ImageView
-                            android:id="@id/iv_audio_system"
-                            android:layout_width="20dp"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/ic_notifications" />
-
-                        <SeekBar
-                            android:id="@id/sb_system_audio"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@id/iv_audio_system" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="2">
-
-                        <ImageView
-                            android:id="@id/iv_audio_media"
-                            android:layout_width="20dp"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/ic_media" />
-
-                        <SeekBar
-                            android:id="@id/sb_media_audio"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@id/iv_audio_media" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="2">
-
-                        <ImageView
-                            android:id="@id/iv_audio_alarm"
-                            android:layout_width="20dp"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/ic_alarm" />
-
-                        <SeekBar
-                            android:id="@id/sb_alarm_audio"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@id/iv_audio_alarm" />
-
-                    </RelativeLayout>
-                </LinearLayout>
-
-                <GridLayout
-                    android:layout_width="135dp"
-                    android:layout_height="95dp"
-                    android:columnCount="3"
-                    android:rowCount="2">
-
-                    <RelativeLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:background="@drawable/shape_react_corners_top_menu_bg"
-                        android:orientation="horizontal"
-                        android:visibility="visible"></RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/shape_react_corners_top_menu_bg"
-                        android:orientation="horizontal"
-                        android:visibility="visible"></RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/shape_react_corners_top_menu_bg"
-                        android:orientation="horizontal"
-                        android:visibility="visible"></RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:background="@drawable/shape_react_corners_top_menu_bg"
-                        android:orientation="horizontal"
-                        android:visibility="visible"></RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:background="@drawable/shape_react_corners_top_menu_bg"
-                        android:orientation="horizontal"
-                        android:visibility="visible"></RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:background="@drawable/shape_react_corners_top_menu_bg"
-                        android:orientation="horizontal"
-                        android:visibility="visible"></RelativeLayout>
-                </GridLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="90dp"
-                android:layout_height="230dp"
-                android:layout_marginStart="5dp"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@id/container_ball_menu_detail_pay_content"
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:background="@drawable/shape_react_corners_top_menu_bg"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="60dp"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:gravity="center"
-                                android:text="支付宝扫描"
-                                android:textColor="@color/colorWhite"
-                                android:visibility="gone" />
-
-                            <ImageView
-                                android:id="@id/iv_scan_alipay"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:src="@drawable/vector_drawable_scan_alipay" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="60dp"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@id/iv_pay_alipay"
-                                android:layout_width="35dp"
-                                android:layout_height="35dp"
-                                android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:src="@drawable/vector_drawable_pay_alipay" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:gravity="center"
-                                android:text="支付宝付款"
-                                android:textColor="@color/colorWhite"
-                                android:visibility="gone" />
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="60dp"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@id/iv_scan_weixin"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:src="@drawable/vector_drawable_scan_weixin" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:gravity="center"
-                                android:text="微信扫描"
-                                android:textColor="@color/colorWhite"
-                                android:visibility="gone" />
-                        </LinearLayout>
-
-
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:layout_weight="1" />
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:layout_width="90dp"
-                    android:layout_height="130dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/shape_react_corners_top_menu_bg"
-                    android:orientation="horizontal"
-                    android:visibility="visible">
-
-                </RelativeLayout>
-
-            </LinearLayout>
-        </LinearLayout>
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

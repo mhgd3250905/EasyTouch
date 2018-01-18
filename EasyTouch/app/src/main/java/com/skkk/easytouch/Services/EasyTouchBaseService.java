@@ -1,27 +1,40 @@
 package com.skkk.easytouch.Services;
 
 import android.accessibilityservice.AccessibilityService;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.app.Service;
+import android.app.WallpaperManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
+import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.skkk.easytouch.Bean.AppInfoBean;
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.R;
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
+import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.SpUtils;
+import com.skkk.easytouch.View.AppSelect.AppSelectActivity;
 
 import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_LEFT;
 
@@ -37,6 +50,8 @@ import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_LEFT;
 */
 public class EasyTouchBaseService extends Service {
 
+    private static final String TAG = "EasyTouchBaseService";
+
     protected WindowManager windowManager;//窗口管理器
     protected AudioManager audioManager;//音量管理器
     protected ComponentName mAdminName;//组件名称
@@ -46,9 +61,14 @@ public class EasyTouchBaseService extends Service {
     protected int vibrateLevel = Configs.DEFAULT_VIBRATE_LEVEL;//震动等级
     protected int direction=Configs.TOUCH_UI_DIRECTION_LEFT;//左右位置
 
-    protected WindowManager.LayoutParams mWholeMenuParams;
-    protected View wholeMenuView;
-    protected LinearLayout containerWholeMenu;
+    private WindowManager.LayoutParams mWholeMenuParams;
+    private View wholeMenuView;
+    private RelativeLayout containerWholeMenu;
+    private GridLayout containerWholeMenuApps;
+    private RelativeLayout containerWholeMenuBg;
+
+    protected float menuDetailWidth = 270f;
+
 
     @Override
     public void onCreate() {
@@ -81,14 +101,18 @@ public class EasyTouchBaseService extends Service {
         mWholeMenuParams.gravity = Gravity.LEFT | Gravity.TOP;
 
         wholeMenuView = View.inflate(getApplicationContext(), R.layout.layout_whole_menu, null);
-        containerWholeMenu = (LinearLayout) wholeMenuView.findViewById(R.id.container_whole_menu);
+        containerWholeMenu = (RelativeLayout) wholeMenuView.findViewById(R.id.container_whole_menu);
+        containerWholeMenuBg = (RelativeLayout) wholeMenuView.findViewById(R.id.container_whole_menu_bg);
+        containerWholeMenuApps = (GridLayout) wholeMenuView.findViewById(R.id.container_whole_menu_apps);
 
         initWholeMenuUI();
         initWholeMenuEvent();
     }
 
     private void initWholeMenuUI() {
-
+        WallpaperManager wallpaperManager=WallpaperManager.getInstance(getApplicationContext());
+        Drawable drawable = wallpaperManager.getDrawable();
+        containerWholeMenuBg.setBackground(drawable);
     }
 
     private void initWholeMenuEvent() {
@@ -98,6 +122,74 @@ public class EasyTouchBaseService extends Service {
                 windowManager.removeView(wholeMenuView);
             }
         });
+
+
+        for (int i = 0; i < 10; i++) {
+            ImageView ivApp = (ImageView) containerWholeMenuApps.getChildAt(i);
+            String shortCutStr = SpUtils.getString(getApplicationContext(), Configs.KEY_BALL_MENU_TOP_APPS_ + i, "");
+            final int finalIndex = i;
+            if (TextUtils.isEmpty(shortCutStr)) {
+                ivApp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue(),Configs.TouchType.BALL);
+                    }
+                });
+
+            } else {
+                final AppInfoBean appInfo = new Gson().fromJson(shortCutStr, AppInfoBean.class);
+                if (appInfo != null) {
+                    ivApp.setImageDrawable(PackageUtils.getInstance(getApplicationContext()).getShortCutIcon(appInfo));
+                    ivApp.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            PackageUtils.getInstance(getApplicationContext()).startAppActivity(appInfo);
+                        }
+                    });
+                    ivApp.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue(),Configs.TouchType.BALL);
+                            return true;
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+
+
+    /**
+     * 显示全部菜单
+     */
+    protected void showWholeMenu() {
+        windowManager.addView(wholeMenuView,mWholeMenuParams);
+        initWholeMenuBg();
+    }
+
+    /**
+     * 设置全部菜单的背景
+     */
+    private void initWholeMenuBg() {
+        ValueAnimator animBgAlpha=ValueAnimator.ofFloat(0f,1f);
+        animBgAlpha.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float alpha= (float) animation.getAnimatedValue();
+                Log.i(TAG, "onAnimationUpdate:"+alpha);
+                containerWholeMenuBg.setAlpha(alpha);
+            }
+        });
+        animBgAlpha.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                containerWholeMenuBg.setAlpha(1f);
+            }
+        });
+        animBgAlpha.setDuration(800);
+        animBgAlpha.start();
     }
 
     @Override
@@ -183,5 +275,22 @@ public class EasyTouchBaseService extends Service {
         } else {
             service.performGlobalAction(action);
         }
+    }
+
+    /**
+     * 打开App选择界面
+     *
+     * @param finalIndex
+     * @param value
+     */
+    protected void startSelectAppActivity(int finalIndex, int value, Configs.TouchType touchType) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(getApplicationContext(), AppSelectActivity.class);
+        intent.putExtra(Configs.KEY_APP_TYPE, value);
+        intent.putExtra(Configs.KEY_BALL_MENU_SELECT_APP_INDEX, finalIndex);
+        intent.putExtra(Configs.KEY_TOUCH_TYPE, touchType.getValue());
+        startActivity(intent);
+        stopSelf();
     }
 }

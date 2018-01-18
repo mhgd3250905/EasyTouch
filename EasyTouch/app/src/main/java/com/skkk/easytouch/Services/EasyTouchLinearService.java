@@ -46,7 +46,6 @@ import com.skkk.easytouch.R;
 import com.skkk.easytouch.Utils.IntentUtils;
 import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.SpUtils;
-import com.skkk.easytouch.View.AppSelect.AppSelectActivity;
 import com.skkk.easytouch.View.CircleImageView;
 import com.skkk.easytouch.View.FunctionSelect.FuncConfigs;
 
@@ -153,6 +152,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     private LocalBroadcastManager localBroadcastManager;
 
 
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -255,6 +255,12 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 
         menuView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_linear_menu, null);
         menuContainer = (RelativeLayout) menuView.findViewById(R.id.container_menu_ball);
+        if (direction == Configs.Position.LEFT.getValue()) {
+            ObjectAnimator.ofFloat(menuDetailView, "translationX", 0, dp2px(-menuDetailWidth)).start();
+        } else if (direction == Configs.Position.RIGHT.getValue()) {
+            ObjectAnimator.ofFloat(menuDetailView, "translationX", 0, dp2px(menuDetailWidth)).start();
+        }
+
 //        ivMenuBall0 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_0);
 //        ivMenuBall1 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_1);
 //        ivMenuBall2 = (ImageView) menuView.findViewById(R.id.iv_menu_ball_2);
@@ -263,6 +269,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 
 
         menuDetailView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball_menu_detail, null);
+
 
         containerMenuDetailVoice = (RelativeLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_voice);
         sbSystemAudio = (SeekBar) menuDetailView.findViewById(R.id.sb_system_audio);
@@ -1052,7 +1059,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                 ivApp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue());
+                        startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue(),Configs.TouchType.LINEAR);
                     }
                 });
 
@@ -1075,7 +1082,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                     ivApp.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue());
+                            startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue(),Configs.TouchType.LINEAR);
                             return true;
                         }
                     });
@@ -1122,23 +1129,6 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 //        }
     }
 
-    /**
-     * 打开App选择界面
-     *
-     * @param finalIndex
-     * @param value
-     */
-    private void startSelectAppActivity(int finalIndex, int value) {
-        Intent intent = new Intent();
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setClass(getApplicationContext(), AppSelectActivity.class);
-        intent.putExtra(Configs.KEY_APP_TYPE, value);
-        intent.putExtra(Configs.KEY_BALL_MENU_SELECT_APP_INDEX, finalIndex);
-        intent.putExtra(Configs.KEY_TOUCH_TYPE, Configs.TouchType.LINEAR.getValue());
-        startActivity(intent);
-        stopSelf();
-
-    }
 
     /**
      * 设置支付点击事件
@@ -1546,9 +1536,9 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      */
     private void enterMenuDetailAnim(View containerMenuDetail) {
         if (direction == Configs.Position.LEFT.getValue()) {
-            ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(-300f), 0).start();
+            ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(-menuDetailWidth), 0).start();
         } else if (direction == Configs.Position.RIGHT.getValue()) {
-            ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(300f), 0).start();
+            ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(menuDetailWidth), 0).start();
         }
     }
 

@@ -117,7 +117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_centerVertical="true"
-                android:background="@drawable/shape_react_corners_top_bottom"
+                android:background="@drawable/shape_react_corners_top_menu_bg"
                 android:src="@drawable/ic_arrow_left" />
 
         </RelativeLayout>
@@ -242,7 +242,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_centerVertical="true"
-                android:background="@drawable/shape_react_corners_top_bottom"
+                android:background="@drawable/shape_react_corners_top_menu_bg"
                 android:src="@drawable/ic_arrow_left" />
 
         </RelativeLayout>
@@ -251,7 +251,7 @@
 
     <RelativeLayout
         android:id="@id/container_ball_menu_detail_apps"
-        android:layout_width="350dp"
+        android:layout_width="320dp"
         android:layout_height="120dp"
         android:layout_centerVertical="true"
         android:background="@drawable/shape_react_corners_top_menu_bg"
@@ -259,7 +259,7 @@
 
         <GridLayout
             android:id="@id/container_ball_menu_detail_app_content"
-            android:layout_width="330dp"
+            android:layout_width="300dp"
             android:layout_height="120dp"
             android:background="@drawable/shape_react_corners_top_menu_bg"
             android:columnCount="5"
@@ -267,86 +267,66 @@
             android:visibility="visible">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
                 android:layout_margin="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/ic_add_white_48dp" />
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_add_white_48dp" />
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_add_white_48dp" />
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_add_white_48dp" />
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
                 android:layout_margin="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/ic_add_white_48dp" />
 
             <ImageView
+                android:layout_margin="10dp"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
                 android:src="@drawable/ic_add_white_48dp" />
 
             <ImageView
+                android:layout_margin="10dp"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
                 android:src="@drawable/ic_add_white_48dp" />
 
             <ImageView
+                android:layout_margin="10dp"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
                 android:src="@drawable/ic_add_white_48dp" />
+
             <ImageView
+                android:layout_margin="10dp"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
                 android:src="@drawable/ic_add_white_48dp" />
+
             <ImageView
+                android:layout_margin="10dp"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
                 android:src="@drawable/ic_add_white_48dp" />
+
+            <ImageView
+                android:layout_margin="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_white_48dp" />
+
+            <ImageView
+                android:layout_margin="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_white_48dp" />
+
+            <ImageView
+                android:layout_margin="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_white_48dp" />
+
+
 
         </GridLayout>
 
@@ -362,7 +342,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_centerVertical="true"
-                android:background="@drawable/shape_react_corners_top_bottom"
+                android:background="@drawable/shape_react_corners_top_menu_bg"
                 android:src="@drawable/ic_arrow_left" />
 
         </RelativeLayout>
