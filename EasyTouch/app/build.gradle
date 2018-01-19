@@ -7,8 +7,8 @@ android {
         applicationId "com.skkk.easytouch"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.2"
+        versionCode 2
+        versionName "1.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

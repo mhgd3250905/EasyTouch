@@ -22,7 +22,7 @@ public class Configs {
     public static final String KEY_PHOTO_CUSTOM_DRAWABLE = "key_photo_custom_drawable";
     public static final int RESULT_PERMISS_REQUEST_FLOAT_LINEAR = 200;
     public static final int RESULT_PERMISS_REQUEST_FLOAT_BALL = 201;
-    public static String SAVED_IMAGE_DIR_PATH=
+    public static String SAVED_IMAGE_DIR_PATH =
             Environment.getExternalStorageDirectory().getPath()
                     + "/EasyTouch/camera/";
 
@@ -35,11 +35,21 @@ public class Configs {
         }
     }
 
-    public enum LinearPos{
+    public enum LinearPos {
         TOP,
         MID,
         BOTTOM;
 
+        public int getValue() {
+            return this.ordinal();
+        }
+
+    }
+
+    public enum MenuDetailType {
+        VOICE,
+        PAY,
+        APPS;
         public int getValue() {
             return this.ordinal();
         }
@@ -70,6 +80,7 @@ public class Configs {
         LEFT,
         DOWN,
         RIGHT;
+
         public int getValue() {
             return this.ordinal();
         }
@@ -129,11 +140,11 @@ public class Configs {
     public static final int TOUCH_UI_DIRECTION_RIGHT = 1;
 
 
-    public static final String BROADCAST_SHAPE_COLOR_SHETTING="broadcast_shape_color_shetting";
+    public static final String BROADCAST_SHAPE_COLOR_SHETTING = "broadcast_shape_color_shetting";
 
-    public static final String KEY_SHAPE_COLOR_SETTING="key_shape_color_setting";
-    public static final int KEY_SHAPE_COLOR_SETTING_TOP=1;
-    public static final int KEY_SHAPE_COLOR_SETTING_MID=2;
-    public static final int KEY_SHAPE_COLOR_SETTING_BOTTOM=3;
+    public static final String KEY_SHAPE_COLOR_SETTING = "key_shape_color_setting";
+    public static final int KEY_SHAPE_COLOR_SETTING_TOP = 1;
+    public static final int KEY_SHAPE_COLOR_SETTING_MID = 2;
+    public static final int KEY_SHAPE_COLOR_SETTING_BOTTOM = 3;
 
 }
