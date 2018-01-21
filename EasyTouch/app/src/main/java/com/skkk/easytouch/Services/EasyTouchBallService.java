@@ -1093,8 +1093,6 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             }
         });
         ivTouchBall.startAnimation(scaleAnimation);
-
-
     }
 
 

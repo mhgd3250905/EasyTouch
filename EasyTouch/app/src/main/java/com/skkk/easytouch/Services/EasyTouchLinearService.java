@@ -1226,31 +1226,31 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                 left = mParams.x + dp2px(touchWidth + 5);
                 top = mParams.y;
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuWidth) / 2) {
-                        top = Math.max(screenHeight, screenWidth) - dp2px(menuWidth);
+                    if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(touchHeight)) {
+                        top = Math.max(screenHeight, screenWidth) - dp2px(touchHeight);
                     } else if (mParams.y < dp2px(menuWidth) / 2) {
                         top = 0;
                     }
                 } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuWidth) / 2) {
-                        top = Math.min(screenHeight, screenWidth) - dp2px(menuWidth);
+                    if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(touchHeight)) {
+                        top = Math.min(screenHeight, screenWidth) - dp2px(touchHeight);
                     } else if (mParams.y < dp2px(menuWidth) / 2) {
                         top = 0;
                     }
                 }
             } else if (direction == TOUCH_UI_DIRECTION_RIGHT) {
-                left = mParams.x - dp2px(menuWidth);
+                left = mParams.x - dp2px(menuWidth)-dp2px(touchWidth);
                 top = mParams.y;
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuWidth) / 2) {
-                        top = Math.max(screenHeight, screenWidth) - dp2px(menuWidth);
-                    } else if (mParams.y < dp2px(menuWidth) / 2) {
+                    if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(touchHeight)) {
+                        top = Math.max(screenHeight, screenWidth) - dp2px(touchHeight);
+                    } else if (mParams.y < dp2px(touchHeight)) {
                         top = 0;
                     }
                 } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuWidth) / 2) {
-                        top = Math.min(screenHeight, screenWidth) - dp2px(menuWidth);
-                    } else if (mParams.y < dp2px(menuWidth) / 2) {
+                    if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(touchHeight)) {
+                        top = Math.min(screenHeight, screenWidth) - dp2px(touchHeight);
+                    } else if (mParams.y < dp2px(touchHeight)) {
                         top = 0;
                     }
                 }
