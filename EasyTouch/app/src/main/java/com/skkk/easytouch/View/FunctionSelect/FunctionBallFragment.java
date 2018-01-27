@@ -227,6 +227,8 @@ public class FunctionBallFragment extends Fragment {
             funcDesc = "上一个应用";
         } else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {//app菜单
             funcDesc = "锁屏";
+        }else if (funcType == FuncConfigs.Func.SHOT_SCREEN.getValue()) {//app菜单
+            funcDesc = "截屏";
         }
         item.setValue(funcDesc);
     }

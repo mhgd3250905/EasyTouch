@@ -14,6 +14,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.DrawableRes;
@@ -42,9 +43,11 @@ import com.google.gson.Gson;
 import com.skkk.easytouch.Bean.AppInfoBean;
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.MyApplication;
+import com.skkk.easytouch.PreviewShotScreenActivity;
 import com.skkk.easytouch.R;
 import com.skkk.easytouch.Utils.IntentUtils;
 import com.skkk.easytouch.Utils.PackageUtils;
+import com.skkk.easytouch.Utils.ShotScreenUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.CircleImageView;
 import com.skkk.easytouch.View.FunctionSelect.FuncConfigs;
@@ -301,6 +304,32 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     }
 
     /**
+     * 初始化截屏事件
+     */
+    private void initShotScreenEvent() {
+        ShotScreenUtils.getInstance().setOnShotScreenListener(new ShotScreenUtils.OnShotScreenListener() {
+            @Override
+            public void startShotScreen() {
+                llTouchContainer.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void finishShotScreen(Uri uri) {
+                llTouchContainer.setVisibility(View.VISIBLE);
+                Intent intent = new Intent(EasyTouchLinearService.this, PreviewShotScreenActivity.class);
+                intent.setData(uri);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+
+            @Override
+            public void failedShotScreen() {
+
+            }
+        });
+    }
+
+    /**
      * 设置触摸块UI
      */
     private void initTouchUI() {
@@ -411,7 +440,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         } else if (funcType == FuncConfigs.Func.HOME.getValue()) {
             drawableId = R.drawable.vector_drawable_home;
         } else if (funcType == FuncConfigs.Func.RECENT.getValue()) {
-            drawableId = R.drawable.vector_drawable_recent;
+            drawableId = R.drawable.vector_drawable_menu;
         } else if (funcType == FuncConfigs.Func.NOTIFICATION.getValue()) {
             drawableId = R.drawable.vector_drawable_notification;
         } else if (funcType == FuncConfigs.Func.PREVIOUS_APP.getValue()) {
@@ -423,11 +452,13 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         } else if (funcType == FuncConfigs.Func.VOICE_MENU.getValue()) {
             drawableId = R.drawable.vector_ball_menu_voice;
         } else if (funcType == FuncConfigs.Func.PAY_MENU.getValue()) {
-            drawableId = R.drawable.vector_drawable_pay_menu;
+            drawableId = R.drawable.vector_drawable_pay;
         } else if (funcType == FuncConfigs.Func.APP_MENU.getValue()) {
             drawableId = R.drawable.vector_ball_menu_apps;
         } else if (funcType == FuncConfigs.Func.APPS.getValue()) {
             drawableId = R.drawable.vector_ball_menu_apps;
+        }else if (funcType == FuncConfigs.Func.SHOT_SCREEN.getValue()) {
+            drawableId = R.drawable.vector_drawable_shot;
         }
         ivBall.setImageResource(drawableId);
     }
@@ -1940,6 +1971,8 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             jump2LastApp();
         } else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {//app菜单
             lockScreen();
+        }else if (funcType == FuncConfigs.Func.SHOT_SCREEN.getValue()) {//app菜单
+            shotScreen();
         }
     }
 
@@ -1995,6 +2028,8 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                     jump2LastApp();
                 } else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {//app菜单
                     lockScreen();
+                }else if (funcType == FuncConfigs.Func.SHOT_SCREEN.getValue()) {//app菜单
+                    shotScreen();
                 }
             }
         });

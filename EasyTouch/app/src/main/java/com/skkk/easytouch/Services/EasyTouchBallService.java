@@ -306,7 +306,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             @Override
             public void finishShotScreen(Uri uri) {
                 ivTouchBall.setVisibility(View.VISIBLE);
-                Intent intent=new Intent(EasyTouchBallService.this, PreviewShotScreenActivity.class);
+                Intent intent = new Intent(EasyTouchBallService.this, PreviewShotScreenActivity.class);
                 intent.setData(uri);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -547,15 +547,15 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private void initMenuBallDrawable(ImageView ivBall, int funcType) {
         int drawableId = R.drawable.vector_ball_menu_voice;
         if (funcType == FuncConfigs.Func.BACK.getValue()) {
-            drawableId = R.drawable.vector_drawable_back;
+            drawableId = R.drawable.vector_drawable_function_back;
         } else if (funcType == FuncConfigs.Func.HOME.getValue()) {
-            drawableId = R.drawable.vector_drawable_home;
+            drawableId = R.drawable.vector_drawable_function_home;
         } else if (funcType == FuncConfigs.Func.RECENT.getValue()) {
             drawableId = R.drawable.vector_drawable_recent;
         } else if (funcType == FuncConfigs.Func.NOTIFICATION.getValue()) {
-            drawableId = R.drawable.vector_drawable_notification;
+            drawableId = R.drawable.vector_drawable_function_notification;
         } else if (funcType == FuncConfigs.Func.PREVIOUS_APP.getValue()) {
-            drawableId = R.drawable.vector_drawable_previous;
+            drawableId = R.drawable.vector_drawable_function_previous;
         } else if (funcType == FuncConfigs.Func.TRUN_POS.getValue()) {
             drawableId = R.drawable.vector_drawable_trun_pos;
         } else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {
@@ -563,11 +563,13 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         } else if (funcType == FuncConfigs.Func.VOICE_MENU.getValue()) {
             drawableId = R.drawable.vector_ball_menu_voice;
         } else if (funcType == FuncConfigs.Func.PAY_MENU.getValue()) {
-            drawableId = R.drawable.vector_drawable_pay_menu;
+            drawableId = R.drawable.vector_drawable_function_pay;
         } else if (funcType == FuncConfigs.Func.APP_MENU.getValue()) {
             drawableId = R.drawable.vector_ball_menu_apps;
         } else if (funcType == FuncConfigs.Func.APPS.getValue()) {
             drawableId = R.drawable.vector_ball_menu_apps;
+        } else if (funcType == FuncConfigs.Func.SHOT_SCREEN.getValue()) {
+            drawableId = R.drawable.vector_drawable_shot;
         }
         ivBall.setImageResource(drawableId);
     }
@@ -1820,7 +1822,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         //如果不是菜单或者菜单详情，也就是悬浮球状态，进行显示操作
         if (!isMenuShow && !isMenuDetailShow) {
             if (ishideWhole) {//如果已经进入隐藏状态：平移显示
-                ishideWhole=false;
+                ishideWhole = false;
                 ObjectAnimator transHideWholeX = null;
                 if (direction == TOUCH_UI_DIRECTION_LEFT) {
                     transHideWholeX = ObjectAnimator.ofFloat(ivTouchBall, "translationX", -2 * dp2px(touchWidth) * 4 / 5, 0);
@@ -1890,6 +1892,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
     /**
      * 获取当前触摸点的坐标
+     *
      * @param e
      */
     private void setMoveDownXY(MotionEvent e) {
@@ -2184,6 +2187,8 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
             jump2LastApp();
         } else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {//app菜单
             lockScreen();
+        } else if (funcType == FuncConfigs.Func.SHOT_SCREEN.getValue()) {//app菜单
+            shotScreen();
         }
     }
 
@@ -2246,6 +2251,8 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
                         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "activity device");
                         startActivity(intent);
                     }
+                } else if (funcType == FuncConfigs.Func.SHOT_SCREEN.getValue()) {//app菜单
+                    shotScreen();
                 }
             }
         });

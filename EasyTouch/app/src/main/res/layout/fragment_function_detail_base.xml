@@ -13,7 +13,7 @@
             android:id="@id/tv_item_back"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:drawableLeft="@drawable/vector_drawable_back"
+            android:drawableLeft="@drawable/vector_drawable_function_back"
             android:gravity="center"
             android:paddingStart="10dp"
             android:text="返回"
@@ -30,7 +30,7 @@
             android:id="@id/tv_item_home"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:drawableLeft="@drawable/vector_drawable_home"
+            android:drawableLeft="@drawable/vector_drawable_function_home"
             android:gravity="center"
             android:paddingStart="10dp"
             android:text="主页"
@@ -64,7 +64,7 @@
             android:id="@id/tv_item_notification"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:drawableLeft="@drawable/vector_drawable_notification"
+            android:drawableLeft="@drawable/vector_drawable_function_notification"
             android:gravity="center"
             android:paddingStart="10dp"
             android:text="通知"
@@ -81,7 +81,7 @@
             android:id="@id/tv_item_menu"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:drawableLeft="@drawable/vector_drawable_menu"
+            android:drawableLeft="@drawable/vector_drawable_function_menu"
             android:gravity="center"
             android:paddingStart="10dp"
             android:text="菜单"
@@ -150,7 +150,7 @@
             android:id="@id/tv_item_pay"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:drawableLeft="@drawable/vector_drawable_pay_menu"
+            android:drawableLeft="@drawable/vector_drawable_function_pay"
             android:gravity="center"
             android:paddingStart="10dp"
             android:text="支付菜单"
@@ -186,10 +186,27 @@
             android:id="@id/tv_item_previous_app"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:drawableLeft="@drawable/vector_drawable_previous"
+            android:drawableLeft="@drawable/vector_drawable_function_previous"
             android:gravity="center"
             android:paddingStart="10dp"
             android:text="上一个应用"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/colorGray"/>
+
+        <TextView
+            android:id="@id/tv_item_shot_screen"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableLeft="@drawable/vector_drawable_function_shot"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:text="截屏"
             android:textSize="20sp" />
 
         <View

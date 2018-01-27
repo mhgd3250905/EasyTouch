@@ -135,11 +135,12 @@ public class MainActivity extends AppCompatActivity {
             SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_BOTTOM_FLING_UP, FuncConfigs.Func.MENU.getValue());
             SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_BOTTOM_FLING_BOTTOM, FuncConfigs.Func.LOCK_SCREEN.getValue());
 
-            SpUtils.saveInt(getApplicationContext(), SpUtils.KEY_MENU_BALL_COUNT, 4);
+            SpUtils.saveInt(getApplicationContext(), SpUtils.KEY_MENU_BALL_COUNT, 5);
             SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_MENU_BALL + 0, FuncConfigs.Func.TRUN_POS.getValue());
             SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_MENU_BALL + 1, FuncConfigs.Func.VOICE_MENU.getValue());
             SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_MENU_BALL + 2, FuncConfigs.Func.APP_MENU.getValue());
             SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_MENU_BALL + 3, FuncConfigs.Func.LOCK_SCREEN.getValue());
+            SpUtils.saveInt(getApplicationContext(), FuncConfigs.VALUE_FUNC_OP_MENU_BALL + 4, FuncConfigs.Func.SHOT_SCREEN.getValue());
 
             SpUtils.saveBoolean(getApplicationContext(), SpUtils.KEY_APP_IS_FIRST_RYN, false);
         }

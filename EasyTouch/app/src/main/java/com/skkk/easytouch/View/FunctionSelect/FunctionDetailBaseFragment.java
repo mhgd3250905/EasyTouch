@@ -46,6 +46,8 @@ public class FunctionDetailBaseFragment extends Fragment {
     TextView tvItemMenu;
     @Bind(R.id.tv_item_previous_app)
     TextView tvItemPreviousApp;
+    @Bind(R.id.tv_item_shot_screen)
+    TextView tvItemShotScreen;
 
     // TODO: Rename and change types of parameters
     private String opType;
@@ -116,7 +118,8 @@ public class FunctionDetailBaseFragment extends Fragment {
 
     @OnClick({R.id.tv_item_back, R.id.tv_item_home, R.id.tv_item_recent, R.id.tv_item_notification,
             R.id.tv_item_location, R.id.tv_item_voice, R.id.tv_item_pay, R.id.tv_item_app,
-            R.id.tv_item_menu,R.id.tv_item_previous_app,R.id.tv_item_lock_screen})
+            R.id.tv_item_menu,R.id.tv_item_previous_app,R.id.tv_item_lock_screen,
+            R.id.tv_item_shot_screen})
     public void onViewClicked(View view) {
         int funcType = 0;
         switch (view.getId()) {
@@ -152,6 +155,9 @@ public class FunctionDetailBaseFragment extends Fragment {
                 break;
             case R.id.tv_item_lock_screen:
                 funcType = FuncConfigs.Func.LOCK_SCREEN.getValue();
+                break;
+            case R.id.tv_item_shot_screen:
+                funcType = FuncConfigs.Func.SHOT_SCREEN.getValue();
                 break;
         }
         SpUtils.saveInt(getContext().getApplicationContext(), opType, funcType);
