@@ -10,8 +10,13 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
+import android.hardware.display.VirtualDisplay;
 import android.media.AudioManager;
+import android.media.ImageReader;
+import android.media.projection.MediaProjection;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
@@ -20,6 +25,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -29,11 +35,12 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.skkk.easytouch.Bean.AppInfoBean;
 import com.skkk.easytouch.Configs;
-import com.skkk.easytouch.R;
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
 import com.skkk.easytouch.Utils.PackageUtils;
+import com.skkk.easytouch.Utils.ShotScreenUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.AppSelect.AppSelectActivity;
+import com.skkk.easytouch.View.SoftInputListenerView;
 
 import static com.skkk.easytouch.Configs.TOUCH_UI_DIRECTION_LEFT;
 
@@ -73,7 +80,24 @@ public class EasyTouchBaseService extends Service {
     protected int menuDetailHeightMin = 80;
 
     protected float wholeMenuWidth = 340f;
+    private WindowManager.LayoutParams softInputLp;
+    protected SoftInputListenerView softInputListenerView;
 
+    protected int lastParamsY;//软件盘弹出前的高度位置
+    protected boolean hasConfigurationChanged = false;
+
+    protected int flagSoftInputChangeHeight = 300;
+
+    protected int screenWidth;
+    protected int screenHeight;
+
+    protected int leftBorder;
+    protected int rightBorder;
+    private ImageReader mImageReader;
+    private MediaProjection mMediaProjection;
+    private VirtualDisplay mVirtualDisplay;
+
+    private static Intent mResultData = null;
 
     @Override
     public void onCreate() {
@@ -89,14 +113,31 @@ public class EasyTouchBaseService extends Service {
         mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         //设置震动管理器
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        initWholeMenu();
+
+        Point size = new Point();
+        windowManager.getDefaultDisplay().getSize(size);
+        screenWidth = size.x;
+        screenHeight = size.y;
+
+        leftBorder = 0;
+        rightBorder = screenWidth;
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            flagSoftInputChangeHeight = Math.max(screenWidth, screenHeight) / 3;
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            flagSoftInputChangeHeight = Math.min(screenWidth, screenHeight) / 3;
+        }
+
+        initUI();
     }
 
-    private void initWholeMenu() {
+
+
+    private void initUI() {
         //设置二级菜单的LP
         mWholeMenuParams = new WindowManager.LayoutParams();
         mWholeMenuParams.packageName = getPackageName();
-        mWholeMenuParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        mWholeMenuParams.width = 0;
         mWholeMenuParams.height = WindowManager.LayoutParams.MATCH_PARENT;
         mWholeMenuParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
@@ -105,14 +146,26 @@ public class EasyTouchBaseService extends Service {
         mWholeMenuParams.format = PixelFormat.RGBA_8888;
         mWholeMenuParams.gravity = Gravity.LEFT | Gravity.TOP;
 
-        wholeMenuView = View.inflate(getApplicationContext(), R.layout.layout_whole_menu, null);
-        containerWholeMenu = (RelativeLayout) wholeMenuView.findViewById(R.id.container_whole_menu);
-        containerWholeMenuBg = (RelativeLayout) wholeMenuView.findViewById(R.id.container_whole_menu_bg);
-        containerWholeMenuApps = (GridLayout) wholeMenuView.findViewById(R.id.container_whole_menu_apps);
+        softInputLp = new WindowManager.LayoutParams();
+        softInputLp.width = 0;
+        softInputLp.x = 0;
+        softInputLp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        softInputLp.type = WindowManager.LayoutParams.TYPE_PHONE;
+        softInputLp.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
+        softInputLp.format = PixelFormat.TRANSPARENT;
+        softInputLp.gravity = Gravity.LEFT | Gravity.TOP;
+        softInputListenerView = new SoftInputListenerView(this);
+        softInputListenerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        windowManager.addView(softInputListenerView, softInputLp);
 
-        initWholeMenuUI();
-        initWholeMenuEvent();
+//        wholeMenuView = View.inflate(getApplicationContext(), R.layout.layout_whole_menu, null);
+//        containerWholeMenu = (RelativeLayout) wholeMenuView.findViewById(R.id.container_whole_menu);
+//        containerWholeMenuBg = (RelativeLayout) wholeMenuView.findViewById(R.id.container_whole_menu_bg);
+//        containerWholeMenuApps = (GridLayout) wholeMenuView.findViewById(R.id.container_whole_menu_apps);
+
     }
+
 
     /**
      * 初始化菜单UI
@@ -327,5 +380,12 @@ public class EasyTouchBaseService extends Service {
     protected int dp2px(float dp) {
         final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.1f);
+    }
+
+    /**
+     * 截屏
+     */
+    protected void shotScreen(){
+        ShotScreenUtils.getInstance().startScreenShot();
     }
 }

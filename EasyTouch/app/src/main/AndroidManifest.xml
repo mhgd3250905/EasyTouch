@@ -84,7 +84,9 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".View.AboutActivity"></activity>
+        <activity android:name=".View.AboutActivity" />
+        <activity android:name=".PreviewShotScreenActivity"
+            android:theme="@style/TranslucentTheme"></activity>
     </application>
 
 </manifest>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_preview_shot_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlack55"
+    tools:context="com.skkk.easytouch.PreviewShotScreenActivity">
+
+    <RelativeLayout
+        android:background="@color/colorWhite"
+        android:layout_marginTop="19.2dp"
+        android:layout_marginBottom="19.2dp"
+        android:layout_marginStart="10.8dp"
+        android:layout_marginEnd="10.8dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@id/iv_shot_screen_preview"
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+</RelativeLayout>

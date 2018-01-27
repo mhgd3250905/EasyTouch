@@ -22,6 +22,9 @@ public class Configs {
     public static final String KEY_PHOTO_CUSTOM_DRAWABLE = "key_photo_custom_drawable";
     public static final int RESULT_PERMISS_REQUEST_FLOAT_LINEAR = 200;
     public static final int RESULT_PERMISS_REQUEST_FLOAT_BALL = 201;
+
+    //截屏传递Key
+    public static final int REQUEST_MEDIA_PROJECTION = 300;
     public static String SAVED_IMAGE_DIR_PATH =
             Environment.getExternalStorageDirectory().getPath()
                     + "/EasyTouch/camera/";

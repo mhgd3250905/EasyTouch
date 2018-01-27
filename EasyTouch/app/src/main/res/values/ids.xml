@@ -145,4 +145,5 @@
     <item name="container_whole_menu_functions" type="id">container_whole_menu_functions</item>
     <item name="container_whole_menu_clipboard" type="id">container_whole_menu_clipboard</item>
     <item name="container_whole_menu_bg" type="id">container_whole_menu_bg</item>
+    <item name="iv_shot_screen_preview" type="id">iv_shot_screen_preview</item>
 </resources>

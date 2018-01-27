@@ -48,6 +48,7 @@ import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.CircleImageView;
 import com.skkk.easytouch.View.FunctionSelect.FuncConfigs;
+import com.skkk.easytouch.View.SoftInputListenerView;
 
 import java.util.List;
 
@@ -94,10 +95,6 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     private int midColor;
     private int bottomColor;
     private int colorAlpha;
-    private int screenWidth;
-    private int screenHeight;
-    private int leftBorder;
-    private int rightBorder;
     private int direction;
     private int directionX;
 
@@ -457,12 +454,104 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      * 设置事件
      */
     private void initEvent() {
+        initSoftInputEvent();
         setTouchBarEvent();
         initMenuEvent();
         initMenuDetailVoiceEvent();
         initMenuDetailPayEvent();
         initMenuDetailAppEvent();
     }
+
+    /**
+     * 设置软件盘弹出时的状态变化
+     */
+    private void initSoftInputEvent() {
+
+
+
+
+        softInputListenerView.setOnSoftInputStateChangeListener(new SoftInputListenerView.OnSoftInputStateChangeListener() {
+            @Override
+            public void onSoftInputSttateChange(int w, int h, int oldw, int oldh) {
+
+                //竖屏
+                if (oldh == 0) {
+                    return;
+                }
+                if (Math.abs(oldh-h)<flagSoftInputChangeHeight){
+                    return;
+                }
+                if (hasConfigurationChanged) {
+                    hasConfigurationChanged = false;
+                    return;
+                }
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    if (Math.max(screenHeight, screenWidth) - h > flagSoftInputChangeHeight) {//呼出软键盘
+                        if (isMenuDetailShow) {
+                            try {
+                                windowManager.removeView(menuDetailView);
+                                isMenuDetailShow = false;
+                            } catch (Exception e) {
+                                Log.e(TAG, "onSoftInputSttateChange: 菜单详情已经删除过！");
+                            }
+                        } else if (isMenuShow) {
+                            try {
+                                windowManager.removeView(menuView);
+                                isMenuShow = false;
+                            } catch (Exception e) {
+                                Log.e(TAG, "onSoftInputSttateChange: 菜单已经删除过！");
+                            }
+                        } else {
+                            try {
+                                windowManager.removeView(touchView);
+                            } catch (Exception e) {
+                                Log.e(TAG, "onSoftInputSttateChange: 悬浮球已经删除过！");
+                            }
+                        }
+                    } else {//隐藏软键盘
+                        try {
+                            windowManager.addView(touchView, mParams);
+                        }catch (Exception e){
+                            Log.e(TAG, "onSoftInputSttateChange: 悬浮球已经添加过！");
+                        }
+                    }
+                } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    if (Math.min(screenHeight, screenWidth) - h > flagSoftInputChangeHeight) {//呼出软键盘
+                        if (isMenuDetailShow) {
+                            try {
+                                windowManager.removeView(menuDetailView);
+                                isMenuDetailShow = false;
+                            } catch (Exception e) {
+                                Log.e(TAG, "onSoftInputSttateChange: 菜单详情已经删除过！");
+
+                            }
+                        } else if (isMenuShow) {
+                            try {
+                                windowManager.removeView(menuView);
+                                isMenuShow = false;
+                            } catch (Exception e) {
+                                Log.e(TAG, "onSoftInputSttateChange: 菜单已经删除过！");
+                            }
+                        } else {
+                            try {
+                                windowManager.removeView(menuView);
+                            } catch (Exception e) {
+                                Log.e(TAG, "onSoftInputSttateChange: 悬浮球已经删除过！");
+                            }
+                        }
+                    } else {//隐藏软键盘
+                        try {
+                            windowManager.addView(touchView, mParams);
+                        } catch (Exception e) {
+                            Log.e(TAG, "onSoftInputSttateChange: 悬浮球已经添加过！");
+                        }
+                    }
+                }
+                Log.d(TAG, "onSoftInputSttateChange() called with: w = [" + w + "], h = [" + h + "], oldw = [" + oldw + "], oldh = [" + oldh + "]");
+            }
+        });
+    }
+
 
     /**
      * 根据横竖屏幕切换悬浮球对应的位置
@@ -472,6 +561,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        hasConfigurationChanged = true;
         try {
             if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 //横屏
@@ -639,19 +729,19 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         topDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
-                Log.d(TAG, "onDown() called with: e = [" + e + "]");
+//                Log.d(TAG, "onDown() called with: e = [" + e + "]");
                 return false;
             }
 
             @Override
             public void onShowPress(MotionEvent e) {
-                Log.d(TAG, "onShowPress() called with: e = [" + e + "]");
+//                Log.d(TAG, "onShowPress() called with: e = [" + e + "]");
 
             }
 
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
-                Log.d(TAG, "onSingleTapUp() called with: e = [" + e + "]");
+//                Log.d(TAG, "onSingleTapUp() called with: e = [" + e + "]");
                 //震动30毫秒
                 vibrator.vibrate(vibrateLevel);
                 if (MyApplication.isSettingShape()) {
@@ -681,7 +771,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 
             @Override
             public void onLongPress(MotionEvent e) {
-                Log.d(TAG, "onLongPress() called with: e = [" + e + "]");
+//                Log.d(TAG, "onLongPress() called with: e = [" + e + "]");
             }
 
             @Override
@@ -1239,7 +1329,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                     }
                 }
             } else if (direction == TOUCH_UI_DIRECTION_RIGHT) {
-                left = mParams.x - dp2px(menuWidth)-dp2px(touchWidth);
+                left = mParams.x - dp2px(menuWidth) - dp2px(touchWidth);
                 top = mParams.y;
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                     if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(touchHeight)) {
@@ -1518,7 +1608,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             @Override
             public void run() {
                 //显示二级菜单
-                containerMenuDetailVoice.setVisibility(View.VISIBLE);
+                containerMenuDetailVoice.setVisibility(View.GONE);
                 containerMenuDetailApps.setVisibility(View.GONE);
                 containerMenuDetailPay.setVisibility(View.GONE);
                 if (direction == Configs.Position.LEFT.getValue()) {
@@ -1536,6 +1626,9 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                     @Override
                     public void onAnimationStart(Animator animation) {
                         super.onAnimationStart(animation);
+                        containerMenuDetailVoice.setVisibility(View.VISIBLE);
+                        containerMenuDetailApps.setVisibility(View.GONE);
+                        containerMenuDetailPay.setVisibility(View.GONE);
                         containerMenuDetailVoice.setAlpha(1f);
                     }
                 }, Configs.MenuDetailType.VOICE);
@@ -1563,9 +1656,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             @Override
             public void run() {
                 //显示二级菜单
-                containerMenuDetailVoice.setVisibility(View.GONE);
-                containerMenuDetailApps.setVisibility(View.VISIBLE);
-                containerMenuDetailPay.setVisibility(View.GONE);
+
                 if (direction == Configs.Position.LEFT.getValue()) {
                     setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsContent);
                     setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsBack);
@@ -1582,6 +1673,9 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                     @Override
                     public void onAnimationStart(Animator animation) {
                         super.onAnimationStart(animation);
+                        containerMenuDetailVoice.setVisibility(View.GONE);
+                        containerMenuDetailApps.setVisibility(View.VISIBLE);
+                        containerMenuDetailPay.setVisibility(View.GONE);
                         containerMenuDetailPay.setAlpha(1f);
 
                     }
@@ -1610,9 +1704,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             @Override
             public void run() {
                 //显示二级菜单
-                containerMenuDetailVoice.setVisibility(View.GONE);
-                containerMenuDetailApps.setVisibility(View.GONE);
-                containerMenuDetailPay.setVisibility(View.VISIBLE);
+
                 if (direction == Configs.Position.LEFT.getValue()) {
                     setMenuBallDetailAlignStartLayoutParams(containerMenuDetailPayContent);
                     setMenuBallDetailAlignEndLayoutParams(containerMenuDetailPayBack);
@@ -1628,9 +1720,12 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                     @Override
                     public void onAnimationStart(Animator animation) {
                         super.onAnimationStart(animation);
+                        containerMenuDetailVoice.setVisibility(View.GONE);
+                        containerMenuDetailApps.setVisibility(View.GONE);
+                        containerMenuDetailPay.setVisibility(View.VISIBLE);
                         containerMenuDetailApps.setAlpha(1f);
                     }
-                },Configs.MenuDetailType.PAY);
+                }, Configs.MenuDetailType.PAY);
                 isMenuDetailShow = true;
             }
         });
@@ -1646,13 +1741,13 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      *
      * @param containerMenuDetail
      */
-    private void enterMenuDetailAnim(View containerMenuDetail, AnimatorListenerAdapter animatorListenerAdapter,Configs.MenuDetailType menuDetailType) {
+    private void enterMenuDetailAnim(View containerMenuDetail, AnimatorListenerAdapter animatorListenerAdapter, Configs.MenuDetailType menuDetailType) {
         ObjectAnimator enterMenuDetailAnim = null;
-        int transX=0;
-        if (menuDetailType.equals(Configs.MenuDetailType.APPS)){
-            transX=menuDetailWidthMax;
-        }else {
-            transX=menuDetailWidthMax;
+        int transX = 0;
+        if (menuDetailType.equals(Configs.MenuDetailType.APPS)) {
+            transX = menuDetailWidthMax;
+        } else {
+            transX = menuDetailWidthMin;
         }
         if (direction == Configs.Position.LEFT.getValue()) {
             enterMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(-transX), 0);
@@ -1696,18 +1791,18 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      */
     private void hideMenuDetailEnterAnim(View containerMenuDetail, int duration, final Configs.OnAnimEndListener onAnimEndListener, boolean isAppsMenu) {
         int transFromX = 0;
-        int transToX = dp2px(-200);
+        int transToX = dp2px(-menuDetailWidthMin-dp2px(touchWidth));
         if (direction == Configs.Position.LEFT.getValue()) {
             transFromX = 0;
-            transToX = dp2px(-200);
+            transToX = dp2px(-menuDetailWidthMin-dp2px(touchWidth));
             if (isAppsMenu) {
-                transToX = dp2px(-300f);
+                transToX = dp2px(-menuDetailWidthMax-dp2px(touchWidth));
             }
         } else if (direction == Configs.Position.RIGHT.getValue()) {
             transFromX = 0;
-            transToX = dp2px(200f);
+            transToX = dp2px(menuDetailWidthMin+dp2px(touchWidth));
             if (isAppsMenu) {
-                transToX = dp2px(300f);
+                transToX = dp2px(menuDetailWidthMax+dp2px(touchWidth));
             }
         }
 
@@ -1937,6 +2032,9 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             windowManager.removeView(menuDetailView);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (softInputListenerView != null) {
+            softInputListenerView.setOnSoftInputStateChangeListener(null);
         }
         super.onDestroy();
     }

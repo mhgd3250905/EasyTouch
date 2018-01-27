@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ import com.skkk.easytouch.Services.EasyTouchLinearService;
 import com.skkk.easytouch.Services.FloatService;
 import com.skkk.easytouch.Utils.DialogUtils;
 import com.skkk.easytouch.Utils.ServiceUtils;
+import com.skkk.easytouch.Utils.ShotScreenUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.AboutActivity;
 import com.skkk.easytouch.View.FunctionSelect.FuncConfigs;
@@ -74,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String PACKAGE_URL_SCHEME = "package:"; // 方案
     private ComponentName mAdminName;
     private DevicePolicyManager mDPM;
+    private int screenDensity;
+    private int screenWidth;
+    private int screenHeight;
 
 
     @Override
@@ -82,6 +88,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+
+        //测量屏幕
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        screenDensity = metrics.densityDpi;
+        screenWidth = metrics.widthPixels;
+        screenHeight = metrics.heightPixels;
+
 
         initFirstRunData();
 
@@ -94,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
 //                    Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
 //            startActivity(intent);
 //        }
+
+        requestCapturePermission();
     }
 
     /**
@@ -274,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivityForResult(intent, Configs.RESULT_PERMISS_REQUEST_FLOAT_BALL);
                         return;
                     } else {
-                        if (ServiceUtils.isServiceRun(getApplicationContext(),Configs.NAME_SERVICE_TOUCH_LINEAR)) {
+                        if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_LINEAR)) {
                             stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
                         }
                         startService(new Intent(MainActivity.this, EasyTouchBallService.class));
@@ -333,6 +349,14 @@ public class MainActivity extends AppCompatActivity {
                     startService(new Intent(MainActivity.this, FloatService.class));
                 }
             }
+        } else if (requestCode == Configs.REQUEST_MEDIA_PROJECTION) {
+            if (resultCode == RESULT_OK && data != null) {
+//                MyApplication.setShotScreenIntent(data);
+                ShotScreenUtils.getInstance()
+                        .setContext(getApplicationContext())
+                        .setShotSize(screenWidth,screenHeight,screenDensity)
+                        .setResultData(data);
+            }
         }
     }
 
@@ -387,4 +411,18 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, 1);
     }
 
+    public void requestCapturePermission() {
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            //5.0 之后才允许使用屏幕截图
+
+            return;
+        }
+
+        MediaProjectionManager mediaProjectionManager = (MediaProjectionManager)
+                getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        startActivityForResult(
+                mediaProjectionManager.createScreenCaptureIntent(),
+                Configs.REQUEST_MEDIA_PROJECTION);
+    }
 }

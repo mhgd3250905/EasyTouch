@@ -15,24 +15,22 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:alpha="50"
-            android:src="@drawable/shape_react_top" />
+            android:alpha="50" />
 
         <ImageView
+            android:background="@drawable/bg_linear_left"
             android:id="@id/iv_touch_mid"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:alpha="50"
-            android:src="@drawable/shape_react_mid" />
+            android:alpha="50" />
 
         <ImageView
             android:id="@id/iv_touch_bottom"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:alpha="50"
-            android:src="@drawable/shape_react_bottom" />
+            android:alpha="50" />
     </LinearLayout>
 
 </LinearLayout>
