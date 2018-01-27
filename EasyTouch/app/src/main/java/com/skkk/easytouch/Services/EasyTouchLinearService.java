@@ -301,6 +301,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 
 
         windowManager.addView(touchView, mParams);
+        initShotScreenEvent();
     }
 
     /**
