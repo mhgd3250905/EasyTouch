@@ -166,7 +166,7 @@ public class TouchLinearShapeFragment extends Fragment {
         setVibrate = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL_LINEAR, Configs.DEFAULT_VIBRATE_LEVEL);
         sbVibrate.setProgress((setHeight - VIBRATE_MIN) / VIBRATE_STEP);
 
-        alpha = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA, Configs.DEFAULT_ALPHA);
+        alpha = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA_LINEAR, Configs.DEFAULT_ALPHA);
         sbAlpha.setProgress(alpha);
     }
 
@@ -253,7 +253,7 @@ public class TouchLinearShapeFragment extends Fragment {
                 Log.d(TAG, "onProgressChanged() called with: progress = [" + progress + "]");
                 alpha = progress;
                 upDateTouchViewShape(0, 0);
-                SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA, progress);
+                SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA_LINEAR, progress);
             }
 
             @Override

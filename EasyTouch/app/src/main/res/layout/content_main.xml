@@ -75,6 +75,18 @@
                     app:title="锁屏功能"
                     app:value="未开启" />
 
+                <com.skkk.easytouch.View.SettingItemView
+                    android:id="@id/settings_item_shot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    app:title="截屏功能"
+                    app:value="未开启" />
+
+
             </LinearLayout>
 
         </android.support.v7.widget.CardView>

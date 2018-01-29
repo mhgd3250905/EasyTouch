@@ -386,6 +386,8 @@ public class EasyTouchBaseService extends Service {
      * 截屏
      */
     protected void shotScreen(){
-        ShotScreenUtils.getInstance().startScreenShot();
+        if (ShotScreenUtils.checkServiceIsRun()) {
+            ShotScreenUtils.getInstance().startScreenShot();
+        }
     }
 }

@@ -347,8 +347,14 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         midColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_MID_COLOR, Color.GREEN);
         bottomColor = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_COLOR, Color.BLUE);
 
-        colorAlpha = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA, DEFAULT_ALPHA);
+        colorAlpha = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA_LINEAR, DEFAULT_ALPHA);
 
+
+        if (direction == TOUCH_UI_DIRECTION_LEFT) {
+            ivTouchMid.setBackgroundResource(R.drawable.bg_linear_left);
+        } else {
+            ivTouchMid.setBackgroundResource(R.drawable.bg_linear_right);
+        }
 //        int theme = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_THEME, DEFAULT_THEME);
 //
 //        if (theme == Configs.TOUCH_UI_THEME_0) {
@@ -458,7 +464,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             drawableId = R.drawable.vector_ball_menu_apps;
         } else if (funcType == FuncConfigs.Func.APPS.getValue()) {
             drawableId = R.drawable.vector_ball_menu_apps;
-        }else if (funcType == FuncConfigs.Func.SHOT_SCREEN.getValue()) {
+        } else if (funcType == FuncConfigs.Func.SHOT_SCREEN.getValue()) {
             drawableId = R.drawable.vector_drawable_shot;
         }
         ivBall.setImageResource(drawableId);
@@ -500,8 +506,6 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     private void initSoftInputEvent() {
 
 
-
-
         softInputListenerView.setOnSoftInputStateChangeListener(new SoftInputListenerView.OnSoftInputStateChangeListener() {
             @Override
             public void onSoftInputSttateChange(int w, int h, int oldw, int oldh) {
@@ -510,7 +514,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                 if (oldh == 0) {
                     return;
                 }
-                if (Math.abs(oldh-h)<flagSoftInputChangeHeight){
+                if (Math.abs(oldh - h) < flagSoftInputChangeHeight) {
                     return;
                 }
                 if (hasConfigurationChanged) {
@@ -543,7 +547,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                     } else {//隐藏软键盘
                         try {
                             windowManager.addView(touchView, mParams);
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             Log.e(TAG, "onSoftInputSttateChange: 悬浮球已经添加过！");
                         }
                     }
@@ -1823,18 +1827,18 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      */
     private void hideMenuDetailEnterAnim(View containerMenuDetail, int duration, final Configs.OnAnimEndListener onAnimEndListener, boolean isAppsMenu) {
         int transFromX = 0;
-        int transToX = dp2px(-menuDetailWidthMin-dp2px(touchWidth));
+        int transToX = dp2px(-menuDetailWidthMin - dp2px(touchWidth));
         if (direction == Configs.Position.LEFT.getValue()) {
             transFromX = 0;
-            transToX = dp2px(-menuDetailWidthMin-dp2px(touchWidth));
+            transToX = dp2px(-menuDetailWidthMin - dp2px(touchWidth));
             if (isAppsMenu) {
-                transToX = dp2px(-menuDetailWidthMax-dp2px(touchWidth));
+                transToX = dp2px(-menuDetailWidthMax - dp2px(touchWidth));
             }
         } else if (direction == Configs.Position.RIGHT.getValue()) {
             transFromX = 0;
-            transToX = dp2px(menuDetailWidthMin+dp2px(touchWidth));
+            transToX = dp2px(menuDetailWidthMin + dp2px(touchWidth));
             if (isAppsMenu) {
-                transToX = dp2px(menuDetailWidthMax+dp2px(touchWidth));
+                transToX = dp2px(menuDetailWidthMax + dp2px(touchWidth));
             }
         }
 
@@ -1863,12 +1867,16 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                 mParams.x = rightBorder;
                 mMenuParams.x = rightBorder;
                 mMenuDetailParams.x = rightBorder;
+                ivTouchMid.setBackgroundResource(R.drawable.bg_linear_right);
+
             } else if (direction == Configs.Position.RIGHT.getValue()) {
                 direction = Configs.Position.LEFT.getValue();
                 SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, direction);
                 mParams.x = 0;
                 mMenuParams.x = 0;
                 mMenuDetailParams.x = 0;
+                ivTouchMid.setBackgroundResource(R.drawable.bg_linear_left);
+
 
             }
 
@@ -1972,7 +1980,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             jump2LastApp();
         } else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {//app菜单
             lockScreen();
-        }else if (funcType == FuncConfigs.Func.SHOT_SCREEN.getValue()) {//app菜单
+        } else if (funcType == FuncConfigs.Func.SHOT_SCREEN.getValue()) {//app菜单
             shotScreen();
         }
     }
@@ -2029,7 +2037,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                     jump2LastApp();
                 } else if (funcType == FuncConfigs.Func.LOCK_SCREEN.getValue()) {//app菜单
                     lockScreen();
-                }else if (funcType == FuncConfigs.Func.SHOT_SCREEN.getValue()) {//app菜单
+                } else if (funcType == FuncConfigs.Func.SHOT_SCREEN.getValue()) {//app菜单
                     shotScreen();
                 }
             }

@@ -305,11 +305,11 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
             @Override
             public void finishShotScreen(Uri uri) {
-                ivTouchBall.setVisibility(View.VISIBLE);
                 Intent intent = new Intent(EasyTouchBallService.this, PreviewShotScreenActivity.class);
                 intent.setData(uri);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
+                ivTouchBall.setVisibility(View.VISIBLE);
             }
 
             @Override

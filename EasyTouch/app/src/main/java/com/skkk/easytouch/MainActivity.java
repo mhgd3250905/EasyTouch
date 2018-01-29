@@ -1,6 +1,8 @@
 package com.skkk.easytouch;
 
+import android.Manifest;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -14,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -26,6 +29,7 @@ import com.skkk.easytouch.Services.EasyTouchBallService;
 import com.skkk.easytouch.Services.EasyTouchLinearService;
 import com.skkk.easytouch.Services.FloatService;
 import com.skkk.easytouch.Utils.DialogUtils;
+import com.skkk.easytouch.Utils.PermissionsUtils;
 import com.skkk.easytouch.Utils.ServiceUtils;
 import com.skkk.easytouch.Utils.ShotScreenUtils;
 import com.skkk.easytouch.Utils.SpUtils;
@@ -42,6 +46,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.M;
 import static com.skkk.easytouch.R.id.settings_item_about;
 
@@ -49,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private static final int PERMISSION_REQUEST_CODE = 0; // 系统权限管理页面的参数
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.settings_item_float)
@@ -70,9 +74,11 @@ public class MainActivity extends AppCompatActivity {
     ScaleScrollView contentMain;
     @Bind(settings_item_about)
     SettingItemView settingsItemAbout;
+    @Bind(R.id.settings_item_shot)
+    SettingItemView settingsItemShot;
 
 
-    private ArrayList<String> needRequestPermissions = new ArrayList<>();
+
 
     private static final String PACKAGE_URL_SCHEME = "package:"; // 方案
     private ComponentName mAdminName;
@@ -80,6 +86,16 @@ public class MainActivity extends AppCompatActivity {
     private int screenDensity;
     private int screenWidth;
     private int screenHeight;
+
+    // 所需的全部权限
+    private static final String[] PERMISSIONS = new String[]{
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+    };
+    private static final int PERMISSION_REQUEST_CODE = 0; // 系统权限管理页面的参数
+
+
+    private ArrayList<String> needRequestPermissions = new ArrayList<>();
 
 
     @Override
@@ -109,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
 //            startActivity(intent);
 //        }
 
-        requestCapturePermission();
     }
 
     /**
@@ -182,6 +197,12 @@ public class MainActivity extends AppCompatActivity {
         } else {
             settingsItemLock.setValue("已开启");
         }
+
+        if (!ShotScreenUtils.checkServiceIsRun()){
+            settingsItemShot.setWarning("未开启，截屏功能无法使用");
+        }else{
+            settingsItemShot.setValue("已开启");
+        }
     }
 
     /**
@@ -229,6 +250,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showAdminManagement(mAdminName);
+            }
+        });
+
+        settingsItemShot.setSettingItemClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= M) {
+                    //版本为6.0以上，那么进行权限检测
+                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                            && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        //如果已经具备了权限，那么可以操作
+                        if (Build.VERSION.SDK_INT >= LOLLIPOP) {
+                            requestCapturePermission();
+                        }
+                    }else {
+                        initPermissions();
+                    }
+                }
             }
         });
 
@@ -355,8 +394,9 @@ public class MainActivity extends AppCompatActivity {
 //                MyApplication.setShotScreenIntent(data);
                 ShotScreenUtils.getInstance()
                         .setContext(getApplicationContext())
-                        .setShotSize(screenWidth,screenHeight,screenDensity)
+                        .setShotSize(screenWidth, screenHeight, screenDensity)
                         .setResultData(data);
+                initUI();
             }
         }
     }
@@ -412,11 +452,38 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, 1);
     }
 
+    /**
+     * 用户权限处理,
+     * 如果全部获取, 则直接过.
+     * 如果权限缺失, 则提示Dialog.
+     *
+     * @param requestCode  请求码
+     * @param permissions  权限
+     * @param grantResults 结果
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode == PERMISSION_REQUEST_CODE && hasAllPermissionsGranted(grantResults)) {
+            requestCapturePermission();
+        } else {
+            DialogUtils.showDialog(MainActivity.this, R.drawable.ic_warning,
+                    "提醒", "当前应用缺少必要权限，\n请点击\"设置\"-\"权限\"打开所需要的权限。",
+                    "设置", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            intent.setData(Uri.parse(PACKAGE_URL_SCHEME + getPackageName()));
+                            startActivity(intent);
+                        }
+                    }, "算了", null).show();
+        }
+    }
+
     public void requestCapturePermission() {
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT < LOLLIPOP) {
             //5.0 之后才允许使用屏幕截图
-
             return;
         }
 
@@ -425,5 +492,29 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(
                 mediaProjectionManager.createScreenCaptureIntent(),
                 Configs.REQUEST_MEDIA_PROJECTION);
+    }
+
+    /**
+     * 检测权限
+     */
+    @RequiresApi(api = M)
+    private void initPermissions() {
+        if (PermissionsUtils.lacksPermissions(MainActivity.this, PERMISSIONS)) {
+            requestPermissions(PERMISSIONS);
+        }
+    }
+
+    // 请求权限兼容低版本
+    @TargetApi(M)
+    private void requestPermissions(String... permissions) {
+        needRequestPermissions.clear();
+        for (int i = 0; i < PERMISSIONS.length; i++) {
+            if (PermissionsUtils.lacksPermission(this, PERMISSIONS[i])) {
+                needRequestPermissions.add(PERMISSIONS[i]);
+            }
+        }
+        String[] permissionArr = new String[needRequestPermissions.size()];
+        needRequestPermissions.toArray(permissionArr);
+        requestPermissions(permissionArr, PERMISSION_REQUEST_CODE);
     }
 }

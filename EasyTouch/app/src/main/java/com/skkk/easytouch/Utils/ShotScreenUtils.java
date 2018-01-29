@@ -52,7 +52,7 @@ public class ShotScreenUtils {
 
     private static final String TAG = "ShotScreenUtils";
 
-    private ImageReader mImageReader;
+    private static ImageReader mImageReader;
     private int screenWidth;
     private int screenHeight;
     private int screenDensity;
@@ -103,6 +103,15 @@ public class ShotScreenUtils {
         mImageReader = ImageReader.newInstance(screenWidth, screenHeight, PixelFormat.RGBA_8888, 1);
     }
 
+    /**
+     * 查看截图功能是否可用
+     * @return
+     */
+    public static boolean checkServiceIsRun() {
+        return mImageReader==null?false:true;
+    }
+
+
     private void startVirtual() {
         if (mMediaProjection != null) {
             virtualDisplay();
@@ -115,6 +124,9 @@ public class ShotScreenUtils {
     private void setUpMediaProjection() {
         if (resultDate == null) {
             Log.e(TAG, "setUpMediaProjection: 获取权限返回数据发生异常！");
+            if (onShotScreenListener != null) {
+                onShotScreenListener.failedShotScreen();
+            }
         } else {
             mMediaProjection = getMediaProjectionManager().getMediaProjection(Activity.RESULT_OK, resultDate);
         }
@@ -147,7 +159,9 @@ public class ShotScreenUtils {
         protected Uri doInBackground(Image... params) {
 
             if (params == null || params.length < 1 || params[0] == null) {
-
+                if (onShotScreenListener != null) {
+                    onShotScreenListener.failedShotScreen();
+                }
                 return null;
             }
 
@@ -170,6 +184,9 @@ public class ShotScreenUtils {
             if (bitmap != null) {
                 return saveImageGallery(context, bitmap);
             }
+            if (onShotScreenListener != null) {
+                onShotScreenListener.failedShotScreen();
+            }
             return null;
         }
 
@@ -180,6 +197,10 @@ public class ShotScreenUtils {
             if (uri != null) {
                 if (onShotScreenListener != null) {
                     onShotScreenListener.finishShotScreen(uri);
+                }
+            }else {
+                if (onShotScreenListener != null) {
+                    onShotScreenListener.failedShotScreen();
                 }
             }
         }
@@ -248,8 +269,14 @@ public class ShotScreenUtils {
             out.flush();
             out.close();
         } catch (FileNotFoundException e) {
+            if (onShotScreenListener != null) {
+                onShotScreenListener.failedShotScreen();
+            }
             e.printStackTrace();
         } catch (IOException e) {
+            if (onShotScreenListener != null) {
+                onShotScreenListener.failedShotScreen();
+            }
             e.printStackTrace();
         }
 

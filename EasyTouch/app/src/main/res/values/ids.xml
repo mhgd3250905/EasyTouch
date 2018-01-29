@@ -147,4 +147,5 @@
     <item name="container_whole_menu_bg" type="id">container_whole_menu_bg</item>
     <item name="iv_shot_screen_preview" type="id">iv_shot_screen_preview</item>
     <item name="tv_item_shot_screen" type="id">tv_item_shot_screen</item>
+    <item name="settings_item_shot" type="id">settings_item_shot</item>
 </resources>
