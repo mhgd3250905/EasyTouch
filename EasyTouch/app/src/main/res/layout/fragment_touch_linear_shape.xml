@@ -34,9 +34,9 @@
             android:padding="10dp">
 
             <android.support.v7.widget.CardView
-                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:background="@color/colorPrimary"
                 app:cardCornerRadius="5dp"
                 app:cardElevation="1.5dp">
@@ -243,13 +243,47 @@
                         android:layout_marginTop="10dp"
                         android:orientation="vertical">
 
-                        <com.skkk.easytouch.View.SettingItemView
-                            android:id="@+id/sivTheme"
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            app:title="主题"
-                            app:value="圆角"></com.skkk.easytouch.View.SettingItemView>
+                            android:text="隐藏式主题"
+                            android:textColor="@color/colorBlackBody"
+                            android:textSize="20sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <RadioGroup
+                                android:id="@id/rg_hide_theme"
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <RadioButton
+                                    android:id="@id/rb_hide_line_1"
+                                    android:layout_weight="1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="线1" />
+
+                                <RadioButton
+                                    android:id="@id/rb_hide_line_2"
+                                    android:layout_weight="1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="线2" />
+
+                                <RadioButton
+                                    android:id="@id/rb_hide_rect"
+                                    android:layout_weight="1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="面" />
+                            </RadioGroup>
+
+                        </LinearLayout>
                     </LinearLayout>
 
                 </LinearLayout>

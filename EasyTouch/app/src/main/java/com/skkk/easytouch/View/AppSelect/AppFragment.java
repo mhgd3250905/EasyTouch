@@ -116,7 +116,7 @@ public class AppFragment extends Fragment {
                 if (touchType == Configs.TouchType.LINEAR.getValue()) {
                     shortCutStr = SpUtils.getString(getContext().getApplicationContext(), Configs.KEY_LINEAR_MENU_TOP_APPS_ + i, "");
                 } else if (touchType == Configs.TouchType.BALL.getValue()) {
-                    shortCutStr = SpUtils.getString(getContext().getApplicationContext(), Configs.KEY_BALL_MENU_TOP_APPS_ + i, "");
+                    shortCutStr = SpUtils.getString(getContext().getApplicationContext(), Configs.KEY_LINEAR_MENU_TOP_APPS_ + i, "");
                 }
             } else if (appType == Configs.AppType.SHORTCUT.getValue()) {
                 if (touchType == Configs.TouchType.LINEAR.getValue()) {
@@ -162,7 +162,7 @@ public class AppFragment extends Fragment {
                     if (touchType == Configs.TouchType.LINEAR.getValue()) {
                         SpUtils.saveString(getContext(), Configs.KEY_LINEAR_MENU_TOP_APPS_ + appIndex, appInfoJson);
                     } else if (touchType == Configs.TouchType.BALL.getValue()) {
-                        SpUtils.saveString(getContext(), Configs.KEY_BALL_MENU_TOP_APPS_ + appIndex, appInfoJson);
+                        SpUtils.saveString(getContext(), Configs.KEY_LINEAR_MENU_TOP_APPS_ + appIndex, appInfoJson);
                     }
                 } else if (appType == Configs.AppType.SHORTCUT.getValue()) {
                     if (touchType == Configs.TouchType.LINEAR.getValue()) {

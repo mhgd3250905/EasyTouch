@@ -303,12 +303,18 @@ public class MainActivity extends AppCompatActivity {
                         if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_BALL)) {
                             stopService(new Intent(MainActivity.this, EasyTouchBallService.class));
                         }
+                        if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_LINEAR)) {
+                            stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
+                        }
                         startService(new Intent(MainActivity.this, EasyTouchLinearService.class));
                         startService(new Intent(MainActivity.this, FloatService.class));
                     }
                 } else {
                     if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_BALL)) {
                         stopService(new Intent(MainActivity.this, EasyTouchBallService.class));
+                    }
+                    if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_LINEAR)) {
+                        stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
                     }
                     startService(new Intent(MainActivity.this, EasyTouchLinearService.class));
                     startService(new Intent(MainActivity.this, FloatService.class));
@@ -333,12 +339,18 @@ public class MainActivity extends AppCompatActivity {
                         if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_LINEAR)) {
                             stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
                         }
+                        if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_BALL)) {
+                            stopService(new Intent(MainActivity.this, EasyTouchBallService.class));
+                        }
                         startService(new Intent(MainActivity.this, EasyTouchBallService.class));
                         startService(new Intent(MainActivity.this, FloatService.class));
                     }
                 } else {
                     if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_LINEAR)) {
                         stopService(new Intent(MainActivity.this, EasyTouchLinearService.class));
+                    }
+                    if (ServiceUtils.isServiceRun(getApplicationContext(), Configs.NAME_SERVICE_TOUCH_BALL)) {
+                        stopService(new Intent(MainActivity.this, EasyTouchBallService.class));
                     }
                     startService(new Intent(MainActivity.this, EasyTouchBallService.class));
                     startService(new Intent(MainActivity.this, FloatService.class));

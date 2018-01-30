@@ -53,6 +53,7 @@ public class Configs {
         VOICE,
         PAY,
         APPS;
+
         public int getValue() {
             return this.ordinal();
         }
@@ -71,7 +72,8 @@ public class Configs {
 
     public enum TouchType {
         LINEAR,
-        BALL;
+        BALL,
+        NONE;
 
         public int getValue() {
             return this.ordinal();
@@ -107,7 +109,7 @@ public class Configs {
     public static final String KEY_TOUCH_UI_BOTTOM_DRAWABLE = "key_touch_ui_bottom_drawable";
     public static final String KEY_TOUCH_UI_VIBRATE_LEVEL_LINEAR = "key_touch_ui_vibrate_level_linear";
     public static final String KEY_TOUCH_UI_COLOR_ALPHA_LINEAR = "key_touch_ui_color_alpha_linear";
-    public static final String KEY_TOUCH_UI_THEME = "key_touch_ui_theme";
+    public static final String KEY_TOUCH_UI_THEME_HIDE = "key_touch_ui_theme_hide";
     public static final String KEY_TOUCH_UI_DIRECTION = "key_touch_ui_direction";
 
     public static final String KEY_TOUCH_UI_RADIUS = "key_touch_ui_radius";
@@ -140,6 +142,10 @@ public class Configs {
 
     public static final int TOUCH_UI_DIRECTION_LEFT = 0;
     public static final int TOUCH_UI_DIRECTION_RIGHT = 1;
+
+    public static final int TOUCH_UI_THEME_HIDE_LINE_1 = 0;
+    public static final int TOUCH_UI_THEME_HIDE_LINE_2 = 1;
+    public static final int TOUCH_UI_THEME_HIDE_RECT = 2;
 
 
     public static final String BROADCAST_SHAPE_COLOR_SHETTING = "broadcast_shape_color_shetting";

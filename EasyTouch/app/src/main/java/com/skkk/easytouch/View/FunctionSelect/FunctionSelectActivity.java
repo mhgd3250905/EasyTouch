@@ -11,7 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.skkk.easytouch.Configs;
+import com.skkk.easytouch.MyApplication;
 import com.skkk.easytouch.R;
+import com.skkk.easytouch.Services.EasyTouchBallService;
+import com.skkk.easytouch.Services.EasyTouchLinearService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,4 +163,15 @@ public class FunctionSelectActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        if (MyApplication.getTouchType()== Configs.TouchType.BALL){
+            stopService(new Intent(FunctionSelectActivity.this, EasyTouchBallService.class));
+            startService(new Intent(FunctionSelectActivity.this, EasyTouchBallService.class));
+        }else if (MyApplication.getTouchType()== Configs.TouchType.LINEAR){
+            stopService(new Intent(FunctionSelectActivity.this, EasyTouchLinearService.class));
+            startService(new Intent(FunctionSelectActivity.this, EasyTouchLinearService.class));
+        }
+        super.onDestroy();
+    }
 }

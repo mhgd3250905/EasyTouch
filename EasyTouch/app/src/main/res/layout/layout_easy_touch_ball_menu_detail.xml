@@ -2,12 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/realTransparentColor">
+    android:visibility="invisible"
+    android:background="@color/colorBlack55">
 
     <RelativeLayout
         android:id="@id/container_ball_menu_detail_voice"
         android:layout_width="220dp"
         android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:layout_alignParentBottom="true"
         android:background="@drawable/shape_react_corners_top_menu_bg"
         android:orientation="vertical"
         android:visibility="gone">
@@ -110,7 +114,7 @@
             android:id="@id/container_ball_menu_detail_voice_back"
             android:layout_width="20dp"
             android:layout_height="200dp"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@id/iv_menu_detail_voice_back"
@@ -128,6 +132,9 @@
         android:id="@id/container_ball_menu_detail_pay"
         android:layout_width="220dp"
         android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:layout_alignParentBottom="true"
         android:background="@drawable/shape_react_corners_top_menu_bg"
         android:visibility="gone">
 
@@ -235,7 +242,7 @@
             android:id="@id/container_ball_menu_detail_pay_back"
             android:layout_width="20dp"
             android:layout_height="200dp"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@id/iv_menu_detail_pay_back"
@@ -253,8 +260,11 @@
         android:id="@id/container_ball_menu_detail_apps"
         android:layout_width="320dp"
         android:layout_height="120dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:layout_alignParentBottom="true"
         android:background="@drawable/shape_react_corners_top_menu_bg"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <GridLayout
             android:id="@id/container_ball_menu_detail_app_content"
@@ -334,7 +344,7 @@
             android:id="@id/container_ball_menu_detail_app_back"
             android:layout_width="20dp"
             android:layout_height="120dp"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@id/iv_menu_detail_app_back"
@@ -350,4 +360,3 @@
 
 
 </RelativeLayout>
-

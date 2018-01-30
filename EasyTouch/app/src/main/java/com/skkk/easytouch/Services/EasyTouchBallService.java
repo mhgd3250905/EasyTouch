@@ -22,6 +22,7 @@ import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
@@ -42,6 +43,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.skkk.easytouch.Bean.AppInfoBean;
 import com.skkk.easytouch.Configs;
+import com.skkk.easytouch.MyApplication;
 import com.skkk.easytouch.PreviewShotScreenActivity;
 import com.skkk.easytouch.R;
 import com.skkk.easytouch.Utils.IntentUtils;
@@ -254,11 +256,6 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
 
         menuDetailView = View.inflate(getApplicationContext(), R.layout.layout_easy_touch_ball_menu_detail, null);
-        if (direction == Configs.Position.LEFT.getValue()) {
-            ObjectAnimator.ofFloat(menuDetailView, "translationX", 0, dp2px(-menuDetailWidthMin)).start();
-        } else if (direction == Configs.Position.RIGHT.getValue()) {
-            ObjectAnimator.ofFloat(menuDetailView, "translationX", 0, dp2px(menuDetailWidthMin)).start();
-        }
 
         containerMenuDetailVoice = (RelativeLayout) menuDetailView.findViewById(R.id.container_ball_menu_detail_voice);
         sbSystemAudio = (SeekBar) menuDetailView.findViewById(R.id.sb_system_audio);
@@ -314,7 +311,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
             @Override
             public void failedShotScreen() {
-
+                Toast.makeText(EasyTouchBallService.this, "发生未知错误，截屏失败。", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -882,7 +879,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         });
         for (int i = 0; i < 10; i++) {
             ImageView ivApp = (ImageView) containerMenuDetailAppsContent.getChildAt(i);
-            String shortCutStr = SpUtils.getString(getApplicationContext(), Configs.KEY_BALL_MENU_TOP_APPS_ + i, "");
+            String shortCutStr = SpUtils.getString(getApplicationContext(), Configs.KEY_LINEAR_MENU_TOP_APPS_ + i, "");
             final int finalIndex = i;
             if (TextUtils.isEmpty(shortCutStr)) {
                 ivApp.setOnClickListener(new View.OnClickListener() {
@@ -1274,64 +1271,64 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 //        mMenuDetailParams.x = mParams.x;
 //        mMenuDetailParams.y = mParams.y - dp2px(80);
 
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) containerMenuDetailVoice.getLayoutParams();
-        int left = 0;
-        int top = 0;
-        if (direction == TOUCH_UI_DIRECTION_LEFT) {
-            left = mParams.x;
-            top = mParams.y - dp2px(menuDetailHeightMax / 2);
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
-                    top = Math.max(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
-                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
-                    top = 0;
-                }
-            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
-                    top = Math.min(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
-                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
-                    top = 0;
-                }
-            }
-        } else if (direction == TOUCH_UI_DIRECTION_RIGHT) {
-            left = mParams.x - dp2px(menuDetailWidthMin);
-            top = mParams.y - dp2px(menuDetailHeightMax / 2);
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
-                    top = Math.max(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
-                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
-                    top = 0;
-                }
-            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
-                    top = Math.min(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
-                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
-                    top = 0;
-                }
-            }
-        }
-        lp.setMargins(left, top, 0, 0);
-        containerMenuDetailVoice.setLayoutParams(lp);
-
+//        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) containerMenuDetailVoice.getLayoutParams();
+//        int left = 0;
+//        int top = 0;
+//        if (direction == TOUCH_UI_DIRECTION_LEFT) {
+//            left = mParams.x;
+//            top = mParams.y - dp2px(menuDetailHeightMax / 2);
+//            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
+//                    top = Math.max(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
+//                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
+//                    top = 0;
+//                }
+//            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
+//                    top = Math.min(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
+//                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
+//                    top = 0;
+//                }
+//            }
+//        } else if (direction == TOUCH_UI_DIRECTION_RIGHT) {
+//            left = mParams.x - dp2px(menuDetailWidthMin);
+//            top = mParams.y - dp2px(menuDetailHeightMax / 2);
+//            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
+//                    top = Math.max(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
+//                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
+//                    top = 0;
+//                }
+//            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
+//                    top = Math.min(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
+//                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
+//                    top = 0;
+//                }
+//            }
+//        }
+//        lp.setMargins(left, top, 0, 0);
+//        containerMenuDetailVoice.setLayoutParams(lp);
+//
 
         windowManager.addView(menuDetailView, mMenuDetailParams);
         menuDetailView.post(new Runnable() {
             @Override
             public void run() {
-
-                if (direction == Configs.Position.LEFT.getValue()) {
-                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailVoiceContent);
-                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailVoiceBack);
-                    ivMenuDetailVoiceBack.setImageResource(R.drawable.ic_arrow_left);
-                    setMenuDetailContentAlignStart(containerMenuDetailVoiceContent, R.id.container_ball_menu_detail_voice_content);
-                } else if (direction == Configs.Position.RIGHT.getValue()) {
-                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailVoiceContent);
-                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailVoiceBack);
-                    ivMenuDetailVoiceBack.setImageResource(R.drawable.ic_arrwo_right);
-                    setMenuDetailContentAlignEnd(containerMenuDetailVoiceContent, R.id.container_ball_menu_detail_voice_content);
-
-                }
-                containerMenuDetailVoice.setAlpha(0f);
+//
+//                if (direction == Configs.Position.LEFT.getValue()) {
+//                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailVoiceContent);
+//                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailVoiceBack);
+//                    ivMenuDetailVoiceBack.setImageResource(R.drawable.ic_arrow_left);
+//                    setMenuDetailContentAlignStart(containerMenuDetailVoiceContent, R.id.container_ball_menu_detail_voice_content);
+//                } else if (direction == Configs.Position.RIGHT.getValue()) {
+//                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailVoiceContent);
+//                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailVoiceBack);
+//                    ivMenuDetailVoiceBack.setImageResource(R.drawable.ic_arrwo_right);
+//                    setMenuDetailContentAlignEnd(containerMenuDetailVoiceContent, R.id.container_ball_menu_detail_voice_content);
+//
+//                }
+//                containerMenuDetailVoice.setAlpha(0f);
 
                 enterMenuDetailAnim(menuDetailView, new AnimatorListenerAdapter() {
                     @Override
@@ -1354,22 +1351,43 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      * @param containerMenuDetail
      */
     private void enterMenuDetailAnim(View containerMenuDetail, AnimatorListenerAdapter animatorListenerAdapter, Configs.MenuDetailType menuDetailType) {
-        ObjectAnimator enterMenuDetailAnim = null;
-        int transX = 0;
+//        ObjectAnimator enterMenuDetailAnim = null;
+//        int transX = 0;
+//        if (menuDetailType.equals(Configs.MenuDetailType.APPS)) {
+//            transX = menuDetailWidthMax;
+//        } else {
+//            transX = menuDetailWidthMin;
+//        }
+//        if (direction == Configs.Position.LEFT.getValue()) {
+//            enterMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(-transX), 0);
+//        } else if (direction == Configs.Position.RIGHT.getValue()) {
+//            enterMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(transX), 0);
+//        }
+//        if (enterMenuDetailAnim != null) {
+//            enterMenuDetailAnim.addListener(animatorListenerAdapter);
+//            enterMenuDetailAnim.start();
+//        }
+        menuDetailView.setVisibility(View.VISIBLE);
+        containerMenuDetailApps.setVisibility(View.GONE);
+        containerMenuDetailPay.setVisibility(View.GONE);
+        containerMenuDetailVoice.setVisibility(View.GONE);
         if (menuDetailType.equals(Configs.MenuDetailType.APPS)) {
-            transX = menuDetailWidthMax;
-        } else {
-            transX = menuDetailWidthMin;
+            containerMenuDetailApps.setVisibility(View.VISIBLE);
+        } else if (menuDetailType.equals(Configs.MenuDetailType.PAY)) {
+            containerMenuDetailPay.setVisibility(View.VISIBLE);
+        } else if (menuDetailType.equals(Configs.MenuDetailType.VOICE)) {
+            containerMenuDetailVoice.setVisibility(View.VISIBLE);
         }
+
         if (direction == Configs.Position.LEFT.getValue()) {
-            enterMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(-transX), 0);
+
         } else if (direction == Configs.Position.RIGHT.getValue()) {
-            enterMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(transX), 0);
+
         }
-        if (enterMenuDetailAnim != null) {
-            enterMenuDetailAnim.addListener(animatorListenerAdapter);
-            enterMenuDetailAnim.start();
-        }
+        Animator circularReveal = ViewAnimationUtils.createCircularReveal(containerMenuDetail, mParams.x, mParams.y+dp2px(touchWidth), 0, screenHeight);
+        circularReveal.setDuration(500);
+        circularReveal.start();
+
     }
 
     /**
@@ -1378,34 +1396,51 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      * @param containerMenuDetail
      */
     private void hideMenuDetailEnterAnim(View containerMenuDetail, int duration, final Configs.OnAnimEndListener onAnimEndListener, boolean isAppsMenu) {
-        int transFromX = 0;
-        int transToX = dp2px(-menuDetailWidthMin);
-        if (direction == Configs.Position.LEFT.getValue()) {
-            transFromX = 0;
-            transToX = dp2px(-menuDetailWidthMin);
-            if (isAppsMenu) {
-                transToX = dp2px(-menuDetailWidthMax);
-            }
-        } else if (direction == Configs.Position.RIGHT.getValue()) {
-            transFromX = 0;
-            transToX = dp2px(menuDetailWidthMin);
-            if (isAppsMenu) {
-                transToX = dp2px(menuDetailWidthMax);
-            }
-        }
+//        int transFromX = 0;
+//        int transToX = dp2px(-menuDetailWidthMin);
+//        if (direction == Configs.Position.LEFT.getValue()) {
+//            transFromX = 0;
+//            transToX = dp2px(-menuDetailWidthMin);
+//            if (isAppsMenu) {
+//                transToX = dp2px(-menuDetailWidthMax);
+//            }
+//        } else if (direction == Configs.Position.RIGHT.getValue()) {
+//            transFromX = 0;
+//            transToX = dp2px(menuDetailWidthMin);
+//            if (isAppsMenu) {
+//                transToX = dp2px(menuDetailWidthMax);
+//            }
+//        }
+//
+//        hideMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", transFromX, transToX);
+//        hideMenuDetailAnim.addListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                super.onAnimationEnd(animation);
+//                if (onAnimEndListener != null) {
+//                    onAnimEndListener.onAnimEnd();
+//                }
+//            }
+//        });
+//        hideMenuDetailAnim.setDuration(duration);
+//        hideMenuDetailAnim.start();
 
-        hideMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", transFromX, transToX);
-        hideMenuDetailAnim.addListener(new AnimatorListenerAdapter() {
+        if (direction == Configs.Position.LEFT.getValue()) {
+
+        } else if (direction == Configs.Position.RIGHT.getValue()) {
+
+        }
+        final Animator circularReveal = ViewAnimationUtils.createCircularReveal(containerMenuDetail, mParams.x, mParams.y+dp2px(touchWidth), screenHeight,0);
+        circularReveal.setDuration(500);
+        circularReveal.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                if (onAnimEndListener != null) {
-                    onAnimEndListener.onAnimEnd();
-                }
+                menuDetailView.setVisibility(View.INVISIBLE);
+                onAnimEndListener.onAnimEnd();
             }
         });
-        hideMenuDetailAnim.setDuration(duration);
-        hideMenuDetailAnim.start();
+        circularReveal.start();
     }
 
     /**
@@ -1413,47 +1448,47 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      */
     private void showMenuDetailPay() {
 
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) containerMenuDetailPay.getLayoutParams();
-
-
-        int left = 0;
-        int top = 0;
-        if (direction == TOUCH_UI_DIRECTION_LEFT) {
-            left = mParams.x;
-            top = mParams.y - dp2px(menuDetailHeightMax / 2);
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
-                    top = Math.max(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
-                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
-                    top = 0;
-                }
-            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
-                    top = Math.min(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
-                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
-                    top = 0;
-                }
-            }
-        } else if (direction == TOUCH_UI_DIRECTION_RIGHT) {
-            left = mParams.x - dp2px(menuDetailWidthMin);
-            top = mParams.y - dp2px(menuDetailHeightMax / 2);
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
-                    top = Math.max(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
-                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
-                    top = 0;
-                }
-            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
-                    top = Math.min(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
-                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
-                    top = 0;
-                }
-            }
-        }
-
-        lp.setMargins(left, top, 0, 0);
-        containerMenuDetailPay.setLayoutParams(lp);
+//        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) containerMenuDetailPay.getLayoutParams();
+//
+//
+//        int left = 0;
+//        int top = 0;
+//        if (direction == TOUCH_UI_DIRECTION_LEFT) {
+//            left = mParams.x;
+//            top = mParams.y - dp2px(menuDetailHeightMax / 2);
+//            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
+//                    top = Math.max(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
+//                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
+//                    top = 0;
+//                }
+//            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
+//                    top = Math.min(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
+//                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
+//                    top = 0;
+//                }
+//            }
+//        } else if (direction == TOUCH_UI_DIRECTION_RIGHT) {
+//            left = mParams.x - dp2px(menuDetailWidthMin);
+//            top = mParams.y - dp2px(menuDetailHeightMax / 2);
+//            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
+//                    top = Math.max(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
+//                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
+//                    top = 0;
+//                }
+//            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMax / 2)) {
+//                    top = Math.min(screenHeight, screenWidth) - dp2px(menuDetailHeightMax);
+//                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailHeightMax) / 2) {
+//                    top = 0;
+//                }
+//            }
+//        }
+//
+//        lp.setMargins(left, top, 0, 0);
+//        containerMenuDetailPay.setLayoutParams(lp);
 
 
         windowManager.addView(menuDetailView, mMenuDetailParams);
@@ -1464,19 +1499,19 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 //                containerMenuDetailVoice.setVisibility(View.GONE);
 //                containerMenuDetailApps.setVisibility(View.GONE);
 //                containerMenuDetailPay.setVisibility(View.VISIBLE);
-                if (direction == Configs.Position.LEFT.getValue()) {
-                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailPayContent);
-                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailPayBack);
-                    ivMenuDetailPayBack.setImageResource(R.drawable.ic_arrow_left);
-                    setMenuDetailContentAlignStart(containerMenuDetailPayBack, R.id.container_ball_menu_detail_pay_content);
-                } else if (direction == Configs.Position.RIGHT.getValue()) {
-                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailPayContent);
-                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailPayBack);
-                    ivMenuDetailPayBack.setImageResource(R.drawable.ic_arrwo_right);
-                    setMenuDetailContentAlignEnd(containerMenuDetailPayBack, R.id.container_ball_menu_detail_pay_content);
-
-                }
-                containerMenuDetailPay.setAlpha(0f);
+//                if (direction == Configs.Position.LEFT.getValue()) {
+//                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailPayContent);
+//                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailPayBack);
+//                    ivMenuDetailPayBack.setImageResource(R.drawable.ic_arrow_left);
+//                    setMenuDetailContentAlignStart(containerMenuDetailPayBack, R.id.container_ball_menu_detail_pay_content);
+//                } else if (direction == Configs.Position.RIGHT.getValue()) {
+//                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailPayContent);
+//                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailPayBack);
+//                    ivMenuDetailPayBack.setImageResource(R.drawable.ic_arrwo_right);
+//                    setMenuDetailContentAlignEnd(containerMenuDetailPayBack, R.id.container_ball_menu_detail_pay_content);
+//
+//                }
+//                containerMenuDetailPay.setAlpha(0f);
 
                 enterMenuDetailAnim(menuDetailView, new AnimatorListenerAdapter() {
                     @Override
@@ -1500,72 +1535,72 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 //        mMenuDetailParams.x = mParams.x;
 //        mMenuDetailParams.y = mParams.y - dp2px(40);
 
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) containerMenuDetailApps.getLayoutParams();
-
-
-        int left = 0;
-        int top = 0;
-        if (direction == TOUCH_UI_DIRECTION_LEFT) {
-            left = mParams.x;
-            top = mParams.y - dp2px(menuDetailHeightMin / 2);
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMin / 2)) {
-                    top = Math.max(screenHeight, screenWidth) - dp2px(menuDetailHeightMin);
-                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailWidthMin) / 2) {
-                    top = 0;
-                }
-            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMin / 2)) {
-                    top = Math.min(screenHeight, screenWidth) - dp2px(menuDetailHeightMin);
-                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailWidthMin) / 2) {
-                    top = 0;
-                }
-            }
-        } else if (direction == TOUCH_UI_DIRECTION_RIGHT) {
-            left = mParams.x - dp2px(menuDetailWidthMax);
-            top = mParams.y - dp2px(menuDetailHeightMin / 2);
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMin / 2)) {
-                    top = Math.max(screenHeight, screenWidth) - dp2px(menuDetailHeightMin);
-                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailWidthMin) / 2) {
-                    top = 0;
-                }
-            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMin / 2)) {
-                    top = Math.min(screenHeight, screenWidth) - dp2px(menuDetailHeightMin);
-                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailWidthMin) / 2) {
-                    top = 0;
-                }
-            }
-        }
-
-        lp.setMargins(left, top, 0, 0);
-        containerMenuDetailApps.setLayoutParams(lp);
+//        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) containerMenuDetailApps.getLayoutParams();
+//
+//
+//        int left = 0;
+//        int top = 0;
+//        if (direction == TOUCH_UI_DIRECTION_LEFT) {
+//            left = mParams.x;
+//            top = mParams.y - dp2px(menuDetailHeightMin / 2);
+//            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMin / 2)) {
+//                    top = Math.max(screenHeight, screenWidth) - dp2px(menuDetailHeightMin);
+//                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailWidthMin) / 2) {
+//                    top = 0;
+//                }
+//            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMin / 2)) {
+//                    top = Math.min(screenHeight, screenWidth) - dp2px(menuDetailHeightMin);
+//                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailWidthMin) / 2) {
+//                    top = 0;
+//                }
+//            }
+//        } else if (direction == TOUCH_UI_DIRECTION_RIGHT) {
+//            left = mParams.x - dp2px(menuDetailWidthMax);
+//            top = mParams.y - dp2px(menuDetailHeightMin / 2);
+//            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+//                if (Math.max(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMin / 2)) {
+//                    top = Math.max(screenHeight, screenWidth) - dp2px(menuDetailHeightMin);
+//                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailWidthMin) / 2) {
+//                    top = 0;
+//                }
+//            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                if (Math.min(screenHeight, screenWidth) - mParams.y < dp2px(menuDetailHeightMin / 2)) {
+//                    top = Math.min(screenHeight, screenWidth) - dp2px(menuDetailHeightMin);
+//                } else if (mParams.y + dp2px(touchWidth) < dp2px(menuDetailWidthMin) / 2) {
+//                    top = 0;
+//                }
+//            }
+//        }
+//
+//        lp.setMargins(left, top, 0, 0);
+//        containerMenuDetailApps.setLayoutParams(lp);
 
 
         windowManager.addView(menuDetailView, mMenuDetailParams);
         containerMenuDetailApps.post(new Runnable() {
             @Override
             public void run() {
-                //显示二级菜单
-//                containerMenuDetailVoice.setVisibility(View.GONE);
-//                containerMenuDetailApps.setVisibility(View.VISIBLE);
-//                containerMenuDetailPay.setVisibility(View.GONE);
-                if (direction == Configs.Position.LEFT.getValue()) {
-//                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsContent);
-//                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsBack);
-                    ivMenuDetailAppBack.setImageResource(R.drawable.ic_arrow_left);
-//                    setMenuDetailContentAlignStart(ivMenuDetailAppBack,R.id.container_ball_menu_detail_app_content);
-
-                } else if (direction == Configs.Position.RIGHT.getValue()) {
-                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsContent);
-                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsBack);
-                    ivMenuDetailAppBack.setImageResource(R.drawable.ic_arrwo_right);
-                    setMenuDetailContentAlignEnd(ivMenuDetailAppBack, R.id.container_ball_menu_detail_app_content);
-
-
-                }
-                containerMenuDetailApps.setAlpha(0f);
+//                //显示二级菜单
+////                containerMenuDetailVoice.setVisibility(View.GONE);
+////                containerMenuDetailApps.setVisibility(View.VISIBLE);
+////                containerMenuDetailPay.setVisibility(View.GONE);
+//                if (direction == Configs.Position.LEFT.getValue()) {
+////                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsContent);
+////                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsBack);
+//                    ivMenuDetailAppBack.setImageResource(R.drawable.ic_arrow_left);
+////                    setMenuDetailContentAlignStart(ivMenuDetailAppBack,R.id.container_ball_menu_detail_app_content);
+//
+//                } else if (direction == Configs.Position.RIGHT.getValue()) {
+//                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsContent);
+//                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsBack);
+//                    ivMenuDetailAppBack.setImageResource(R.drawable.ic_arrwo_right);
+//                    setMenuDetailContentAlignEnd(ivMenuDetailAppBack, R.id.container_ball_menu_detail_app_content);
+//
+//
+//                }
+//                containerMenuDetailApps.setAlpha(0f);
 
                 enterMenuDetailAnim(menuDetailView, new AnimatorListenerAdapter() {
                     @Override
@@ -1902,6 +1937,10 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        //设置悬浮类型
+        MyApplication.setTouchType(Configs.TouchType.BALL);
+
         //如果二级菜单打开
         if (isMenuDetailShow) {
 //            containerMenuDetailApps.post(new Runnable() {
@@ -2074,6 +2113,9 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
         }
         handler.removeCallbacks(pressRunnable);
         handler.removeCallbacks(hideRunnable);
+
+        MyApplication.setTouchType(Configs.TouchType.NONE);
+
         super.onDestroy();
     }
 

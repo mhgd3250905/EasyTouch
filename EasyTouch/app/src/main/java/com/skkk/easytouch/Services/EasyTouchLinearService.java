@@ -26,6 +26,7 @@ import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
@@ -98,6 +99,8 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     private int midColor;
     private int bottomColor;
     private int colorAlpha;
+    private int theme;
+
     private int direction;
     private int directionX;
 
@@ -325,7 +328,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 
             @Override
             public void failedShotScreen() {
-
+                Toast.makeText(EasyTouchLinearService.this, "发生未知错误，截屏失败。", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -349,23 +352,28 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 
         colorAlpha = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA_LINEAR, DEFAULT_ALPHA);
 
+        theme = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_THEME_HIDE,-1);
+
 
         if (direction == TOUCH_UI_DIRECTION_LEFT) {
-            ivTouchMid.setBackgroundResource(R.drawable.bg_linear_left);
+            if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_1) {
+                llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_left_1);
+            }else if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_2) {
+                llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_left_2);
+            } else if (theme == Configs.TOUCH_UI_THEME_HIDE_RECT) {
+                llTouchContainer.setBackgroundResource(R.drawable.bg_linear_rect_left);
+            }
         } else {
-            ivTouchMid.setBackgroundResource(R.drawable.bg_linear_right);
+            if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_1) {
+                llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_left_2);
+            }else if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_2) {
+                llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_right_2);
+            } else if (theme == Configs.TOUCH_UI_THEME_HIDE_RECT) {
+                llTouchContainer.setBackgroundResource(R.drawable.bg_linear_rect_right);
+            }
         }
-//        int theme = SpUtils.getInt(getApplicationContext(), Configs.KEY_TOUCH_UI_THEME, DEFAULT_THEME);
-//
-//        if (theme == Configs.TOUCH_UI_THEME_0) {
-//            topDrawable = R.drawable.shape_react_corners_top;
-//            midDrawable = R.drawable.shape_react_corners_mid;
-//            bottomDrawable = R.drawable.shape_react_corners_bottom;
-//        } else if (theme == Configs.TOUCH_UI_THEME_1) {
-//            topDrawable = R.drawable.shape_react_top;
-//            midDrawable = R.drawable.shape_react_mid;
-//            bottomDrawable = R.drawable.shape_react_bottom;
-//        }
+
+
 
         ViewGroup.LayoutParams containerLp = llTouchContainer.getLayoutParams();
         containerLp.width = dp2px(touchWidth);
@@ -1573,6 +1581,10 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        //设置悬浮类型
+        MyApplication.setTouchType(Configs.TouchType.LINEAR);
+
+
         llTouchContainer.post(new Runnable() {
             @Override
             public void run() {
@@ -1629,35 +1641,35 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      * 显示详细菜单-声音设置
      */
     private void showMenuDetailVoice() {
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) containerMenuDetailVoice.getLayoutParams();
-
-        if (direction == Configs.Position.LEFT.getValue()) {
-            lp.setMargins(mParams.x + dp2px(touchWidth), mParams.y + dp2px((touchHeight - 200) / 2), 0, 0);
-        } else if (direction == Configs.Position.RIGHT.getValue()) {
-            lp.setMargins(screenWidth - dp2px(220) - dp2px(touchWidth), mParams.y + dp2px((touchHeight - 200) / 2), 0, 0);
-        }
-
-        containerMenuDetailVoice.setLayoutParams(lp);
+//        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) containerMenuDetailVoice.getLayoutParams();
+//
+//        if (direction == Configs.Position.LEFT.getValue()) {
+//            lp.setMargins(mParams.x + dp2px(touchWidth), mParams.y + dp2px((touchHeight - 200) / 2), 0, 0);
+//        } else if (direction == Configs.Position.RIGHT.getValue()) {
+//            lp.setMargins(screenWidth - dp2px(220) - dp2px(touchWidth), mParams.y + dp2px((touchHeight - 200) / 2), 0, 0);
+//        }
+//
+//        containerMenuDetailVoice.setLayoutParams(lp);
 
         windowManager.addView(menuDetailView, mMenuDetailParams);
         menuDetailView.post(new Runnable() {
             @Override
             public void run() {
                 //显示二级菜单
-                containerMenuDetailVoice.setVisibility(View.GONE);
-                containerMenuDetailApps.setVisibility(View.GONE);
-                containerMenuDetailPay.setVisibility(View.GONE);
-                if (direction == Configs.Position.LEFT.getValue()) {
-                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailVoiceContent);
-                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailVoiceBack);
-                    ivMenuDetailVoiceBack.setImageResource(R.drawable.ic_arrow_left);
-                } else if (direction == Configs.Position.RIGHT.getValue()) {
-                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailVoiceContent);
-                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailVoiceBack);
-                    ivMenuDetailVoiceBack.setImageResource(R.drawable.ic_arrwo_right);
-
-                }
-                containerMenuDetailVoice.setAlpha(0f);
+//                containerMenuDetailVoice.setVisibility(View.GONE);
+//                containerMenuDetailApps.setVisibility(View.GONE);
+//                containerMenuDetailPay.setVisibility(View.GONE);
+//                if (direction == Configs.Position.LEFT.getValue()) {
+//                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailVoiceContent);
+//                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailVoiceBack);
+//                    ivMenuDetailVoiceBack.setImageResource(R.drawable.ic_arrow_left);
+//                } else if (direction == Configs.Position.RIGHT.getValue()) {
+//                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailVoiceContent);
+//                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailVoiceBack);
+//                    ivMenuDetailVoiceBack.setImageResource(R.drawable.ic_arrwo_right);
+//
+//                }
+//                containerMenuDetailVoice.setAlpha(0f);
                 enterMenuDetailAnim(menuDetailView, new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -1677,15 +1689,15 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      * 显示详细菜单-App设置
      */
     private void showMenuDetailApp() {
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) containerMenuDetailApps.getLayoutParams();
-
-        if (direction == Configs.Position.LEFT.getValue()) {
-            lp.setMargins(mParams.x + dp2px(touchWidth), mParams.y + dp2px((touchHeight - 120) / 2), 0, 0);
-        } else if (direction == Configs.Position.RIGHT.getValue()) {
-            lp.setMargins(screenWidth - dp2px(320) - dp2px(touchWidth), mParams.y + dp2px((touchHeight - 120) / 2), 0, 0);
-        }
-
-        containerMenuDetailApps.setLayoutParams(lp);
+//        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) containerMenuDetailApps.getLayoutParams();
+//
+//        if (direction == Configs.Position.LEFT.getValue()) {
+//            lp.setMargins(mParams.x + dp2px(touchWidth), mParams.y + dp2px((touchHeight - 120) / 2), 0, 0);
+//        } else if (direction == Configs.Position.RIGHT.getValue()) {
+//            lp.setMargins(screenWidth - dp2px(320) - dp2px(touchWidth), mParams.y + dp2px((touchHeight - 120) / 2), 0, 0);
+//        }
+//
+//        containerMenuDetailApps.setLayoutParams(lp);
 
         windowManager.addView(menuDetailView, mMenuDetailParams);
         containerMenuDetailApps.post(new Runnable() {
@@ -1693,18 +1705,18 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             public void run() {
                 //显示二级菜单
 
-                if (direction == Configs.Position.LEFT.getValue()) {
-                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsContent);
-                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsBack);
-                    ivMenuDetailAppBack.setImageResource(R.drawable.ic_arrow_left);
-
-                } else if (direction == Configs.Position.RIGHT.getValue()) {
-                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsContent);
-                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsBack);
-                    ivMenuDetailAppBack.setImageResource(R.drawable.ic_arrwo_right);
-
-                }
-                containerMenuDetailPay.setAlpha(0f);
+//                if (direction == Configs.Position.LEFT.getValue()) {
+//                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsContent);
+//                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsBack);
+//                    ivMenuDetailAppBack.setImageResource(R.drawable.ic_arrow_left);
+//
+//                } else if (direction == Configs.Position.RIGHT.getValue()) {
+//                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailAppsContent);
+//                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailAppsBack);
+//                    ivMenuDetailAppBack.setImageResource(R.drawable.ic_arrwo_right);
+//
+//                }
+//                containerMenuDetailPay.setAlpha(0f);
                 enterMenuDetailAnim(menuDetailView, new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -1725,15 +1737,15 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      * 显示详细菜单-支付设置
      */
     private void showMenuDetailPay() {
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) containerMenuDetailPay.getLayoutParams();
-
-        if (direction == Configs.Position.LEFT.getValue()) {
-            lp.setMargins(mParams.x + dp2px(touchWidth), mParams.y + dp2px((touchHeight - 200) / 2), 0, 0);
-        } else if (direction == Configs.Position.RIGHT.getValue()) {
-            lp.setMargins(screenWidth - dp2px(220) - dp2px(touchWidth), mParams.y + dp2px((touchHeight - 200) / 2), 0, 0);
-        }
-
-        containerMenuDetailPay.setLayoutParams(lp);
+//        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) containerMenuDetailPay.getLayoutParams();
+//
+//        if (direction == Configs.Position.LEFT.getValue()) {
+//            lp.setMargins(mParams.x + dp2px(touchWidth), mParams.y + dp2px((touchHeight - 200) / 2), 0, 0);
+//        } else if (direction == Configs.Position.RIGHT.getValue()) {
+//            lp.setMargins(screenWidth - dp2px(220) - dp2px(touchWidth), mParams.y + dp2px((touchHeight - 200) / 2), 0, 0);
+//        }
+//
+//        containerMenuDetailPay.setLayoutParams(lp);
 
         windowManager.addView(menuDetailView, mMenuDetailParams);
         containerMenuDetailPay.post(new Runnable() {
@@ -1741,17 +1753,17 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             public void run() {
                 //显示二级菜单
 
-                if (direction == Configs.Position.LEFT.getValue()) {
-                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailPayContent);
-                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailPayBack);
-                    ivMenuDetailPayBack.setImageResource(R.drawable.ic_arrow_left);
-                } else if (direction == Configs.Position.RIGHT.getValue()) {
-                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailPayContent);
-                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailPayBack);
-                    ivMenuDetailPayBack.setImageResource(R.drawable.ic_arrwo_right);
-
-                }
-                containerMenuDetailApps.setAlpha(0f);
+//                if (direction == Configs.Position.LEFT.getValue()) {
+//                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailPayContent);
+//                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailPayBack);
+//                    ivMenuDetailPayBack.setImageResource(R.drawable.ic_arrow_left);
+//                } else if (direction == Configs.Position.RIGHT.getValue()) {
+//                    setMenuBallDetailAlignEndLayoutParams(containerMenuDetailPayContent);
+//                    setMenuBallDetailAlignStartLayoutParams(containerMenuDetailPayBack);
+//                    ivMenuDetailPayBack.setImageResource(R.drawable.ic_arrwo_right);
+//
+//                }
+//                containerMenuDetailApps.setAlpha(0f);
                 enterMenuDetailAnim(menuDetailView, new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -1778,22 +1790,44 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      * @param containerMenuDetail
      */
     private void enterMenuDetailAnim(View containerMenuDetail, AnimatorListenerAdapter animatorListenerAdapter, Configs.MenuDetailType menuDetailType) {
-        ObjectAnimator enterMenuDetailAnim = null;
-        int transX = 0;
+//        ObjectAnimator enterMenuDetailAnim = null;
+//        int transX = 0;
+//        if (menuDetailType.equals(Configs.MenuDetailType.APPS)) {
+//            transX = menuDetailWidthMax;
+//        } else {
+//            transX = menuDetailWidthMin;
+//        }
+//        if (direction == Configs.Position.LEFT.getValue()) {
+//            enterMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(-transX), 0);
+//        } else if (direction == Configs.Position.RIGHT.getValue()) {
+//            enterMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(transX), 0);
+//        }
+//        if (enterMenuDetailAnim != null) {
+//            enterMenuDetailAnim.addListener(animatorListenerAdapter);
+//            enterMenuDetailAnim.start();
+//        }
+
+        menuDetailView.setVisibility(View.VISIBLE);
+        containerMenuDetailApps.setVisibility(View.GONE);
+        containerMenuDetailPay.setVisibility(View.GONE);
+        containerMenuDetailVoice.setVisibility(View.GONE);
         if (menuDetailType.equals(Configs.MenuDetailType.APPS)) {
-            transX = menuDetailWidthMax;
-        } else {
-            transX = menuDetailWidthMin;
+            containerMenuDetailApps.setVisibility(View.VISIBLE);
+        } else if (menuDetailType.equals(Configs.MenuDetailType.PAY)) {
+            containerMenuDetailPay.setVisibility(View.VISIBLE);
+        } else if (menuDetailType.equals(Configs.MenuDetailType.VOICE)) {
+            containerMenuDetailVoice.setVisibility(View.VISIBLE);
         }
+
         if (direction == Configs.Position.LEFT.getValue()) {
-            enterMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(-transX), 0);
+
         } else if (direction == Configs.Position.RIGHT.getValue()) {
-            enterMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", dp2px(transX), 0);
+
         }
-        if (enterMenuDetailAnim != null) {
-            enterMenuDetailAnim.addListener(animatorListenerAdapter);
-            enterMenuDetailAnim.start();
-        }
+        Animator circularReveal = ViewAnimationUtils.createCircularReveal(containerMenuDetail, mParams.x, mParams.y+dp2px(touchHeight)/2, 0, screenHeight);
+        circularReveal.setDuration(500);
+        circularReveal.start();
+
     }
 
     /**
@@ -1826,34 +1860,51 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
      * @param containerMenuDetail
      */
     private void hideMenuDetailEnterAnim(View containerMenuDetail, int duration, final Configs.OnAnimEndListener onAnimEndListener, boolean isAppsMenu) {
-        int transFromX = 0;
-        int transToX = dp2px(-menuDetailWidthMin - dp2px(touchWidth));
-        if (direction == Configs.Position.LEFT.getValue()) {
-            transFromX = 0;
-            transToX = dp2px(-menuDetailWidthMin - dp2px(touchWidth));
-            if (isAppsMenu) {
-                transToX = dp2px(-menuDetailWidthMax - dp2px(touchWidth));
-            }
-        } else if (direction == Configs.Position.RIGHT.getValue()) {
-            transFromX = 0;
-            transToX = dp2px(menuDetailWidthMin + dp2px(touchWidth));
-            if (isAppsMenu) {
-                transToX = dp2px(menuDetailWidthMax + dp2px(touchWidth));
-            }
-        }
+//        int transFromX = 0;
+//        int transToX = dp2px(-menuDetailWidthMin - dp2px(touchWidth));
+//        if (direction == Configs.Position.LEFT.getValue()) {
+//            transFromX = 0;
+//            transToX = dp2px(-menuDetailWidthMin - dp2px(touchWidth));
+//            if (isAppsMenu) {
+//                transToX = dp2px(-menuDetailWidthMax - dp2px(touchWidth));
+//            }
+//        } else if (direction == Configs.Position.RIGHT.getValue()) {
+//            transFromX = 0;
+//            transToX = dp2px(menuDetailWidthMin + dp2px(touchWidth));
+//            if (isAppsMenu) {
+//                transToX = dp2px(menuDetailWidthMax + dp2px(touchWidth));
+//            }
+//        }
+//
+//        hideMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", transFromX, transToX);
+//        hideMenuDetailAnim.addListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                super.onAnimationEnd(animation);
+//                if (onAnimEndListener != null) {
+//                    onAnimEndListener.onAnimEnd();
+//                }
+//            }
+//        });
+//        hideMenuDetailAnim.setDuration(duration);
+//        hideMenuDetailAnim.start();
 
-        hideMenuDetailAnim = ObjectAnimator.ofFloat(containerMenuDetail, "translationX", transFromX, transToX);
-        hideMenuDetailAnim.addListener(new AnimatorListenerAdapter() {
+        if (direction == Configs.Position.LEFT.getValue()) {
+
+        } else if (direction == Configs.Position.RIGHT.getValue()) {
+
+        }
+        final Animator circularReveal = ViewAnimationUtils.createCircularReveal(containerMenuDetail, mParams.x, mParams.y+dp2px(touchHeight)/2, screenHeight,0);
+        circularReveal.setDuration(500);
+        circularReveal.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                if (onAnimEndListener != null) {
-                    onAnimEndListener.onAnimEnd();
-                }
+                menuDetailView.setVisibility(View.INVISIBLE);
+                onAnimEndListener.onAnimEnd();
             }
         });
-        hideMenuDetailAnim.setDuration(duration);
-        hideMenuDetailAnim.start();
+        circularReveal.start();
     }
 
     private void switchTouchPos() {
@@ -1867,16 +1918,28 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                 mParams.x = rightBorder;
                 mMenuParams.x = rightBorder;
                 mMenuDetailParams.x = rightBorder;
-                ivTouchMid.setBackgroundResource(R.drawable.bg_linear_right);
 
+                if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_1) {
+                    llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_left_2);
+                }else if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_2) {
+                    llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_right_2);
+                } else if (theme == Configs.TOUCH_UI_THEME_HIDE_RECT) {
+                    llTouchContainer.setBackgroundResource(R.drawable.bg_linear_rect_right);
+                }
             } else if (direction == Configs.Position.RIGHT.getValue()) {
                 direction = Configs.Position.LEFT.getValue();
                 SpUtils.saveInt(getApplicationContext(), Configs.KEY_TOUCH_UI_DIRECTION, direction);
                 mParams.x = 0;
                 mMenuParams.x = 0;
                 mMenuDetailParams.x = 0;
-                ivTouchMid.setBackgroundResource(R.drawable.bg_linear_left);
 
+                if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_1) {
+                    llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_left_1);
+                }else if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_2) {
+                    llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_left_2);
+                } else if (theme == Configs.TOUCH_UI_THEME_HIDE_RECT) {
+                    llTouchContainer.setBackgroundResource(R.drawable.bg_linear_rect_left);
+                }
 
             }
 
@@ -2080,6 +2143,9 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
         if (softInputListenerView != null) {
             softInputListenerView.setOnSoftInputStateChangeListener(null);
         }
+
+        MyApplication.setTouchType(Configs.TouchType.NONE);
+
         super.onDestroy();
     }
 

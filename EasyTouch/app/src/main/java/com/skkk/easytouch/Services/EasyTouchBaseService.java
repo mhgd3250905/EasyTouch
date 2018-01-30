@@ -387,7 +387,11 @@ public class EasyTouchBaseService extends Service {
      */
     protected void shotScreen(){
         if (ShotScreenUtils.checkServiceIsRun()) {
+            Toast.makeText(this, "开始截屏", Toast.LENGTH_SHORT).show();
             ShotScreenUtils.getInstance().startScreenShot();
+        }else {
+            Toast.makeText(this, "请确认截屏权限是否开启", Toast.LENGTH_SHORT).show();
         }
     }
 }
+

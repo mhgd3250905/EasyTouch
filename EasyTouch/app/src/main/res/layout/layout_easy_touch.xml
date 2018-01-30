@@ -6,6 +6,7 @@
     android:orientation="horizontal">
 
     <LinearLayout
+        android:id="@id/container_touch_linear"
         android:layout_width="15dp"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -18,7 +19,6 @@
             android:alpha="50" />
 
         <ImageView
-            android:background="@drawable/bg_linear_left"
             android:id="@id/iv_touch_mid"
             android:layout_width="match_parent"
             android:layout_height="0dp"

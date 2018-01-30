@@ -20,6 +20,8 @@
     <color name="transparentColor">#555555</color>
     <color name="realTransparentColor">#00000000</color>
     <color name="colorBlack55">#55000000</color>
+    <color name="colorBlack88">#88000000</color>
+    <color name="colorWhite88">#88ffffff</color>
 
 
     <color name="colorLightBlue">#3ffffF</color>

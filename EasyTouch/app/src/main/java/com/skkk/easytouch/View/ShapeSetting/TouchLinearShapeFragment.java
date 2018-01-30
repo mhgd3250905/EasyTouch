@@ -3,7 +3,6 @@ package com.skkk.easytouch.View.ShapeSetting;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -13,7 +12,6 @@ import android.os.Vibrator;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 
 import com.skkk.easytouch.Configs;
@@ -29,7 +29,6 @@ import com.skkk.easytouch.Services.EasyTouchLinearService;
 import com.skkk.easytouch.Utils.ServiceUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.ColorPickerDialog;
-import com.skkk.easytouch.View.SettingItemView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -64,8 +63,18 @@ public class TouchLinearShapeFragment extends Fragment {
     AppCompatSeekBar sbVibrate;
     @Bind(R.id.sb_alpha)
     AppCompatSeekBar sbAlpha;
-    @Bind(R.id.sivTheme)
-    SettingItemView sivTheme;
+
+
+    @Bind(R.id.rb_hide_line_1)
+    RadioButton rbHideLine1;
+    @Bind(R.id.rb_hide_line_2)
+    RadioButton rbHideLine2;
+    @Bind(R.id.rb_hide_rect)
+    RadioButton rbHideRect;
+    @Bind(R.id.rg_hide_theme)
+    RadioGroup rgHideTheme;
+    @Bind(R.id.container_touch_linear)
+    LinearLayout containerTouchLinear;
 
 
     // TODO: Rename and change types of parameters
@@ -245,6 +254,9 @@ public class TouchLinearShapeFragment extends Fragment {
         });
 
 
+        /**
+         * 设置透明度
+         */
         sbAlpha.setMax(255);
         sbAlpha.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
@@ -284,7 +296,6 @@ public class TouchLinearShapeFragment extends Fragment {
             }
         });
 
-
         bottomColor = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_BOTTOM_COLOR, Color.BLUE);
         ivTouchBottom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -293,27 +304,28 @@ public class TouchLinearShapeFragment extends Fragment {
             }
         });
 
-        theme = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_THEME, Configs.TOUCH_UI_THEME_0);
-        sivTheme.setSettingItemClickListener(new View.OnClickListener() {
+        //设置隐藏式主题
+        theme = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_THEME_HIDE, -1);
+        if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_1) {
+            rbHideLine1.setChecked(true);
+        } else if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_2) {
+            rbHideLine2.setChecked(true);
+        } else if (theme == Configs.TOUCH_UI_THEME_HIDE_RECT) {
+            rbHideRect.setChecked(true);
+        }
+        rgHideTheme.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                String[] themeTitleArr = new String[]{
-                        "主题1",
-                        "主题2",
-                };
-                builder.setSingleChoiceItems(themeTitleArr, theme, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        theme = which;
-                        SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_THEME, which);
-                        upDateTouchViewShape(0, 0);
-                        dialog.dismiss();
-                    }
-                });
-                builder.setTitle("请选择主题");
-                builder.create().show();
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.rb_hide_line_1) {
+                    theme = Configs.TOUCH_UI_THEME_HIDE_LINE_1;
+                } else if (checkedId == R.id.rb_hide_line_2) {
+                    theme = Configs.TOUCH_UI_THEME_HIDE_LINE_2;
+                } else if (checkedId == R.id.rb_hide_rect) {
+                    theme = Configs.TOUCH_UI_THEME_HIDE_RECT;
+                }
+                SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_THEME_HIDE, theme);
+                sbAlpha.setProgress(0);
+                upDateTouchViewShape(0, 0);
             }
         });
     }
@@ -346,6 +358,14 @@ public class TouchLinearShapeFragment extends Fragment {
             setImageViewDrawableColor(ivTouchTop, topDrawable, topColor, alpha);
             setImageViewDrawableColor(ivTouchMid, midDrawable, midColor, alpha);
             setImageViewDrawableColor(ivTouchBottom, bottomDrawable, bottomColor, alpha);
+
+            if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_1) {
+                containerTouchLinear.setBackgroundResource(R.drawable.bg_linear_line_left_1);
+            }else if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_2) {
+                containerTouchLinear.setBackgroundResource(R.drawable.bg_linear_line_left_2);
+            } else if (theme == Configs.TOUCH_UI_THEME_HIDE_RECT) {
+                containerTouchLinear.setBackgroundResource(R.drawable.bg_linear_rect_left);
+            }
         }
     }
 
@@ -410,7 +430,7 @@ public class TouchLinearShapeFragment extends Fragment {
                     topColor = color;
                     ivTouchTop.setImageDrawable(drawable);
                     SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_TOP_COLOR, color);
-                    upDateTouchViewShape(0,0);
+                    upDateTouchViewShape(0, 0);
 
                 }
             });
@@ -424,7 +444,7 @@ public class TouchLinearShapeFragment extends Fragment {
                     midColor = color;
                     ivTouchMid.setImageDrawable(drawable);
                     SpUtils.saveInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_MID_COLOR, color);
-                    upDateTouchViewShape(0,0);
+                    upDateTouchViewShape(0, 0);
 
                 }
             });
@@ -438,7 +458,7 @@ public class TouchLinearShapeFragment extends Fragment {
                     ivTouchBottom.setImageDrawable(drawable);
                     bottomColor = color;
                     SpUtils.saveInt(getContext().getApplicationContext(), KEY_TOUCH_UI_BOTTOM_COLOR, color);
-                    upDateTouchViewShape(0,0);
+                    upDateTouchViewShape(0, 0);
 
                 }
             });

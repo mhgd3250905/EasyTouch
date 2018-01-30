@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.os.AsyncTaskCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -196,6 +197,7 @@ public class ShotScreenUtils {
             //预览图片
             if (uri != null) {
                 if (onShotScreenListener != null) {
+                    Toast.makeText(context, "截屏完成。", Toast.LENGTH_SHORT).show();
                     onShotScreenListener.finishShotScreen(uri);
                 }
             }else {
@@ -345,3 +347,4 @@ public class ShotScreenUtils {
         stopVirtual();
     }
 }
+

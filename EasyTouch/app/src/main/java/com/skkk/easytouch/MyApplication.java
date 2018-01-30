@@ -14,6 +14,7 @@ import android.app.Application;
 */
 public class MyApplication extends Application {
     private static boolean isSettingShape = false;//外观设置是否打开
+    private static Configs.TouchType touchType= Configs.TouchType.NONE;
 
     @Override
     public void onCreate() {
@@ -26,5 +27,13 @@ public class MyApplication extends Application {
 
     public static void setIsSettingShape(boolean isSettingShape) {
         MyApplication.isSettingShape = isSettingShape;
+    }
+
+    public static Configs.TouchType getTouchType() {
+        return touchType;
+    }
+
+    public static void setTouchType(Configs.TouchType touchType) {
+        MyApplication.touchType = touchType;
     }
 }
