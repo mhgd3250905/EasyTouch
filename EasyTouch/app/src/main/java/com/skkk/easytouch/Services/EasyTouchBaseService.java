@@ -1,12 +1,10 @@
 package com.skkk.easytouch.Services;
 
 import android.accessibilityservice.AccessibilityService;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -21,22 +19,13 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.GridLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.skkk.easytouch.Bean.AppInfoBean;
 import com.skkk.easytouch.Configs;
 import com.skkk.easytouch.Receiver.AdminManageReceiver;
-import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.ShotScreenUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.AppSelect.AppSelectActivity;
@@ -67,11 +56,6 @@ public class EasyTouchBaseService extends Service {
     protected int vibrateLevel = Configs.DEFAULT_VIBRATE_LEVEL;//震动等级
     protected int direction = Configs.TOUCH_UI_DIRECTION_LEFT;//左右位置
 
-    private WindowManager.LayoutParams mWholeMenuParams;
-    private View wholeMenuView;
-    private RelativeLayout containerWholeMenu;
-    private GridLayout containerWholeMenuApps;
-    private RelativeLayout containerWholeMenuBg;
 
     protected int menuDetailWidthMax = 320;
     protected int menuDetailWidthMin = 220;
@@ -132,20 +116,8 @@ public class EasyTouchBaseService extends Service {
     }
 
 
-
     private void initUI() {
-        //设置二级菜单的LP
-        mWholeMenuParams = new WindowManager.LayoutParams();
-        mWholeMenuParams.packageName = getPackageName();
-        mWholeMenuParams.width = 0;
-        mWholeMenuParams.height = WindowManager.LayoutParams.MATCH_PARENT;
-        mWholeMenuParams.flags = WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
-                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-        mWholeMenuParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
-        mWholeMenuParams.format = PixelFormat.RGBA_8888;
-        mWholeMenuParams.gravity = Gravity.LEFT | Gravity.TOP;
-
+        //设置输入法监听的悬浮view
         softInputLp = new WindowManager.LayoutParams();
         softInputLp.width = 0;
         softInputLp.x = 0;
@@ -159,114 +131,25 @@ public class EasyTouchBaseService extends Service {
         softInputListenerView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         windowManager.addView(softInputListenerView, softInputLp);
 
-//        wholeMenuView = View.inflate(getApplicationContext(), R.layout.layout_whole_menu, null);
-//        containerWholeMenu = (RelativeLayout) wholeMenuView.findViewById(R.id.container_whole_menu);
-//        containerWholeMenuBg = (RelativeLayout) wholeMenuView.findViewById(R.id.container_whole_menu_bg);
-//        containerWholeMenuApps = (GridLayout) wholeMenuView.findViewById(R.id.container_whole_menu_apps);
-
-    }
-
-
-    /**
-     * 初始化菜单UI
-     */
-    private void initWholeMenuUI() {
-//        WallpaperManager wallpaperManager=WallpaperManager.getInstance(getApplicationContext());
-//        Drawable drawable = wallpaperManager.getDrawable();
-//        containerWholeMenuBg.setBackground(drawable);
+        //设置剪贴板监听
+//        initClipBoard();
     }
 
     /**
-     * 初始化菜单事件
+     * 设置剪贴板监听
      */
-    private void initWholeMenuEvent() {
-        wholeMenuView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                windowManager.removeView(wholeMenuView);
-            }
-        });
+    private void initClipBoard() {
+        // 获取系统剪贴板
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 
+        // 获取剪贴板的剪贴数据集
+        ClipData clipData = clipboard.getPrimaryClip();
 
-        for (int i = 0; i < 10; i++) {
-            ImageView ivApp = (ImageView) containerWholeMenuApps.getChildAt(i);
-            String shortCutStr = SpUtils.getString(getApplicationContext(), Configs.KEY_BALL_MENU_TOP_APPS_ + i, "");
-            final int finalIndex = i;
-            if (TextUtils.isEmpty(shortCutStr)) {
-                ivApp.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue(), Configs.TouchType.BALL);
-                    }
-                });
-
-            } else {
-                final AppInfoBean appInfo = new Gson().fromJson(shortCutStr, AppInfoBean.class);
-                if (appInfo != null) {
-                    ivApp.setImageDrawable(PackageUtils.getInstance(getApplicationContext()).getShortCutIcon(appInfo));
-                    ivApp.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            PackageUtils.getInstance(getApplicationContext()).startAppActivity(appInfo);
-                        }
-                    });
-                    ivApp.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            startSelectAppActivity(finalIndex, Configs.AppType.APP.getValue(), Configs.TouchType.BALL);
-                            return true;
-                        }
-                    });
-                }
-            }
+        if (clipData != null && clipData.getItemCount() > 0) {
+            // 从数据集中获取（粘贴）第一条文本数据
+            CharSequence text = clipData.getItemAt(0).getText();
+            System.out.println("text: " + text);
         }
-    }
-
-
-    /**
-     * 显示全部菜单
-     */
-    protected void showWholeMenu() {
-        windowManager.addView(wholeMenuView, mWholeMenuParams);
-        containerWholeMenu.post(new Runnable() {
-            @Override
-            public void run() {
-                ObjectAnimator enterMenuDetailAnim = null;
-                if (direction == Configs.Position.LEFT.getValue()) {
-                    enterMenuDetailAnim = ObjectAnimator.ofFloat(containerWholeMenu, "translationX", dp2px(-wholeMenuWidth), 0);
-                } else if (direction == Configs.Position.RIGHT.getValue()) {
-                    enterMenuDetailAnim = ObjectAnimator.ofFloat(containerWholeMenu, "translationX", dp2px(wholeMenuWidth), 0);
-                }
-                if (enterMenuDetailAnim != null) {
-                    enterMenuDetailAnim.start();
-                }
-            }
-        });
-//        initWholeMenuBg();
-    }
-
-    /**
-     * 设置全部菜单的背景
-     */
-    private void initWholeMenuBg() {
-        ValueAnimator animBgAlpha = ValueAnimator.ofFloat(0f, 1f);
-        animBgAlpha.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float alpha = (float) animation.getAnimatedValue();
-                Log.i(TAG, "onAnimationUpdate:" + alpha);
-                containerWholeMenuBg.setAlpha(alpha);
-            }
-        });
-        animBgAlpha.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                containerWholeMenuBg.setAlpha(1f);
-            }
-        });
-        animBgAlpha.setDuration(800);
-        animBgAlpha.start();
     }
 
     @Override
@@ -385,11 +268,11 @@ public class EasyTouchBaseService extends Service {
     /**
      * 截屏
      */
-    protected void shotScreen(){
+    protected void shotScreen() {
         if (ShotScreenUtils.checkServiceIsRun()) {
             Toast.makeText(this, "开始截屏", Toast.LENGTH_SHORT).show();
             ShotScreenUtils.getInstance().startScreenShot();
-        }else {
+        } else {
             Toast.makeText(this, "请确认截屏权限是否开启", Toast.LENGTH_SHORT).show();
         }
     }

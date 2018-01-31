@@ -365,15 +365,13 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
             }
         } else {
             if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_1) {
-                llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_left_2);
+                llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_right_1);
             }else if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_2) {
                 llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_right_2);
             } else if (theme == Configs.TOUCH_UI_THEME_HIDE_RECT) {
                 llTouchContainer.setBackgroundResource(R.drawable.bg_linear_rect_right);
             }
         }
-
-
 
         ViewGroup.LayoutParams containerLp = llTouchContainer.getLayoutParams();
         containerLp.width = dp2px(touchWidth);
@@ -1920,7 +1918,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
                 mMenuDetailParams.x = rightBorder;
 
                 if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_1) {
-                    llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_left_2);
+                    llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_right_1);
                 }else if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_2) {
                     llTouchContainer.setBackgroundResource(R.drawable.bg_linear_line_right_2);
                 } else if (theme == Configs.TOUCH_UI_THEME_HIDE_RECT) {

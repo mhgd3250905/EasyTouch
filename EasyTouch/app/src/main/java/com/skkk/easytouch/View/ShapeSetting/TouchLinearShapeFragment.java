@@ -173,7 +173,7 @@ public class TouchLinearShapeFragment extends Fragment {
         sbWidth.setProgress((setWidth - ITEM_WIDTH_MIN) / ITEM_WIDTH_STEP);
 
         setVibrate = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_VIBRATE_LEVEL_LINEAR, Configs.DEFAULT_VIBRATE_LEVEL);
-        sbVibrate.setProgress((setHeight - VIBRATE_MIN) / VIBRATE_STEP);
+        sbVibrate.setProgress((setVibrate - VIBRATE_MIN) / VIBRATE_STEP);
 
         alpha = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA_LINEAR, Configs.DEFAULT_ALPHA);
         sbAlpha.setProgress(alpha);
