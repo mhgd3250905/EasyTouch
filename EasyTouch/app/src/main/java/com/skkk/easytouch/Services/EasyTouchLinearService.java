@@ -153,6 +153,7 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
     private int lastAnimX;
     private int lastAnimY;
     private LocalBroadcastManager localBroadcastManager;
+    private boolean touchFreeze;//固定位置
 
 
     @Override
@@ -1564,6 +1565,9 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 
 
     private void refreshMovePlace(MotionEvent e2) {
+        if (touchFreeze){
+            return;
+        }
         dx = e2.getRawX() - lastX;
         dy = e2.getRawY() - lastY;
         mParams.y += dy;
@@ -1579,6 +1583,8 @@ public class EasyTouchLinearService extends EasyTouchBaseService implements View
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        //设置固定位置
+        touchFreeze=SpUtils.getBoolean(getApplicationContext(),Configs.KEY_TOUCH_UI_POS_LINEAR_FREEZE,false);
         //设置悬浮类型
         MyApplication.setTouchType(Configs.TouchType.LINEAR);
 

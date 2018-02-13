@@ -111,6 +111,9 @@ public class Configs {
     public static final String KEY_TOUCH_UI_COLOR_ALPHA_LINEAR = "key_touch_ui_color_alpha_linear";
     public static final String KEY_TOUCH_UI_THEME_HIDE = "key_touch_ui_theme_hide";
     public static final String KEY_TOUCH_UI_DIRECTION = "key_touch_ui_direction";
+    public static final String KEY_TOUCH_UI_POS_LINEAR_FREEZE = "key_touch_ui_pos_linear_freeze";
+    public static final String KEY_TOUCH_UI_POS_BALL_FREEZE = "key_touch_ui_pos_ball_freeze";
+
 
     public static final String KEY_TOUCH_UI_RADIUS = "key_touch_ui_radius";
     public static final String KEY_TOUCH_UI_VIBRATE_LEVEL_BALL = "key_touch_ui_vibrate_level_ball";

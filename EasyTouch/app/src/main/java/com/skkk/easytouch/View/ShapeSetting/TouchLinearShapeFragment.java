@@ -3,8 +3,10 @@ package com.skkk.easytouch.View.ShapeSetting;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -22,10 +24,15 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.skkk.easytouch.Configs;
+import com.skkk.easytouch.MainActivity;
 import com.skkk.easytouch.R;
+import com.skkk.easytouch.Services.EasyTouchBallService;
 import com.skkk.easytouch.Services.EasyTouchLinearService;
+import com.skkk.easytouch.Services.FloatService;
+import com.skkk.easytouch.Utils.DialogUtils;
 import com.skkk.easytouch.Utils.ServiceUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.ColorPickerDialog;
@@ -75,6 +82,8 @@ public class TouchLinearShapeFragment extends Fragment {
     RadioGroup rgHideTheme;
     @Bind(R.id.container_touch_linear)
     LinearLayout containerTouchLinear;
+    @Bind(R.id.tv_ball_pos_custom)
+    TextView tvBallPosCustom;
 
 
     // TODO: Rename and change types of parameters
@@ -102,6 +111,7 @@ public class TouchLinearShapeFragment extends Fragment {
     private int bottomDrawable;
 
     private BroadcastReceiver receiver;
+    private boolean linearPosFreeze;//悬浮条是否固定能够
 
     public TouchLinearShapeFragment() {
         // Required empty public constructor
@@ -177,6 +187,18 @@ public class TouchLinearShapeFragment extends Fragment {
 
         alpha = SpUtils.getInt(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_COLOR_ALPHA_LINEAR, Configs.DEFAULT_ALPHA);
         sbAlpha.setProgress(alpha);
+
+        if (ServiceUtils.isServiceRun(getContext().getApplicationContext(), Configs.NAME_SERVICE_TOUCH_LINEAR)) {
+            tvBallPosCustom.setText("当前位置未固定，点击固定");
+            linearPosFreeze = SpUtils.getBoolean(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_POS_LINEAR_FREEZE, false);
+            if (linearPosFreeze){//已经固定
+                tvBallPosCustom.setText("当前位置已固定，点击取消固定");
+            }else {//未固定
+                tvBallPosCustom.setText("当前位置未固定，点击固定");
+            }
+        }else{
+            tvBallPosCustom.setText("点击说明");
+        }
     }
 
     /**
@@ -328,6 +350,64 @@ public class TouchLinearShapeFragment extends Fragment {
                 upDateTouchViewShape(0, 0);
             }
         });
+
+        //设置是否固定位置：首先判断是否存在可以调整位置的悬浮窗，如果不存在就打开
+        tvBallPosCustom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //是否打开了悬浮条
+                if (ServiceUtils.isServiceRun(getContext().getApplicationContext(), Configs.NAME_SERVICE_TOUCH_LINEAR)) {
+                    if (linearPosFreeze){
+                        DialogUtils.showDialog(getContext(), R.drawable.ic_notifications, "提醒",
+                                "点击确认取消固定悬浮条位置，悬浮条将可以上下拖动。",
+                                "确认", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        SpUtils.saveBoolean(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_POS_LINEAR_FREEZE, false);
+                                        restartService();
+                                    }
+                                }, "取消", null)
+                                .show();
+                    }else {
+                        DialogUtils.showDialog(getContext(), R.drawable.ic_notifications, "提醒",
+                                "点击确认固定悬浮条位置，悬浮条将不可上下拖动。",
+                                "确认", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        SpUtils.saveBoolean(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_POS_LINEAR_FREEZE, true);
+                                        restartService();
+                                    }
+                                }, "取消", null)
+                                .show();
+                    }
+                }else {//未打开悬浮条，那么打开
+                    DialogUtils.showDialog(getContext(), R.drawable.ic_notifications, "提醒",
+                            "检测到当前未开启悬浮条，点击确认将打开悬浮条，然后点击固定位置进行固定。",
+                            "确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    tvBallPosCustom.setText("点击确认");
+                                    if (ServiceUtils.isServiceRun(getContext().getApplicationContext(), Configs.NAME_SERVICE_TOUCH_BALL)) {
+                                        getContext().stopService(new Intent(getContext(), EasyTouchBallService.class));
+                                    }
+
+                                    getContext().startService(new Intent(getContext(), EasyTouchLinearService.class));
+                                    getContext().startService(new Intent(getContext(), FloatService.class));
+                                    containerTouchLinear.setVisibility(View.GONE);
+                                }
+                            },"取消",null)
+                    .show();
+                }
+            }
+        });
+    }
+
+    /**
+     * 更新UI 重新打开悬浮球服务
+     */
+    private void restartService() {
+        initUI();
+        getContext().startService(new Intent(getContext(),EasyTouchLinearService.class));
     }
 
     /**
@@ -361,7 +441,7 @@ public class TouchLinearShapeFragment extends Fragment {
 
             if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_1) {
                 containerTouchLinear.setBackgroundResource(R.drawable.bg_linear_line_left_1);
-            }else if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_2) {
+            } else if (theme == Configs.TOUCH_UI_THEME_HIDE_LINE_2) {
                 containerTouchLinear.setBackgroundResource(R.drawable.bg_linear_line_left_2);
             } else if (theme == Configs.TOUCH_UI_THEME_HIDE_RECT) {
                 containerTouchLinear.setBackgroundResource(R.drawable.bg_linear_rect_left);

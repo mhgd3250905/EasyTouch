@@ -146,6 +146,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private boolean isScaleAnim = false;
     private boolean hasTrunPos = false;
     private boolean ishideWhole = false;//是否进入全部隐藏状态
+    private boolean touchFreeze;//是否固定位置
 
 
     @Override
@@ -510,7 +511,7 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
     private void initMenuBalls() {
         //先清除已经存在的Ball
         if (menuContainer.getChildCount() > 1) {
-            for (int i = menuContainer.getChildCount(); i > 0; i--) {
+            for (int i = menuContainer.getChildCount()-1; i >= 0; i--) {
                 menuContainer.removeView(menuContainer.getChildAt(i));
             }
         }
@@ -1914,6 +1915,10 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
      * @param e2
      */
     private void refreshMovePlace(MotionEvent e2) {
+        if (touchFreeze){
+            return;
+        }
+
         dy = e2.getRawY() - lastY;
         dx = e2.getRawX() - lastX;
         mParams.y += dy;
@@ -1937,6 +1942,8 @@ public class EasyTouchBallService extends EasyTouchBaseService implements View.O
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        //设置是否固定位置
+        touchFreeze=SpUtils.getBoolean(getApplicationContext(),Configs.KEY_TOUCH_UI_POS_BALL_FREEZE,false);
 
         //设置悬浮类型
         MyApplication.setTouchType(Configs.TouchType.BALL);
