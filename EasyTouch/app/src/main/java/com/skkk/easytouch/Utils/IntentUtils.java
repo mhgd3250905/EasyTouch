@@ -14,6 +14,7 @@ import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 import com.skkk.easytouch.Configs;
+import com.skkk.easytouch.MainActivity;
 
 import java.io.File;
 
@@ -28,6 +29,9 @@ import java.io.File;
 * 时    间：2017/11/13$ 22:25$.
 */
 public class IntentUtils {
+    //酷市场 -- 酷安网
+    public static final String PACKAGE_COOL_MARKET = "com.coolapk.market";
+
 
     /**
      * 跳转到微信
@@ -191,5 +195,24 @@ public class IntentUtils {
         intent.setType("image/*");
         // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_GALLERY
         context.startActivityForResult(intent, Configs.RESULT_PHOTO_REQUEST_GALLERY);
+    }
+
+    /**
+     * 跳转到应用市场
+     */
+    public static void jump2AppMarket(Activity activity) {
+        if (PackageUtils.checkAppExist(activity,PACKAGE_COOL_MARKET)) {
+            //跳转到应用市场
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("market://details?id=" + activity.getPackageName()));
+            intent.setPackage(PACKAGE_COOL_MARKET);
+            activity.startActivity(intent);
+        }else {
+            //https://www.coolapk.com/apk/com.skkk.easytouch
+            String coolMarketUrl="https://www.coolapk.com/apk/com.skkk.easytouch";
+            Uri uri = Uri.parse(coolMarketUrl);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            activity.startActivity(intent);
+        }
     }
 }

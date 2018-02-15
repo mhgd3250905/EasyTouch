@@ -96,6 +96,8 @@ public class Configs {
         void onAnimEnd();
     }
 
+    public static final String KEY_VERSION_UPDATE="key_version_update";//记录是否有版本更新
+
     public static final String NAME_SERVICE_TOUCH_BALL = "com.skkk.easytouch.Services.EasyTouchBallService";
     public static final String NAME_SERVICE_TOUCH_LINEAR = "com.skkk.easytouch.Services.EasyTouchLinearService";
 

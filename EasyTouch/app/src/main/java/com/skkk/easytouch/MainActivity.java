@@ -29,6 +29,7 @@ import com.skkk.easytouch.Services.EasyTouchBallService;
 import com.skkk.easytouch.Services.EasyTouchLinearService;
 import com.skkk.easytouch.Services.FloatService;
 import com.skkk.easytouch.Utils.DialogUtils;
+import com.skkk.easytouch.Utils.IntentUtils;
 import com.skkk.easytouch.Utils.PermissionsUtils;
 import com.skkk.easytouch.Utils.ServiceUtils;
 import com.skkk.easytouch.Utils.ShotScreenUtils;
@@ -418,8 +419,48 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         initUI();
         initEvent();
-
+        cheakVersionUpdate();
     }
+
+    /**
+     * 检测是否有版本更新，如果有版本更新那么就需要弹出版本更新内容
+     */
+    private void cheakVersionUpdate() {
+        int versionCode = 0;
+        try {
+            //获取软件版本号，对应AndroidManifest.xml下android:versionCode
+            versionCode = getPackageManager().
+                    getPackageInfo(getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        String verName = "";
+        try {
+            verName = getPackageManager().
+                    getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        int lastVersionCode=SpUtils.getInt(getApplicationContext(),Configs.KEY_VERSION_UPDATE,-1);
+        if (lastVersionCode==-1||lastVersionCode<versionCode){//需要弹出更新提示框
+            DialogUtils.showDialog(this, R.drawable.ic_notifications,
+                    "最新版本：" + verName,
+                    getString(R.string.version_update_content),
+                    "给个好评", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            IntentUtils.jump2AppMarket(MainActivity.this);
+                        }
+                    },
+            "算了",null)
+            .show();
+        }
+        SpUtils.saveInt(getApplicationContext(),Configs.KEY_VERSION_UPDATE,versionCode);
+    }
+
+
 
 
     /**

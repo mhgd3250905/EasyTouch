@@ -186,5 +186,23 @@ public class PackageUtils {
         return resId;
     }
 
+    /**
+     * 判断是否存在某一个应用
+     * @param context 上下文
+     * @param pkgName 包名
+     * @return 是否存在
+     */
+    public static boolean checkAppExist(Context context,String pkgName) {
+        PackageManager packageManager = context.getApplicationContext().getPackageManager();
+        List<PackageInfo> packageInfoList = packageManager.getInstalledPackages(0);
+        for (PackageInfo packageInfo : packageInfoList) {
+            if (packageInfo.packageName.equals(pkgName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
 }

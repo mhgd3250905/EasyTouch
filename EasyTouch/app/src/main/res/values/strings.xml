@@ -8,4 +8,5 @@
     <string name="function_menu_ball_title">菜单%d</string>
     <string name="function_item_message">点击设置</string>
     <string name="function_menu_number_value">当前菜单元素%d个</string>
+    <string name="version_update_content">版本更新内容</string>
 </resources>
