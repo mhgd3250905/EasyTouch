@@ -154,4 +154,6 @@
     <item name="rb_hide_rect" type="id">rb_hide_rect</item>
     <item name="container_touch_linear" type="id">container_touch_linear</item>
     <item name="tv_ball_pos_custom" type="id">tv_ball_pos_custom</item>
+    <item name="swicth_settings" type="id">swicth_settings</item>
+    <item name="ssiv_pos_freeze" type="id">ssiv_pos_freeze</item>
 </resources>

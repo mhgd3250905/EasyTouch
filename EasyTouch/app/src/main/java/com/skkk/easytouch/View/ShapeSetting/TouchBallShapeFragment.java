@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -28,6 +29,7 @@ import com.skkk.easytouch.Utils.PackageUtils;
 import com.skkk.easytouch.Utils.ServiceUtils;
 import com.skkk.easytouch.Utils.SpUtils;
 import com.skkk.easytouch.View.BallDrawableSelect.BallDrawableSelectActivity;
+import com.skkk.easytouch.View.SettingSwitchItemView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -60,6 +62,8 @@ public class TouchBallShapeFragment extends Fragment {
     TextView tvBallDrawable;
     @Bind(R.id.tv_ball_pos_custom)
     TextView tvBallPosCustom;
+    @Bind(R.id.ssiv_pos_freeze)
+    SettingSwitchItemView ssivPosFreeze;
 
 
     // TODO: Rename and change types of parameters
@@ -158,16 +162,30 @@ public class TouchBallShapeFragment extends Fragment {
         drawableName = SpUtils.getString(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_BACKGROUND_BALL, "ball_0");
         upDateTouchViewShape(radius);
 
+//        if (ServiceUtils.isServiceRun(getContext().getApplicationContext(), Configs.NAME_SERVICE_TOUCH_BALL)) {
+//            tvBallPosCustom.setText("当前位置未固定，点击固定");
+//            linearPosFreeze = SpUtils.getBoolean(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_POS_BALL_FREEZE, false);
+//            if (linearPosFreeze){//已经固定
+//                tvBallPosCustom.setText("当前位置已固定，点击取消固定");
+//            }else {//未固定
+//                tvBallPosCustom.setText("当前位置未固定，点击固定");
+//            }
+//        }else{
+//            tvBallPosCustom.setText("点击说明");
+//        }
+
         if (ServiceUtils.isServiceRun(getContext().getApplicationContext(), Configs.NAME_SERVICE_TOUCH_BALL)) {
-            tvBallPosCustom.setText("当前位置未固定，点击固定");
+            ssivPosFreeze.setTitle("当前位置未固定，点击固定");
             linearPosFreeze = SpUtils.getBoolean(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_POS_BALL_FREEZE, false);
+            ssivPosFreeze.setSwichChecked(linearPosFreeze);
+
             if (linearPosFreeze){//已经固定
-                tvBallPosCustom.setText("当前位置已固定，点击取消固定");
+                ssivPosFreeze.setTitle("当前位置已固定，点击取消固定");
             }else {//未固定
-                tvBallPosCustom.setText("当前位置未固定，点击固定");
+                ssivPosFreeze.setTitle("当前位置未固定，点击固定");
             }
         }else{
-            tvBallPosCustom.setText("点击说明");
+            ssivPosFreeze.setTitle("当前未开启悬浮球");
         }
     }
 
@@ -255,18 +273,18 @@ public class TouchBallShapeFragment extends Fragment {
             }
         });
 
-        //设置是否固定位置：首先判断是否存在可以调整位置的悬浮窗，如果不存在就打开
-        tvBallPosCustom.setOnClickListener(new View.OnClickListener() {
+        ssivPosFreeze.setOnSwitchCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                //是否打开了悬浮条
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //是否打开了悬浮球
                 if (ServiceUtils.isServiceRun(getContext().getApplicationContext(), Configs.NAME_SERVICE_TOUCH_BALL)) {
-                    if (linearPosFreeze){
+                    if (isChecked){//已经位置固定
                         DialogUtils.showDialog(getContext(), R.drawable.ic_notifications, "提醒",
                                 "点击确认取消固定悬浮条位置，悬浮条将可以上下拖动。",
                                 "确认", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        linearPosFreeze=false;
                                         SpUtils.saveBoolean(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_POS_BALL_FREEZE, false);
                                         restartService();
                                     }
@@ -278,6 +296,7 @@ public class TouchBallShapeFragment extends Fragment {
                                 "确认", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        linearPosFreeze=true;
                                         SpUtils.saveBoolean(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_POS_BALL_FREEZE, true);
                                         restartService();
                                     }
@@ -304,6 +323,56 @@ public class TouchBallShapeFragment extends Fragment {
                 }
             }
         });
+
+//        //设置是否固定位置：首先判断是否存在可以调整位置的悬浮窗，如果不存在就打开
+//        tvBallPosCustom.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //是否打开了悬浮条
+//                if (ServiceUtils.isServiceRun(getContext().getApplicationContext(), Configs.NAME_SERVICE_TOUCH_BALL)) {
+//                    if (linearPosFreeze){
+//                        DialogUtils.showDialog(getContext(), R.drawable.ic_notifications, "提醒",
+//                                "点击确认取消固定悬浮条位置，悬浮条将可以上下拖动。",
+//                                "确认", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        SpUtils.saveBoolean(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_POS_BALL_FREEZE, false);
+//                                        restartService();
+//                                    }
+//                                }, "取消", null)
+//                                .show();
+//                    }else {
+//                        DialogUtils.showDialog(getContext(), R.drawable.ic_notifications, "提醒",
+//                                "点击确认固定悬浮条位置，悬浮条将不可上下拖动。",
+//                                "确认", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        SpUtils.saveBoolean(getContext().getApplicationContext(), Configs.KEY_TOUCH_UI_POS_BALL_FREEZE, true);
+//                                        restartService();
+//                                    }
+//                                }, "取消", null)
+//                                .show();
+//                    }
+//                }else {//未打开悬浮条，那么打开
+//                    DialogUtils.showDialog(getContext(), R.drawable.ic_notifications, "提醒",
+//                            "检测到当前未开启悬浮条，点击确认将打开悬浮条，然后点击固定位置进行固定。",
+//                            "确认", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    tvBallPosCustom.setText("点击确认");
+//                                    if (ServiceUtils.isServiceRun(getContext().getApplicationContext(), Configs.NAME_SERVICE_TOUCH_LINEAR)) {
+//                                        getContext().stopService(new Intent(getContext(), EasyTouchLinearService.class));
+//                                    }
+//
+//                                    getContext().startService(new Intent(getContext(), EasyTouchBallService.class));
+//                                    getContext().startService(new Intent(getContext(), FloatService.class));
+//                                    llTouchContainer.setVisibility(View.GONE);
+//                                }
+//                            },"取消",null)
+//                            .show();
+//                }
+//            }
+//        });
     }
 
     /**

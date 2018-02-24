@@ -195,6 +195,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -220,6 +221,27 @@
                             android:textSize="20sp" />
 
                     </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="位置固定"
+                        android:textColor="@color/colorBlackBody"
+                        android:textSize="20sp" />
+
+                    <com.skkk.easytouch.View.SettingSwitchItemView
+                        android:id="@id/ssiv_pos_freeze"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:switchTitle="未固定"
+                        app:switchChecked="false"></com.skkk.easytouch.View.SettingSwitchItemView>
+                </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
